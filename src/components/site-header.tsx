@@ -16,6 +16,8 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
           <Link to="/library" className="hover:text-foreground transition-colors">Bibliothèque</Link>
+          <Link to="/tarifs" className="hover:text-foreground transition-colors">Tarifs</Link>
+          <Link to="/pourquoi" className="hover:text-foreground transition-colors">Pourquoi ce projet</Link>
           <Link to="/profile" className="hover:text-foreground transition-colors">Profil</Link>
           {user.premium && (
             <span className="inline-flex items-center gap-1 text-gold">

@@ -1,18 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { SERIES } from "@/lib/data";
-import { Sparkles, BookOpen, MousePointerClick, Mail, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, AlertTriangle, Wrench, Eye, Gift, Quote, ImageIcon, MessageSquareText, Languages } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "K·Intermédiaire — Lire le coréen sans dictionnaire" },
-      { name: "description", content: "Lecture immersive assistée. 9 séries originales pour passer du B1 au B2 sans ouvrir un dictionnaire toutes les deux phrases." },
-      { property: "og:title", content: "K·Intermédiaire" },
-      { property: "og:description", content: "Lisez de vraies histoires en coréen, diapo par diapo." },
+      { title: "Apprendre le coréen intermédiaire en lisant — K·Intermédiaire" },
+      { name: "description", content: "Passez du B1 au B2 en coréen sans cours ni listes de vocabulaire : lisez des histoires imagées en Hangeul, diapo par diapo, à votre rythme. Première histoire offerte." },
+      { name: "keywords", content: "apprendre le coréen, coréen intermédiaire, lire en coréen, B1 B2 coréen, méthode coréen, hangeul, histoires coréennes, K-pop apprendre coréen" },
+      { property: "og:title", content: "Apprendre le coréen intermédiaire en lisant — K·Intermédiaire" },
+      { property: "og:description", content: "Des histoires illustrées en coréen pour vraiment progresser après l'alphabet. Votre première histoire est offerte." },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Index,
 });
@@ -23,48 +25,57 @@ function Index() {
     <div className="min-h-screen">
       <SiteHeader />
 
-      {/* HERO */}
+      {/* HERO — 4U headline + CTA */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-24 md:pt-32 md:pb-32 grid md:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
+        <div className="mx-auto max-w-7xl px-6 pt-20 pb-24 md:pt-28 md:pb-28 grid md:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
           <div>
             <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-accent mb-6">
-              <span className="h-px w-8 bg-accent" /> Lecture immersive assistée · B1 / B2
+              <span className="h-px w-8 bg-accent" /> Méthode pour niveau intermédiaire · B1 / B2
             </div>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.02] text-balance">
-              Lisez de vraies histoires en coréen.{" "}
-              <span className="text-muted-foreground italic">Sans ouvrir un dictionnaire toutes les deux phrases.</span>
+              Enfin comprendre le coréen.{" "}
+              <span className="text-muted-foreground italic">
+                En 15 min par jour, grâce à des histoires illustrées que vous n'aurez pas envie de lâcher.
+              </span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Vous connaissez le Hangeul, mais les webtoons natifs vous épuisent. K·Intermédiaire vous fait
-              avancer <em>diapo par diapo</em>, et révèle la grammaire seulement quand vous le demandez —
-              d'un simple clic.
+              Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
+              les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
+              K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
+              dictionnaire : les images donnent le contexte, la traduction n'apparaît que si vous
+              la demandez, mot par mot.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6">
                 <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                   <Sparkles className="h-4 w-4 mr-2" />
-                  Commencer « Ghost of the Past » gratuitement
+                  Lire ma première histoire — gratuit
                 </Link>
               </Button>
               <Button asChild size="lg" variant="ghost" className="h-12">
-                <Link to="/library">Voir les 9 séries <ArrowRight className="h-4 w-4 ml-2" /></Link>
+                <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
               </Button>
             </div>
             <p className="mt-4 text-xs text-muted-foreground">
-              Aucune carte requise · Premium d'essai activé pour la démo
+              Aucune carte requise · Lecture imagée · B1 → B2 · Tous les registres (oral, écrit, poli, familier)
             </p>
           </div>
 
-          {/* Mock slide preview */}
+          {/* Aperçu d'une diapo */}
           <div className="relative">
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-border/60 shadow-2xl"
-                 style={{ background: `linear-gradient(160deg, ${ghost.cover.from}, ${ghost.cover.to})` }}>
+            <div
+              className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-border/60 shadow-2xl"
+              style={{ background: `linear-gradient(160deg, ${ghost.cover.from}, ${ghost.cover.to})` }}
+            >
               <span className="absolute inset-0 grid place-items-center font-korean text-[14rem] text-white/10 leading-none">유</span>
               <div className="absolute top-6 left-6 right-6 bg-black p-4 rounded-md text-cream">
                 <p className="font-korean text-2xl leading-relaxed">
                   새벽<span className="underline decoration-dotted underline-offset-4 decoration-accent">에</span>{" "}
                   문자<span className="underline decoration-dotted underline-offset-4 decoration-accent">가</span>{" "}
                   <span className="underline decoration-dotted underline-offset-4 decoration-amber-400">왔다</span>.
+                </p>
+                <p className="text-[10px] uppercase tracking-wider text-cream/50 mt-2">
+                  Aperçu d'une diapo · cliquez sur un mot pour la traduction
                 </p>
               </div>
               <div className="absolute bottom-6 left-6 right-6 bg-popover/95 backdrop-blur rounded-md p-3 border border-accent/30">
@@ -80,72 +91,200 @@ function Index() {
         </div>
       </section>
 
-      {/* MECHANIC */}
-      <section className="border-y border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-20 grid md:grid-cols-3 gap-10">
-          <Feature
-            icon={<BookOpen className="h-5 w-5" />}
-            kicker="01 — Lecture"
-            title="Diapo par diapo"
-            body="Une seule image à la fois, comme un roman visuel. Aucune grille, aucun mur de pages. L'immersion sans la fatigue."
-          />
-          <Feature
-            icon={<MousePointerClick className="h-5 w-5" />}
-            kicker="02 — Compréhension"
-            title="Cliquez, comprenez, repartez"
-            body="Un mot ou une particule vous bloque ? Cliquez. Vous obtenez le rôle, la nuance, le registre, sans quitter la diapo."
-          />
-          <Feature
-            icon={<Mail className="h-5 w-5" />}
-            kicker="03 — Demande"
-            title="Une question ? On y répond."
-            body="Soumettez votre passage. Vous recevez une diapo annotée par e-mail, sous 24 à 48 h."
-          />
-        </div>
-      </section>
-
-      {/* ROADMAP */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="flex items-end justify-between mb-10 gap-6 flex-wrap">
-          <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">Feuille de route</div>
-            <h2 className="font-display text-4xl md:text-5xl text-balance">9 séries originales, une progression pensée.</h2>
-          </div>
-          <Button asChild variant="ghost"><Link to="/library">Tout voir <ArrowRight className="h-4 w-4 ml-2" /></Link></Button>
-        </div>
-        <ol className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {SERIES.map((s) => (
-            <li key={s.id} className="rounded-lg border border-border bg-card/60 p-4 flex items-center gap-4">
-              <span className="font-display text-2xl text-muted-foreground w-6 tabular-nums">{s.order}</span>
-              <span className="w-10 h-10 rounded-md grid place-items-center font-korean text-xl text-cream"
-                    style={{ background: `linear-gradient(160deg, ${s.cover.from}, ${s.cover.to})` }}>{s.cover.symbol}</span>
-              <div className="min-w-0 flex-1">
-                <div className="font-display text-base truncate">{s.title}</div>
-                <div className="text-xs text-muted-foreground truncate">{s.moods.join(" · ")}</div>
-              </div>
-              {s.free && <span className="text-[10px] text-gold uppercase tracking-wider">Gratuit</span>}
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* PRICING */}
+      {/* PROBLÈME */}
       <section className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto max-w-5xl px-6 py-24 text-center">
-          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">Modèle freemium</div>
-          <h2 className="font-display text-4xl md:text-5xl text-balance">Lisez la première série gratuitement, débloquez le reste à votre rythme.</h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-4 text-left">
-            <PriceCard title="Découverte" price="0 €" features={["Ghost of the Past en entier", "Mode lecture diapo par diapo", "1 diapo annotée offerte"]} />
-            <PriceCard title="Pass série" price="9 €" features={["1 série au choix", "Analyses Premium illimitées", "Carnet de vocabulaire"]} highlight />
-            <PriceCard title="Founder Pack" price="49 €" features={["Les 9 séries + à venir", "File de questions prioritaire", "Badge fondateur"]} />
+        <div className="mx-auto max-w-3xl px-6 py-24">
+          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3 flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" /> Le problème
+          </div>
+          <h2 className="font-display text-4xl md:text-5xl text-balance">
+            Vous êtes bloqué·e entre « débutant » et « natif » — et personne ne fait rien pour vous.
+          </h2>
+          <div className="mt-8 space-y-5 text-lg text-cream/85 leading-relaxed">
+            <p>
+              Vous avez appris le Hangeul en une après-midi. Vous connaissez 안녕하세요, 사랑해, 감사합니다.
+              Vous suivez à peu près une chanson de BTS sous-titrée. Et après ?
+            </p>
+            <p>
+              Vous ouvrez les news coréennes : c'est du chinois.
+              Vous lancez un manhwa : vous décrochez aux onomatopées.
+              Vous regardez une interview : si vous quittez les sous-titres une seconde, vous êtes perdu·e.
+              Vous essayez des manuels « intermédiaires » : ils sont soit pour vrais débutants, soit pour quasi-natifs.
+            </p>
+            <p className="font-display text-2xl text-cream italic">
+              Le marché est saturé de contenu pour débutants. Pour le niveau intermédiaire, il n'y a rien.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* MÉCANISME DU PROBLÈME */}
+      <section className="border-t border-border/60">
+        <div className="mx-auto max-w-3xl px-6 py-24">
+          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3 flex items-center gap-2">
+            <Wrench className="h-4 w-4" /> Pourquoi vous n'avancez pas
+          </div>
+          <h2 className="font-display text-4xl md:text-5xl text-balance">
+            Ce n'est pas un manque de travail. C'est une mauvaise méthode.
+          </h2>
+          <div className="mt-8 space-y-5 text-lg text-cream/85 leading-relaxed">
+            <p>
+              Apprendre 150 mots par semaine, copier des chansons, réviser des fiches de grammaire
+              décontextualisées — vous l'avez fait, et vous avez oublié 80% trois mois plus tard.
+              Normal : un mot sans contexte, sans histoire, sans émotion ne s'ancre nulle part.
+            </p>
+            <p>
+              Les vraies langues s'apprennent comme un enfant apprend la sienne : en comprenant le
+              <em> sens global</em> grâce au contexte, puis en zoomant sur ce qui résiste. C'est ainsi
+              que des millions de gens ont appris l'anglais — en regardant des séries, en lisant des
+              fanfictions, en jouant à des jeux. Sans jamais ouvrir un manuel.
+            </p>
+            <p>
+              Pour le coréen, ce contenu « entre les deux » n'existait pas.{" "}
+              <strong className="text-cream">Jusqu'ici.</strong>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* MÉCANISME SOLUTION */}
+      <section id="methode" className="border-t border-border/60 bg-card/40">
+        <div className="mx-auto max-w-5xl px-6 py-24">
+          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">La méthode</div>
+          <h2 className="font-display text-4xl md:text-5xl text-balance max-w-3xl">
+            Lire des histoires imagées en coréen, diapo par diapo, à votre rythme.
+          </h2>
+          <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
+            Pas de cours, pas de fiches, pas de devoirs. Vous lisez une histoire qui vous tient en
+            haleine, et la langue s'imprime presque toute seule — exactement comme on apprend une
+            langue dans la vraie vie.
+          </p>
+          <div className="mt-12 grid md:grid-cols-3 gap-8">
+            <Feature
+              icon={<ImageIcon className="h-5 w-5" />}
+              kicker="01 — Le contexte"
+              title="Les images racontent tout"
+              body="Une diapo = une scène. Même si trois mots vous échappent, vous comprenez ce qui se passe. Comme dans un manga ou un drama : votre cerveau remplit les trous."
+            />
+            <Feature
+              icon={<MessageSquareText className="h-5 w-5" />}
+              kicker="02 — Le coréen pur"
+              title="Que du Hangeul. Jamais de romanisation."
+              body="Pas de « annyeonghaseyo » pour vous rassurer. Votre œil s'habitue à la vraie langue, exactement comme un lecteur coréen la voit."
+            />
+            <Feature
+              icon={<Languages className="h-5 w-5" />}
+              kicker="03 — La traduction à la demande"
+              title="Un clic, une explication"
+              body="Mot, particule ou terminaison qui résiste ? Vous cliquez. La traduction apparaît avec le rôle, la nuance et le registre. Puis vous repartez dans l'histoire."
+            />
+          </div>
+          <div className="mt-12 rounded-xl border border-border bg-card p-6 md:p-8">
+            <p className="text-sm uppercase tracking-wider text-accent mb-2">Bonus inclus</p>
+            <p className="text-cream/90">
+              Chaque histoire mélange <strong>tous les registres</strong> du coréen : narration
+              littéraire, dialogues polis (-요), familier (반말), formel (-ㅂ니다), pensées intérieures,
+              SMS, panneaux, cris. Vous travaillez en parallèle ce qu'aucune méthode classique ne
+              vous donne en moins de deux ans.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* SOLUTION / OFFRE / CTA */}
+      <section className="border-t border-border/60">
+        <div className="mx-auto max-w-5xl px-6 py-24">
+          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3 flex items-center gap-2">
+            <Gift className="h-4 w-4" /> Votre première histoire est offerte
+          </div>
+          <h2 className="font-display text-4xl md:text-5xl text-balance max-w-3xl">
+            Commencez maintenant, sans payer.
+          </h2>
+          <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
+            Neuf histoires de l'autrice <em>Sara Eonni</em> — courtes, addictives, de difficulté
+            croissante. La première vous est offerte intégralement, pour que vous puissiez tester
+            la méthode sur du vrai contenu, pas une démo.
+          </p>
+
+          <div className="mt-10 grid md:grid-cols-[1.2fr_1fr] gap-8 items-center">
+            <div className="rounded-2xl border border-accent/30 bg-card/60 p-6 md:p-8 glow-accent">
+              <div className="flex items-baseline justify-between mb-3">
+                <span className="text-xs uppercase tracking-wider text-accent">Histoire offerte · n°1</span>
+                <span className="text-xs text-muted-foreground">Niveau B1 — 8 épisodes</span>
+              </div>
+              <h3 className="font-display text-3xl">Ghost of the Past</h3>
+              <p className="text-sm text-muted-foreground mt-2">
+                Une lycéenne reçoit un message d'un numéro qu'elle a effacé il y a dix ans.
+                Mystère, drame, surnaturel léger — idéal pour démarrer.
+              </p>
+              <Button asChild size="lg" className="mt-6 bg-accent text-accent-foreground hover:bg-accent/90 h-12">
+                <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
+                  Lire le premier épisode <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
+              </Button>
+              <p className="text-xs text-muted-foreground mt-3">
+                Lecture immédiate · aucune carte bancaire · aucune inscription pour commencer
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <Bullet>Lecture diapo par diapo, à votre rythme — pas de vidéo à mettre en pause</Bullet>
+              <Bullet>Hangeul pur, jamais de romanisation</Bullet>
+              <Bullet>Traduction d'un mot ou d'une particule en un clic</Bullet>
+              <Bullet>Travaille tous les registres : poli, familier, écrit, oral</Bullet>
+              <Bullet>Vous progressez sans même vous en rendre compte</Bullet>
+            </div>
+          </div>
+
+          <div className="mt-16 grid md:grid-cols-2 gap-4 text-sm">
+            <Link to="/tarifs" className="rounded-xl border border-border bg-card/40 p-5 hover:border-accent/60 transition flex items-center justify-between">
+              <span>
+                <strong className="font-display text-base">Voir les formules</strong>
+                <br />
+                <span className="text-muted-foreground">Découverte gratuite, Pass série, Pack fondateur</span>
+              </span>
+              <ArrowRight className="h-4 w-4 text-accent" />
+            </Link>
+            <Link to="/pourquoi" className="rounded-xl border border-border bg-card/40 p-5 hover:border-accent/60 transition flex items-center justify-between">
+              <span>
+                <strong className="font-display text-base">Pourquoi ce projet existe</strong>
+                <br />
+                <span className="text-muted-foreground">L'histoire derrière K·Intermédiaire</span>
+              </span>
+              <ArrowRight className="h-4 w-4 text-accent" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* CITATION / CTA FINAL */}
+      <section className="border-t border-border/60 bg-card/40">
+        <div className="mx-auto max-w-3xl px-6 py-20 text-center">
+          <Quote className="h-6 w-6 text-accent mx-auto mb-4" />
+          <p className="font-display text-2xl md:text-3xl text-balance leading-snug">
+            « J'ai appris l'anglais sans m'en rendre compte, juste en lisant des histoires sur mon
+            téléphone. Aujourd'hui, je veux offrir la même chose à tous les passionné·es de
+            culture coréenne qui galèrent comme moi. »
+          </p>
+          <p className="text-sm text-muted-foreground mt-4">— Fondatrice de K·Intermédiaire</p>
+          <div className="mt-8">
+            <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6">
+              <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
+                <Eye className="h-4 w-4 mr-2" /> Lire ma première histoire — gratuit
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
 
       <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground flex justify-between">
+        <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground flex flex-wrap gap-3 justify-between">
           <span>© K·Intermédiaire — 중급 한국어</span>
-          <span>Lecture immersive assistée</span>
+          <span className="flex gap-4">
+            <Link to="/library" className="hover:text-foreground">Bibliothèque</Link>
+            <Link to="/tarifs" className="hover:text-foreground">Tarifs</Link>
+            <Link to="/pourquoi" className="hover:text-foreground">Pourquoi ce projet</Link>
+          </span>
         </div>
       </footer>
     </div>
@@ -165,14 +304,11 @@ function Feature({ icon, kicker, title, body }: { icon: React.ReactNode; kicker:
   );
 }
 
-function PriceCard({ title, price, features, highlight }: { title: string; price: string; features: string[]; highlight?: boolean }) {
+function Bullet({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`rounded-xl border p-6 ${highlight ? "border-accent/60 bg-accent/5 glow-accent" : "border-border bg-card"}`}>
-      <div className="text-xs uppercase tracking-wider text-muted-foreground">{title}</div>
-      <div className="font-display text-4xl mt-2">{price}</div>
-      <ul className="mt-5 space-y-2 text-sm text-cream/85">
-        {features.map((f) => <li key={f} className="flex gap-2"><span className="text-accent">·</span>{f}</li>)}
-      </ul>
+    <div className="flex gap-3 text-cream/85">
+      <span className="text-accent mt-1">✦</span>
+      <span>{children}</span>
     </div>
   );
 }

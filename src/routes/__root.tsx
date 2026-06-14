@@ -79,14 +79,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "K·Intermédiaire — Lire le coréen sans dictionnaire" },
-      { name: "description", content: "Lisez de vraies histoires en coréen, diapo par diapo. Plateforme premium pour niveau intermédiaire B1/B2." },
       { name: "author", content: "K·Intermédiaire" },
-      { property: "og:title", content: "K·Intermédiaire" },
-      { property: "og:description", content: "Lecture immersive assistée pour le coréen intermédiaire." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:site_name", content: "K·Intermédiaire" },
+      { property: "og:locale", content: "fr_FR" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
@@ -97,6 +94,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Noto+Serif+KR:wght@500;700&display=swap" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "K·Intermédiaire",
+          inLanguage: "fr-FR",
+          description:
+            "Plateforme de lecture immersive pour apprendre le coréen au niveau intermédiaire (B1/B2) à partir d'histoires illustrées.",
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -106,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>
