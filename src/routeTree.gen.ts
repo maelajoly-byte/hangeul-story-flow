@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesIdRouteImport } from './routes/series.$id'
+import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
@@ -28,35 +29,49 @@ const SeriesIdRoute = SeriesIdRouteImport.update({
   path: '/series/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
+  id: '/read/$seriesId/$episode/$part',
+  path: '/read/$seriesId/$episode/$part',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
   '/series/$id': typeof SeriesIdRoute
+  '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
   '/series/$id': typeof SeriesIdRoute
+  '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
   '/series/$id': typeof SeriesIdRoute
+  '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/library' | '/series/$id'
+  fullPaths: '/' | '/library' | '/series/$id' | '/read/$seriesId/$episode/$part'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/library' | '/series/$id'
-  id: '__root__' | '/' | '/library' | '/series/$id'
+  to: '/' | '/library' | '/series/$id' | '/read/$seriesId/$episode/$part'
+  id:
+    | '__root__'
+    | '/'
+    | '/library'
+    | '/series/$id'
+    | '/read/$seriesId/$episode/$part'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LibraryRoute: typeof LibraryRoute
   SeriesIdRoute: typeof SeriesIdRoute
+  ReadSeriesIdEpisodePartRoute: typeof ReadSeriesIdEpisodePartRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +97,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeriesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/read/$seriesId/$episode/$part': {
+      id: '/read/$seriesId/$episode/$part'
+      path: '/read/$seriesId/$episode/$part'
+      fullPath: '/read/$seriesId/$episode/$part'
+      preLoaderRoute: typeof ReadSeriesIdEpisodePartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +111,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LibraryRoute: LibraryRoute,
   SeriesIdRoute: SeriesIdRoute,
+  ReadSeriesIdEpisodePartRoute: ReadSeriesIdEpisodePartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
