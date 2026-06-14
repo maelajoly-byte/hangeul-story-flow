@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesIdRouteImport } from './routes/series.$id'
 import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
@@ -38,12 +44,14 @@ const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
+  '/profile': typeof ProfileRoute
   '/series/$id': typeof SeriesIdRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
+  '/profile': typeof ProfileRoute
   '/series/$id': typeof SeriesIdRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
@@ -51,18 +59,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
+  '/profile': typeof ProfileRoute
   '/series/$id': typeof SeriesIdRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/library' | '/series/$id' | '/read/$seriesId/$episode/$part'
+  fullPaths:
+    | '/'
+    | '/library'
+    | '/profile'
+    | '/series/$id'
+    | '/read/$seriesId/$episode/$part'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/library' | '/series/$id' | '/read/$seriesId/$episode/$part'
+  to:
+    | '/'
+    | '/library'
+    | '/profile'
+    | '/series/$id'
+    | '/read/$seriesId/$episode/$part'
   id:
     | '__root__'
     | '/'
     | '/library'
+    | '/profile'
     | '/series/$id'
     | '/read/$seriesId/$episode/$part'
   fileRoutesById: FileRoutesById
@@ -70,12 +90,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LibraryRoute: typeof LibraryRoute
+  ProfileRoute: typeof ProfileRoute
   SeriesIdRoute: typeof SeriesIdRoute
   ReadSeriesIdEpisodePartRoute: typeof ReadSeriesIdEpisodePartRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/library': {
       id: '/library'
       path: '/library'
@@ -110,6 +138,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LibraryRoute: LibraryRoute,
+  ProfileRoute: ProfileRoute,
   SeriesIdRoute: SeriesIdRoute,
   ReadSeriesIdEpisodePartRoute: ReadSeriesIdEpisodePartRoute,
 }
