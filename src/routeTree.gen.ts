@@ -9,15 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PourquoiRouteImport } from './routes/pourquoi'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesIdRouteImport } from './routes/series.$id'
 import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PourquoiRoute = PourquoiRouteImport.update({
+  id: '/pourquoi',
+  path: '/pourquoi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -44,14 +62,20 @@ const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
+  '/pourquoi': typeof PourquoiRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tarifs': typeof TarifsRoute
   '/series/$id': typeof SeriesIdRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
+  '/pourquoi': typeof PourquoiRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tarifs': typeof TarifsRoute
   '/series/$id': typeof SeriesIdRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
@@ -59,7 +83,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/library': typeof LibraryRoute
+  '/pourquoi': typeof PourquoiRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tarifs': typeof TarifsRoute
   '/series/$id': typeof SeriesIdRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
@@ -68,21 +95,30 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/library'
+    | '/pourquoi'
     | '/profile'
+    | '/sitemap.xml'
+    | '/tarifs'
     | '/series/$id'
     | '/read/$seriesId/$episode/$part'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/library'
+    | '/pourquoi'
     | '/profile'
+    | '/sitemap.xml'
+    | '/tarifs'
     | '/series/$id'
     | '/read/$seriesId/$episode/$part'
   id:
     | '__root__'
     | '/'
     | '/library'
+    | '/pourquoi'
     | '/profile'
+    | '/sitemap.xml'
+    | '/tarifs'
     | '/series/$id'
     | '/read/$seriesId/$episode/$part'
   fileRoutesById: FileRoutesById
@@ -90,18 +126,42 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LibraryRoute: typeof LibraryRoute
+  PourquoiRoute: typeof PourquoiRoute
   ProfileRoute: typeof ProfileRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TarifsRoute: typeof TarifsRoute
   SeriesIdRoute: typeof SeriesIdRoute
   ReadSeriesIdEpisodePartRoute: typeof ReadSeriesIdEpisodePartRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pourquoi': {
+      id: '/pourquoi'
+      path: '/pourquoi'
+      fullPath: '/pourquoi'
+      preLoaderRoute: typeof PourquoiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -138,7 +198,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LibraryRoute: LibraryRoute,
+  PourquoiRoute: PourquoiRoute,
   ProfileRoute: ProfileRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TarifsRoute: TarifsRoute,
   SeriesIdRoute: SeriesIdRoute,
   ReadSeriesIdEpisodePartRoute: ReadSeriesIdEpisodePartRoute,
 }
