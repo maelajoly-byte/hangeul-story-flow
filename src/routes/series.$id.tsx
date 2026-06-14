@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { EPISODES, getSeries } from "@/lib/data";
+import { EPISODES, getSeries, type Series } from "@/lib/data";
 import { useUser } from "@/lib/user-store";
 import { PaywallModal } from "@/components/paywall-modal";
 import { AlertTriangle, BookOpen, Lock, Play, Sparkles } from "lucide-react";
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/series/$id")({
 });
 
 function SeriesPage() {
-  const { series: s } = Route.useLoaderData();
+  const { series: s } = Route.useLoaderData() as { series: Series };
   const { user } = useUser();
   const navigate = useNavigate();
   const [paywall, setPaywall] = useState(false);
