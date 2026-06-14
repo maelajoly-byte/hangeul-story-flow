@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PourquoiRouteImport } from './routes/pourquoi'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesIdRouteImport } from './routes/series.$id'
 import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 
@@ -42,6 +43,11 @@ const LibraryRoute = LibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeriesIdRoute = SeriesIdRouteImport.update({
   id: '/series/$id',
   path: '/series/$id',
@@ -54,6 +60,7 @@ const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/library': typeof LibraryRoute
   '/pourquoi': typeof PourquoiRoute
   '/profile': typeof ProfileRoute
@@ -63,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/library': typeof LibraryRoute
   '/pourquoi': typeof PourquoiRoute
   '/profile': typeof ProfileRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/library': typeof LibraryRoute
   '/pourquoi': typeof PourquoiRoute
   '/profile': typeof ProfileRoute
@@ -84,6 +93,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/library'
     | '/pourquoi'
     | '/profile'
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
     | '/read/$seriesId/$episode/$part'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/library'
     | '/pourquoi'
     | '/profile'
@@ -102,6 +113,7 @@ export interface FileRouteTypes {
     | '/read/$seriesId/$episode/$part'
   id:
     | '__root__'
+    | '/'
     | '/library'
     | '/pourquoi'
     | '/profile'
@@ -112,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   LibraryRoute: typeof LibraryRoute
   PourquoiRoute: typeof PourquoiRoute
   ProfileRoute: typeof ProfileRoute
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/series/$id': {
       id: '/series/$id'
       path: '/series/$id'
@@ -176,6 +196,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   LibraryRoute: LibraryRoute,
   PourquoiRoute: PourquoiRoute,
   ProfileRoute: ProfileRoute,
