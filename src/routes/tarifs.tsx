@@ -138,7 +138,7 @@ function Tarifs() {
 function Faq({ q, a }: { q: string; a: string }) {
   return (
     <div className="border-b border-border/60 pb-5">
-      <h3 className="font-display text-lg text-cream">{q}</h3>
+      <h3 className="font-display text-lg text-foreground">{q}</h3>
       <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{a}</p>
     </div>
   );
