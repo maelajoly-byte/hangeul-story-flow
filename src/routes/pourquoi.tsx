@@ -33,8 +33,8 @@ function Pourquoi() {
           L'histoire derrière K·Intermédiaire, racontée par sa fondatrice.
         </p>
 
-        <article className="prose-custom mt-12 space-y-6 text-cream/90 text-lg leading-relaxed">
-          <h2 className="font-display text-3xl text-cream mt-10">Une enfant qui détestait les langues</h2>
+        <article className="prose-custom mt-12 space-y-6 text-foreground/90 text-lg leading-relaxed">
+          <h2 className="font-display text-3xl text-foreground mt-10">Une enfant qui détestait les langues</h2>
           <p>
             En primaire, tout le monde aimait l'anglais sauf moi. Je ne comprenais pas pourquoi on
             n'avait pas une langue universelle — on est censés être l'espèce la plus intelligente
@@ -45,7 +45,7 @@ function Pourquoi() {
             rattrapé. Pendant toute ma scolarité, j'ai été nulle en langues. Et je le détestais.
           </p>
 
-          <h2 className="font-display text-3xl text-cream mt-10">Puis sont venus les animés. Puis BTS.</h2>
+          <h2 className="font-display text-3xl text-foreground mt-10">Puis sont venus les animés. Puis BTS.</h2>
           <p>
             Au lycée, j'ai découvert les animés. Au début en VF, puis mes ami·es m'ont poussée
             à passer en VO. J'ai commencé à aimer le japonais. Un an plus tard, une amie m'a
@@ -57,7 +57,7 @@ function Pourquoi() {
             en 2020, dans une fac sans anglais — parce que je restais nulle.
           </p>
 
-          <h2 className="font-display text-3xl text-cream mt-10">Septembre 2020 : un jeu BTS change tout</h2>
+          <h2 className="font-display text-3xl text-foreground mt-10">Septembre 2020 : un jeu BTS change tout</h2>
           <p>
             BTS sort <em>BTS Universe Story</em>, un jeu où des fans créent des mini-histoires
             illustrées. Je jouais sur la version française — les histoires fr étaient médiocres.
@@ -78,7 +78,7 @@ function Pourquoi() {
             J'avais appris l'anglais sans essayer. Sans liste de vocabulaire. Sans le vouloir.
           </p>
 
-          <h2 className="font-display text-3xl text-cream mt-10">En coréen, l'école ne m'a pas aidée</h2>
+          <h2 className="font-display text-3xl text-foreground mt-10">En coréen, l'école ne m'a pas aidée</h2>
           <p>
             En 2ème année de licence, on devait apprendre 150 nouveaux mots par semaine. Excessif —
             et inutile : si tu ne sais pas construire une phrase, le vocabulaire ne sert à rien.
@@ -95,7 +95,7 @@ function Pourquoi() {
             Le palier entre « débutant » et « natif » n'existait nulle part.
           </p>
 
-          <h2 className="font-display text-3xl text-cream mt-10">Les vacances qui ont tout débloqué</h2>
+          <h2 className="font-display text-3xl text-foreground mt-10">Les vacances qui ont tout débloqué</h2>
           <p>
             En 3ème année, pendant les vacances avant les exams, j'ai alterné lecture sur BTS
             Universe Story et dramas en VO. Mes notes en expression ont pris 2 points. Mon
@@ -108,7 +108,7 @@ function Pourquoi() {
             légitime pour chercher un job en coréen. Trois ans ont passé.
           </p>
 
-          <h2 className="font-display text-3xl text-cream mt-10">2026 : BTS revient, je décide d'agir</h2>
+          <h2 className="font-display text-3xl text-foreground mt-10">2026 : BTS revient, je décide d'agir</h2>
           <p>
             BTS est rentré de l'armée. J'ai regardé une de leurs interviews : tous les sept à la
             fois, chaotique. Je ne peux pas décrocher des sous-titres sans rien comprendre, et
@@ -121,13 +121,13 @@ function Pourquoi() {
             à son rythme. Sans avoir à rembobiner une vidéo de 5 secondes pour un seul mot.
           </p>
 
-          <h2 className="font-display text-3xl text-cream mt-10">Ce que vous trouverez ici</h2>
+          <h2 className="font-display text-3xl text-foreground mt-10">Ce que vous trouverez ici</h2>
           <p>
             Neuf histoires de Sara Eonni, dans leur ordre de création — donc de difficulté
             croissante. Vous débloquez la suivante après avoir fini la précédente. Pas de mur
             de contenu, pas de paradoxe du choix. La première est offerte.
           </p>
-          <p className="font-display text-2xl text-cream italic border-l-2 border-accent pl-6 mt-10">
+          <p className="font-display text-2xl text-foreground italic border-l-2 border-accent pl-6 mt-10">
             Ces histoires m'ont appris l'anglais. Elles vont vous apprendre le coréen.
           </p>
 
