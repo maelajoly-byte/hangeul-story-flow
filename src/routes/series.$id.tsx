@@ -55,7 +55,7 @@ function SeriesPage() {
           <div className="mx-auto max-w-6xl px-6 py-20 grid md:grid-cols-[1fr_360px] gap-12 items-start">
             <div>
               <Link to="/library" className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground">← Bibliothèque</Link>
-              <div className="font-korean text-2xl text-cream/70 mt-6">{s.titleKo}</div>
+              <div className="font-korean text-2xl text-foreground/70 mt-6">{s.titleKo}</div>
               <h1 className="font-display text-5xl md:text-6xl mt-1 text-balance">{s.title}</h1>
               <p className="text-muted-foreground mt-5 max-w-xl leading-relaxed">{s.synopsis}</p>
               <div className="flex flex-wrap gap-2 mt-5">
