@@ -70,7 +70,7 @@ function ProfilePage() {
                 {user.vocab.map((v, i) => (
                   <li key={i} className="px-4 py-3 flex items-center justify-between">
                     <div>
-                      <span className="font-korean text-lg text-cream">{v.ko}</span>
+                      <span className="font-korean text-lg text-foreground">{v.ko}</span>
                       <span className="text-sm text-muted-foreground ml-3">{v.fr}</span>
                     </div>
                     <span className="text-xs text-muted-foreground">{v.series}</span>
