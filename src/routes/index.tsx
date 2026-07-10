@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import { SERIES } from "@/lib/data";
 import { Sparkles, ArrowRight, AlertTriangle, Wrench, Eye, Gift, Quote, ImageIcon, MessageSquareText, Languages } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -20,7 +19,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const ghost = SERIES[0];
   return (
     <div className="min-h-screen">
       <SiteHeader />
