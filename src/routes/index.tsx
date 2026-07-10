@@ -86,9 +86,9 @@ function Index() {
         </div>
 
         {/* Hero text on wooden desk — sits directly under the sky, book overlaps */}
-        <div className="mx-auto max-w-4xl px-6 pt-16 md:pt-20 pb-14 text-center">
-          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--accent)] mb-5">
-            <span className="h-px w-8 bg-[color:var(--accent)]" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-[color:var(--accent)]" />
+        <div className="mx-auto max-w-4xl px-6 pt-14 md:pt-16 pb-14 text-center">
+          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-5">
+            <span className="h-px w-8 bg-muted-foreground" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-muted-foreground" />
           </div>
           <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance text-foreground">
             Enfin comprendre le coréen.{" "}
