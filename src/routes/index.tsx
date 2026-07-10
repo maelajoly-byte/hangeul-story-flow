@@ -31,7 +31,7 @@ function Index() {
           style={{
             background:
               "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
-            height: "clamp(180px, 28vh, 280px)",
+            height: "clamp(110px, 16vh, 150px)",
           }}
         >
           {/* soft clouds */}
@@ -40,14 +40,14 @@ function Index() {
               "radial-gradient(ellipse 220px 40px at 15% 30%, white, transparent 70%), radial-gradient(ellipse 180px 30px at 75% 60%, white, transparent 70%), radial-gradient(ellipse 160px 28px at 45% 15%, white, transparent 70%)" }} />
 
           {/* The book — only top ~1/3 visible; extends below the sky */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[62%] w-[min(92vw,860px)]">
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[32%] w-[min(92vw,860px)]">
             <div className="relative">
               {/* Silk cover — visible on left/right edges + top */}
               <div aria-hidden
                 className="absolute inset-0 rounded-[6px]"
                 style={{
                   background:
-                    "linear-gradient(180deg, oklch(0.40 0.14 25) 0%, oklch(0.36 0.14 25) 100%)",
+                    "linear-gradient(180deg, oklch(0.42 0.157 258.34) 0%, oklch(0.38 0.14 258.34) 100%)",
                   boxShadow:
                     "0 20px 40px -12px rgba(0,0,0,0.45), 0 30px 80px -30px rgba(0,0,0,0.5)",
                 }} />
@@ -57,26 +57,25 @@ function Index() {
                   <span key={i} className="block h-[3px] w-8 rounded-full bg-[oklch(0.95_0.02_85_/_0.85)]" />
                 ))}
               </div>
-              {/* Cream page inset — leaves ~28px of red cover showing left/right/top */}
+              {/* Cream page inset — leaves ~28px of blue cover showing left/right/top */}
               <div className="relative mx-6 mt-7 rounded-[3px] paper-grain"
                    style={{
                      background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
-                <div className="px-6 md:px-12 pt-6 md:pt-8 pb-16 md:pb-20 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <div className="px-6 md:px-12 pt-4 md:pt-6 pb-8 md:pb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                   <div className="min-w-0">
-                    <div className="font-hand-kr text-[3.4rem] md:text-[4.6rem] leading-[0.9] text-foreground select-none"
-                         style={{ color: "oklch(0.24 0.025 45)" }}>
+                    <div className="font-hand-kr text-[2.8rem] md:text-[3.8rem] leading-[0.9] text-foreground select-none">
                       우화등선
                     </div>
-                    <p className="mt-3 font-hand text-xl md:text-2xl leading-snug"
+                    <p className="mt-2 font-hand text-lg md:text-xl leading-snug"
                        style={{ color: "oklch(0.28 0.03 45)" }}>
                       « Quitte ta chrysalide et envole-toi comme un être céleste. »
                     </p>
-                  </div>
-                  <div className="font-korean text-2xl md:text-3xl tracking-[0.35em] shrink-0"
+                    <p className="mt-1 font-korean text-lg md:text-xl tracking-[0.12em]"
                        style={{ color: "oklch(0.32 0.04 45)" }}>
-                    羽化登仙
+                      羽化登仙
+                    </p>
                   </div>
                 </div>
               </div>
