@@ -63,18 +63,18 @@ function Index() {
                      background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
-                <div className="px-6 md:px-12 pt-3 md:pt-4 pb-6 md:pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+                <div className="px-4 md:px-12 pt-2 md:pt-4 pb-4 md:pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3">
                   <div className="min-w-0">
-                    <div className="flex items-baseline gap-3">
-                      <div className="font-hand-kr text-[2.4rem] md:text-[3.2rem] leading-[0.9] text-foreground select-none">
+                    <div className="flex items-baseline gap-2 md:gap-3">
+                      <div className="font-hand-kr text-[2rem] md:text-[3.2rem] leading-[0.9] text-foreground select-none">
                         우화등선
                       </div>
-                      <span className="font-korean text-base md:text-lg tracking-[0.12em]"
+                      <span className="font-korean text-sm md:text-lg tracking-[0.1em]"
                             style={{ color: "oklch(0.32 0.04 45)" }}>
                         羽化登仙
                       </span>
                     </div>
-                    <p className="mt-1.5 font-hand text-base md:text-lg leading-snug"
+                    <p className="mt-1 md:mt-1.5 font-hand text-sm md:text-lg leading-snug"
                        style={{ color: "oklch(0.28 0.03 45)" }}>
                       « Quitte ta chrysalide et envole-toi comme un être céleste. »
                     </p>
