@@ -40,14 +40,14 @@ function Index() {
               "radial-gradient(ellipse 220px 40px at 15% 30%, white, transparent 70%), radial-gradient(ellipse 180px 30px at 75% 60%, white, transparent 70%), radial-gradient(ellipse 160px 28px at 45% 15%, white, transparent 70%)" }} />
 
           {/* The book — only top ~1/3 visible; extends below the sky */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[32%] w-[min(92vw,860px)]">
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[25%] w-[min(92vw,860px)]">
             <div className="relative">
               {/* Silk cover — visible on left/right edges + top */}
               <div aria-hidden
                 className="absolute inset-0 rounded-[6px]"
                 style={{
                   background:
-                    "linear-gradient(180deg, oklch(0.42 0.157 258.34) 0%, oklch(0.38 0.14 258.34) 100%)",
+                    "linear-gradient(180deg, oklch(0.34 0.076 243.88) 0%, oklch(0.30 0.07 243.88) 100%)",
                   boxShadow:
                     "0 20px 40px -12px rgba(0,0,0,0.45), 0 30px 80px -30px rgba(0,0,0,0.5)",
                 }} />
@@ -63,18 +63,20 @@ function Index() {
                      background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
-                <div className="px-6 md:px-12 pt-4 md:pt-6 pb-8 md:pb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <div className="px-6 md:px-12 pt-3 md:pt-4 pb-6 md:pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="font-hand-kr text-[2.8rem] md:text-[3.8rem] leading-[0.9] text-foreground select-none">
-                      우화등선
+                    <div className="flex items-baseline gap-3">
+                      <div className="font-hand-kr text-[2.4rem] md:text-[3.2rem] leading-[0.9] text-foreground select-none">
+                        우화등선
+                      </div>
+                      <span className="font-korean text-base md:text-lg tracking-[0.12em]"
+                            style={{ color: "oklch(0.32 0.04 45)" }}>
+                        羽化登仙
+                      </span>
                     </div>
-                    <p className="mt-2 font-hand text-lg md:text-xl leading-snug"
+                    <p className="mt-1.5 font-hand text-base md:text-lg leading-snug"
                        style={{ color: "oklch(0.28 0.03 45)" }}>
                       « Quitte ta chrysalide et envole-toi comme un être céleste. »
-                    </p>
-                    <p className="mt-1 font-korean text-lg md:text-xl tracking-[0.12em]"
-                       style={{ color: "oklch(0.32 0.04 45)" }}>
-                      羽化登仙
                     </p>
                   </div>
                 </div>
