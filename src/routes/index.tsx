@@ -153,7 +153,7 @@ function Index() {
           <h2 className="font-display text-4xl md:text-5xl text-balance">
             Ce n'est pas un manque de travail. C'est une mauvaise méthode.
           </h2>
-          <div className="mt-8 space-y-5 text-lg text-cream/85 leading-relaxed">
+          <div className="mt-8 space-y-5 text-lg text-foreground/85 leading-relaxed">
             <p>
               Apprendre 150 mots par semaine, copier des chansons, réviser des fiches de grammaire
               décontextualisées — vous l'avez fait, et vous avez oublié 80% trois mois plus tard.
@@ -167,7 +167,7 @@ function Index() {
             </p>
             <p>
               Pour le coréen, ce contenu « entre les deux » n'existait pas.{" "}
-              <strong className="text-cream">Jusqu'ici.</strong>
+              <strong className="text-foreground">Jusqu'ici.</strong>
             </p>
           </div>
         </div>
