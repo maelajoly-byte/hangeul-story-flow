@@ -23,7 +23,7 @@ function Library() {
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-12 max-w-3xl">
-          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">Bibliothèque</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Bibliothèque</div>
           <h1 className="font-display text-5xl text-balance">Neuf histoires, une progression.</h1>
           <p className="text-muted-foreground mt-4">
             Les neuf récits de l'autrice Sara Eonni, présentés dans leur ordre de création — donc de

@@ -82,7 +82,7 @@ function Tarifs() {
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-6 py-20">
         <div className="max-w-2xl">
-          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">Tarifs</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Tarifs</div>
           <h1 className="font-display text-5xl md:text-6xl text-balance">
             Pas d'abonnement. Vous payez une fois, vous gardez à vie.
           </h1>
