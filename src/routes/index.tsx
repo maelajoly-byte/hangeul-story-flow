@@ -332,7 +332,7 @@ function Feature({ icon, kicker, title, body }: { icon: React.ReactNode; kicker:
 
 function Bullet({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-3 text-cream/85">
+    <div className="flex gap-3 text-foreground/85">
       <span className="text-accent mt-1">✦</span>
       <span>{children}</span>
     </div>
