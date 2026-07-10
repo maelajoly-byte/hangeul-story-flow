@@ -118,7 +118,7 @@ function Index() {
       </section>
 
       {/* PROBLÈME */}
-      <section className="border-t border-border/60 bg-card/40">
+      <section className="border-t border-border/60 bg-card/80">
         <div className="mx-auto max-w-3xl px-6 py-24">
           <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3 flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" /> Le problème
@@ -126,7 +126,7 @@ function Index() {
           <h2 className="font-display text-4xl md:text-5xl text-balance">
             Vous êtes bloqué·e entre « débutant » et « natif » — et personne ne fait rien pour vous.
           </h2>
-          <div className="mt-8 space-y-5 text-lg text-cream/85 leading-relaxed">
+          <div className="mt-8 space-y-5 text-lg text-foreground/85 leading-relaxed">
             <p>
               Vous avez appris le Hangeul en une après-midi. Vous connaissez 안녕하세요, 사랑해, 감사합니다.
               Vous suivez à peu près une chanson de BTS sous-titrée. Et après ?
@@ -137,7 +137,7 @@ function Index() {
               Vous regardez une interview : si vous quittez les sous-titres une seconde, vous êtes perdu·e.
               Vous essayez des manuels « intermédiaires » : ils sont soit pour vrais débutants, soit pour quasi-natifs.
             </p>
-            <p className="font-display text-2xl text-cream italic">
+            <p className="font-display text-2xl text-foreground/90 italic">
               Le marché est saturé de contenu pour débutants. Pour le niveau intermédiaire, il n'y a rien.
             </p>
           </div>
