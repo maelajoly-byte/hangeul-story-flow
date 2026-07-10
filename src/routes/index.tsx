@@ -284,7 +284,7 @@ function Index() {
       </section>
 
       {/* CITATION / CTA FINAL */}
-      <section className="border-t border-border/60 bg-card/40">
+      <section className="border-t border-border/60 bg-card/80">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center">
           <Quote className="h-6 w-6 text-accent mx-auto mb-4" />
           <p className="font-display text-2xl md:text-3xl text-balance leading-snug">
