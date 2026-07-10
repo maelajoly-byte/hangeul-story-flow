@@ -23,7 +23,7 @@ function Pourquoi() {
     <div className="min-h-screen">
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-6 py-20">
-        <div className="text-xs uppercase tracking-[0.2em] text-accent mb-4 flex items-center gap-2">
+        <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4 flex items-center gap-2">
           <Heart className="h-4 w-4" /> Pourquoi ce projet
         </div>
         <h1 className="font-display text-5xl md:text-6xl leading-tight text-balance">
