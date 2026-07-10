@@ -174,7 +174,7 @@ function Index() {
       </section>
 
       {/* MÉCANISME SOLUTION */}
-      <section id="methode" className="border-t border-border/60 bg-card/40">
+      <section id="methode" className="border-t border-border/60 bg-card/80">
         <div className="mx-auto max-w-5xl px-6 py-24">
           <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">La méthode</div>
           <h2 className="font-display text-4xl md:text-5xl text-balance max-w-3xl">
@@ -207,7 +207,7 @@ function Index() {
           </div>
           <div className="mt-12 rounded-xl border border-border bg-card p-6 md:p-8">
             <p className="text-sm uppercase tracking-wider text-accent mb-2">Bonus inclus</p>
-            <p className="text-cream/90">
+            <p className="text-foreground/90">
               Chaque histoire mélange <strong>tous les registres</strong> du coréen : narration
               littéraire, dialogues polis (-요), familier (반말), formel (-ㅂ니다), pensées intérieures,
               SMS, panneaux, cris. Vous travaillez en parallèle ce qu'aucune méthode classique ne
