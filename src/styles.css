@@ -109,8 +109,8 @@
 /* Notebook / paper texture utilities */
 @utility paper-grain {
   background-image:
-    repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in oklab, var(--gold) 12%, transparent) 31px 32px),
-    radial-gradient(at 20% 10%, color-mix(in oklab, var(--accent) 8%, transparent), transparent 60%);
+    repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in oklab, var(--accent) 10%, transparent) 31px 32px),
+    radial-gradient(at 20% 10%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 60%);
 }
 @utility notebook-shadow {
   box-shadow:
