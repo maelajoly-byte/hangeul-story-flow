@@ -23,89 +23,96 @@ function Index() {
     <div className="min-h-screen">
       <SiteHeader />
 
-      {/* NOTEBOOK BANNER */}
-      <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-6 pt-14 md:pt-20">
-            {/* The notebook */}
-            <div className="relative mx-auto max-w-5xl">
-              {/* Leather strap decoration */}
-              <div aria-hidden className="absolute -top-3 left-1/2 -translate-x-1/2 h-6 w-24 rounded-b-lg bg-[color:var(--gold)]/70 shadow-[inset_0_-2px_0_rgba(0,0,0,0.15)]" />
-              <div
-                className="relative rounded-[1.25rem] border-2 border-[color:var(--gold)]/60 notebook-shadow overflow-hidden"
-                style={{ background: "linear-gradient(180deg, oklch(0.97 0.02 82) 0%, oklch(0.94 0.03 78) 100%)" }}
-              >
-                {/* Central binding */}
-                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-[3px] bg-[color:var(--gold)]/40 shadow-[0_0_18px_rgba(139,94,60,0.35)] hidden md:block" />
-                <div aria-hidden className="pointer-events-none absolute inset-y-6 left-1/2 -translate-x-[7px] w-[2px] hidden md:flex flex-col justify-between">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <span key={i} className="block h-2 w-[6px] rounded-full bg-[color:var(--gold)]/70" />
-                  ))}
-                </div>
+      {/* SKY + PEEKING CHINESE BOOK */}
+      <section className="relative">
+        {/* Sky-blue banner with a thread-bound book peeking from the top */}
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
+            height: "clamp(180px, 28vh, 280px)",
+          }}
+        >
+          {/* soft clouds */}
+          <div aria-hidden className="absolute inset-0 opacity-60"
+            style={{ backgroundImage:
+              "radial-gradient(ellipse 220px 40px at 15% 30%, white, transparent 70%), radial-gradient(ellipse 180px 30px at 75% 60%, white, transparent 70%), radial-gradient(ellipse 160px 28px at 45% 15%, white, transparent 70%)" }} />
 
-                <div className="grid md:grid-cols-2 gap-0">
-                  {/* Left page — Hangeul + French */}
-                  <div className="relative p-8 md:p-12 paper-grain">
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--gold)] mb-6 font-hand text-lg normal-case tracking-normal">
-                      — citation —
-                    </div>
-                    <div className="font-hand-kr text-[5.5rem] md:text-[7rem] leading-[0.95] text-foreground select-none">
+          {/* The book — only top ~1/3 visible; extends below the sky */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[62%] w-[min(92vw,860px)]">
+            <div className="relative">
+              {/* Silk cover — visible on left/right edges + top */}
+              <div aria-hidden
+                className="absolute inset-0 rounded-[6px]"
+                style={{
+                  background:
+                    "linear-gradient(180deg, oklch(0.40 0.14 25) 0%, oklch(0.36 0.14 25) 100%)",
+                  boxShadow:
+                    "0 20px 40px -12px rgba(0,0,0,0.45), 0 30px 80px -30px rgba(0,0,0,0.5)",
+                }} />
+              {/* thread binding stitches on top */}
+              <div aria-hidden className="absolute top-2 left-0 right-0 flex justify-around px-10">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className="block h-[3px] w-8 rounded-full bg-[oklch(0.95_0.02_85_/_0.85)]" />
+                ))}
+              </div>
+              {/* Cream page inset — leaves ~28px of red cover showing left/right/top */}
+              <div className="relative mx-6 mt-7 rounded-[3px] paper-grain"
+                   style={{
+                     background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
+                     boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
+                   }}>
+                <div className="px-6 md:px-12 pt-6 md:pt-8 pb-16 md:pb-20 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="font-hand-kr text-[3.4rem] md:text-[4.6rem] leading-[0.9] text-foreground select-none"
+                         style={{ color: "oklch(0.24 0.025 45)" }}>
                       우화등선
                     </div>
-                    <p className="mt-8 font-hand text-2xl md:text-3xl leading-snug text-foreground/85 max-w-md">
-                      « Quitte ta chrysalide<br/> et envole-toi comme<br/> un être céleste. »
+                    <p className="mt-3 font-hand text-xl md:text-2xl leading-snug"
+                       style={{ color: "oklch(0.28 0.03 45)" }}>
+                      « Quitte ta chrysalide et envole-toi comme un être céleste. »
                     </p>
-                    <div className="mt-6 h-px w-24 bg-[color:var(--gold)]/60" />
                   </div>
-
-                  {/* Right page — Hanja */}
-                  <div className="relative p-8 md:p-12 paper-grain border-t md:border-t-0 md:border-l border-[color:var(--gold)]/40">
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--gold)] mb-6 font-hand text-lg normal-case tracking-normal text-right">
-                      漢字 · hanja
-                    </div>
-                    <div className="flex md:justify-end">
-                      <div className="font-korean text-[6rem] md:text-[9rem] leading-[0.9] text-foreground/90 [writing-mode:vertical-rl] tracking-[0.15em]">
-                        羽化登仙
-                      </div>
-                    </div>
-                    <p className="mt-8 md:text-right font-hand text-xl text-muted-foreground max-w-xs md:ml-auto">
-                      un proverbe pour se souvenir<br/> pourquoi on apprend.
-                    </p>
+                  <div className="font-korean text-2xl md:text-3xl tracking-[0.35em] shrink-0"
+                       style={{ color: "oklch(0.32 0.04 45)" }}>
+                    羽化登仙
                   </div>
                 </div>
               </div>
-              {/* Notebook shadow */}
-              <div aria-hidden className="absolute -inset-x-8 -bottom-6 h-10 rounded-full bg-[color:var(--foreground)]/15 blur-2xl -z-10" />
             </div>
+          </div>
         </div>
 
-        <div className="mx-auto max-w-4xl px-6 pt-16 pb-20 md:pt-20 md:pb-24 text-center">
-          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--gold)] mb-6">
-            <span className="h-px w-8 bg-[color:var(--gold)]" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-[color:var(--gold)]" />
+        {/* Hero text on wooden desk — sits directly under the sky, book overlaps */}
+        <div className="mx-auto max-w-4xl px-6 pt-24 md:pt-28 pb-14 text-center">
+          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--accent)] mb-5">
+            <span className="h-px w-8 bg-[color:var(--accent)]" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-[color:var(--accent)]" />
           </div>
-          <h1 className="font-display text-5xl md:text-7xl leading-[1.02] text-balance">
+          <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance text-[color:var(--cream)]">
             Enfin comprendre le coréen.{" "}
-            <span className="text-muted-foreground italic font-hand text-4xl md:text-6xl">
+            <span className="text-[color:var(--cream)]/80 italic font-hand text-3xl md:text-5xl block mt-3">
               En 15 min par jour, grâce à des histoires illustrées que vous n'aurez pas envie de lâcher.
             </span>
           </h1>
-          <p className="mt-8 text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-base md:text-lg text-[color:var(--cream)]/80 max-w-2xl mx-auto leading-relaxed">
             Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
             les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
             K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
             dictionnaire.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-6 rounded-full">
+          <div className="mt-8 flex flex-wrap gap-3 justify-center">
+            <Button asChild size="lg" className="bg-[color:var(--cream)] text-[color:var(--cream-foreground)] hover:bg-[color:var(--cream)]/90 h-12 px-6 rounded-full">
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 Lire ma première histoire — gratuit
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[color:var(--gold)]/60 text-foreground hover:bg-[color:var(--gold)]/10">
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[color:var(--cream)]/50 bg-transparent text-[color:var(--cream)] hover:bg-[color:var(--cream)]/10">
               <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
             </Button>
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">
+          <p className="mt-4 text-xs text-[color:var(--cream)]/60">
             Aucune carte requise · Lecture imagée · B1 → B2 · Tous les registres
           </p>
         </div>
