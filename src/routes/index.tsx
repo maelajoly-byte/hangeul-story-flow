@@ -84,34 +84,34 @@ function Index() {
         </div>
 
         {/* Hero text on wooden desk — sits directly under the sky, book overlaps */}
-        <div className="mx-auto max-w-4xl px-6 pt-24 md:pt-28 pb-14 text-center">
+        <div className="mx-auto max-w-4xl px-6 pt-16 md:pt-20 pb-14 text-center">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--accent)] mb-5">
             <span className="h-px w-8 bg-[color:var(--accent)]" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-[color:var(--accent)]" />
           </div>
-          <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance text-[color:var(--cream)]">
+          <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance text-foreground">
             Enfin comprendre le coréen.{" "}
-            <span className="text-[color:var(--cream)]/80 italic font-hand text-3xl md:text-5xl block mt-3">
+            <span className="text-foreground/80 italic font-hand text-3xl md:text-5xl block mt-3">
               En 15 min par jour, grâce à des histoires illustrées que vous n'aurez pas envie de lâcher.
             </span>
           </h1>
-          <p className="mt-6 text-base md:text-lg text-[color:var(--cream)]/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-base md:text-lg text-foreground/80 max-w-2xl mx-auto leading-relaxed">
             Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
             les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
             K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
             dictionnaire.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-[color:var(--cream)] text-[color:var(--cream-foreground)] hover:bg-[color:var(--cream)]/90 h-12 px-6 rounded-full">
+            <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6 rounded-full">
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 Lire ma première histoire — gratuit
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[color:var(--cream)]/50 bg-transparent text-[color:var(--cream)] hover:bg-[color:var(--cream)]/10">
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-foreground/30 bg-transparent text-foreground hover:bg-cream/30">
               <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
             </Button>
           </div>
-          <p className="mt-4 text-xs text-[color:var(--cream)]/60">
+          <p className="mt-4 text-xs text-foreground/60">
             Aucune carte requise · Lecture imagée · B1 → B2 · Tous les registres
           </p>
         </div>
