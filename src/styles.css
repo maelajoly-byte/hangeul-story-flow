@@ -82,14 +82,14 @@
     background-image:
       repeating-linear-gradient(92deg,
         transparent 0 40px,
-        oklch(0.30 0.04 50 / 0.35) 40px 41px,
+        oklch(0.52 0.076 57.2 / 0.12) 40px 41px,
         transparent 41px 120px),
       repeating-linear-gradient(88deg,
         transparent 0 200px,
-        oklch(0.28 0.04 50 / 0.4) 200px 202px,
+        oklch(0.52 0.076 57.2 / 0.18) 200px 202px,
         transparent 202px 500px),
-      radial-gradient(at 20% 30%, oklch(0.42 0.06 55 / 0.7), transparent 55%),
-      radial-gradient(at 80% 70%, oklch(0.30 0.05 50 / 0.7), transparent 55%);
+      radial-gradient(at 20% 30%, oklch(0.72 0.066 72.68 / 0.45), transparent 55%),
+      radial-gradient(at 80% 70%, oklch(0.52 0.076 57.2 / 0.35), transparent 55%);
     background-attachment: fixed;
     min-height: 100vh;
   }
