@@ -25,69 +25,91 @@ function Index() {
     <div className="min-h-screen">
       <SiteHeader />
 
-      {/* HERO — 4U headline + CTA */}
+      {/* NOTEBOOK BANNER */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-24 md:pt-28 md:pb-28 grid md:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-accent mb-6">
-              <span className="h-px w-8 bg-accent" /> Méthode pour niveau intermédiaire · B1 / B2
-            </div>
-            <h1 className="font-display text-5xl md:text-7xl leading-[1.02] text-balance">
-              Enfin comprendre le coréen.{" "}
-              <span className="text-muted-foreground italic">
-                En 15 min par jour, grâce à des histoires illustrées que vous n'aurez pas envie de lâcher.
-              </span>
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
-              les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
-              K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
-              dictionnaire : les images donnent le contexte, la traduction n'apparaît que si vous
-              la demandez, mot par mot.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6">
-                <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Lire ma première histoire — gratuit
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="ghost" className="h-12">
-                <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
-              </Button>
-            </div>
-            <p className="mt-4 text-xs text-muted-foreground">
-              Aucune carte requise · Lecture imagée · B1 → B2 · Tous les registres (oral, écrit, poli, familier)
-            </p>
-          </div>
-
-          {/* Aperçu d'une diapo */}
-          <div className="relative">
-            <div
-              className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-border/60 shadow-2xl"
-              style={{ background: `linear-gradient(160deg, ${ghost.cover.from}, ${ghost.cover.to})` }}
-            >
-              <span className="absolute inset-0 grid place-items-center font-korean text-[14rem] text-white/10 leading-none">유</span>
-              <div className="absolute top-6 left-6 right-6 bg-black p-4 rounded-md text-cream">
-                <p className="font-korean text-2xl leading-relaxed">
-                  새벽<span className="underline decoration-dotted underline-offset-4 decoration-accent">에</span>{" "}
-                  문자<span className="underline decoration-dotted underline-offset-4 decoration-accent">가</span>{" "}
-                  <span className="underline decoration-dotted underline-offset-4 decoration-amber-400">왔다</span>.
-                </p>
-                <p className="text-[10px] uppercase tracking-wider text-cream/50 mt-2">
-                  Aperçu d'une diapo · cliquez sur un mot pour la traduction
-                </p>
-              </div>
-              <div className="absolute bottom-6 left-6 right-6 bg-popover/95 backdrop-blur rounded-md p-3 border border-accent/30">
-                <div className="flex items-baseline justify-between">
-                  <span className="font-korean text-lg">에</span>
-                  <span className="text-[10px] uppercase tracking-wider text-accent">particule</span>
+        <div className="mx-auto max-w-6xl px-6 pt-14 md:pt-20">
+            {/* The notebook */}
+            <div className="relative mx-auto max-w-5xl">
+              {/* Leather strap decoration */}
+              <div aria-hidden className="absolute -top-3 left-1/2 -translate-x-1/2 h-6 w-24 rounded-b-lg bg-[color:var(--gold)]/70 shadow-[inset_0_-2px_0_rgba(0,0,0,0.15)]" />
+              <div
+                className="relative rounded-[1.25rem] border-2 border-[color:var(--gold)]/60 notebook-shadow overflow-hidden"
+                style={{ background: "linear-gradient(180deg, oklch(0.97 0.02 82) 0%, oklch(0.94 0.03 78) 100%)" }}
+              >
+                {/* Central binding */}
+                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-[3px] bg-[color:var(--gold)]/40 shadow-[0_0_18px_rgba(139,94,60,0.35)] hidden md:block" />
+                <div aria-hidden className="pointer-events-none absolute inset-y-6 left-1/2 -translate-x-[7px] w-[2px] hidden md:flex flex-col justify-between">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <span key={i} className="block h-2 w-[6px] rounded-full bg-[color:var(--gold)]/70" />
+                  ))}
                 </div>
-                <p className="text-xs text-cream/80 mt-1">à (temps statique) — précise un point dans le temps.</p>
+
+                <div className="grid md:grid-cols-2 gap-0">
+                  {/* Left page — Hangeul + French */}
+                  <div className="relative p-8 md:p-12 paper-grain">
+                    <div className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--gold)] mb-6 font-hand text-lg normal-case tracking-normal">
+                      — citation —
+                    </div>
+                    <div className="font-hand-kr text-[5.5rem] md:text-[7rem] leading-[0.95] text-foreground select-none">
+                      우화등선
+                    </div>
+                    <p className="mt-8 font-hand text-2xl md:text-3xl leading-snug text-foreground/85 max-w-md">
+                      « Quitte ta chrysalide<br/> et envole-toi comme<br/> un être céleste. »
+                    </p>
+                    <div className="mt-6 h-px w-24 bg-[color:var(--gold)]/60" />
+                  </div>
+
+                  {/* Right page — Hanja */}
+                  <div className="relative p-8 md:p-12 paper-grain border-t md:border-t-0 md:border-l border-[color:var(--gold)]/40">
+                    <div className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--gold)] mb-6 font-hand text-lg normal-case tracking-normal text-right">
+                      漢字 · hanja
+                    </div>
+                    <div className="flex md:justify-end">
+                      <div className="font-korean text-[6rem] md:text-[9rem] leading-[0.9] text-foreground/90 [writing-mode:vertical-rl] tracking-[0.15em]">
+                        羽化登仙
+                      </div>
+                    </div>
+                    <p className="mt-8 md:text-right font-hand text-xl text-muted-foreground max-w-xs md:ml-auto">
+                      un proverbe pour se souvenir<br/> pourquoi on apprend.
+                    </p>
+                  </div>
+                </div>
               </div>
+              {/* Notebook shadow */}
+              <div aria-hidden className="absolute -inset-x-8 -bottom-6 h-10 rounded-full bg-[color:var(--foreground)]/15 blur-2xl -z-10" />
             </div>
-            <div className="absolute -inset-6 -z-10 rounded-3xl bg-accent/10 blur-3xl" />
+        </div>
+
+        <div className="mx-auto max-w-4xl px-6 pt-16 pb-20 md:pt-20 md:pb-24 text-center">
+          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--gold)] mb-6">
+            <span className="h-px w-8 bg-[color:var(--gold)]" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-[color:var(--gold)]" />
           </div>
+          <h1 className="font-display text-5xl md:text-7xl leading-[1.02] text-balance">
+            Enfin comprendre le coréen.{" "}
+            <span className="text-muted-foreground italic font-hand text-4xl md:text-6xl">
+              En 15 min par jour, grâce à des histoires illustrées que vous n'aurez pas envie de lâcher.
+            </span>
+          </h1>
+          <p className="mt-8 text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
+            Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
+            les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
+            K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
+            dictionnaire.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3 justify-center">
+            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-6 rounded-full">
+              <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Lire ma première histoire — gratuit
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[color:var(--gold)]/60 text-foreground hover:bg-[color:var(--gold)]/10">
+              <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
+            </Button>
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Aucune carte requise · Lecture imagée · B1 → B2 · Tous les registres
+          </p>
         </div>
       </section>
 
