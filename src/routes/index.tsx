@@ -31,7 +31,7 @@ function Index() {
           style={{
             background:
               "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
-            height: "clamp(180px, 28vh, 280px)",
+            height: "clamp(110px, 16vh, 150px)",
           }}
         >
           {/* soft clouds */}
@@ -40,14 +40,14 @@ function Index() {
               "radial-gradient(ellipse 220px 40px at 15% 30%, white, transparent 70%), radial-gradient(ellipse 180px 30px at 75% 60%, white, transparent 70%), radial-gradient(ellipse 160px 28px at 45% 15%, white, transparent 70%)" }} />
 
           {/* The book — only top ~1/3 visible; extends below the sky */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[62%] w-[min(92vw,860px)]">
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[25%] w-[min(92vw,860px)]">
             <div className="relative">
               {/* Silk cover — visible on left/right edges + top */}
               <div aria-hidden
                 className="absolute inset-0 rounded-[6px]"
                 style={{
                   background:
-                    "linear-gradient(180deg, oklch(0.40 0.14 25) 0%, oklch(0.36 0.14 25) 100%)",
+                    "linear-gradient(180deg, oklch(0.34 0.076 243.88) 0%, oklch(0.30 0.07 243.88) 100%)",
                   boxShadow:
                     "0 20px 40px -12px rgba(0,0,0,0.45), 0 30px 80px -30px rgba(0,0,0,0.5)",
                 }} />
@@ -57,26 +57,27 @@ function Index() {
                   <span key={i} className="block h-[3px] w-8 rounded-full bg-[oklch(0.95_0.02_85_/_0.85)]" />
                 ))}
               </div>
-              {/* Cream page inset — leaves ~28px of red cover showing left/right/top */}
+              {/* Cream page inset — leaves ~28px of blue cover showing left/right/top */}
               <div className="relative mx-6 mt-7 rounded-[3px] paper-grain"
                    style={{
                      background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
-                <div className="px-6 md:px-12 pt-6 md:pt-8 pb-16 md:pb-20 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <div className="px-4 md:px-12 pt-2 md:pt-4 pb-4 md:pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3">
                   <div className="min-w-0">
-                    <div className="font-hand-kr text-[3.4rem] md:text-[4.6rem] leading-[0.9] text-foreground select-none"
-                         style={{ color: "oklch(0.24 0.025 45)" }}>
-                      우화등선
+                    <div className="flex items-baseline gap-2 md:gap-3">
+                      <div className="font-hand-kr text-[2rem] md:text-[3.2rem] leading-[0.9] text-foreground select-none">
+                        우화등선
+                      </div>
+                      <span className="font-korean text-sm md:text-lg tracking-[0.1em]"
+                            style={{ color: "oklch(0.32 0.04 45)" }}>
+                        羽化登仙
+                      </span>
                     </div>
-                    <p className="mt-3 font-hand text-xl md:text-2xl leading-snug"
+                    <p className="mt-1 md:mt-1.5 font-hand text-sm md:text-lg leading-snug"
                        style={{ color: "oklch(0.28 0.03 45)" }}>
                       « Quitte ta chrysalide et envole-toi comme un être céleste. »
                     </p>
-                  </div>
-                  <div className="font-korean text-2xl md:text-3xl tracking-[0.35em] shrink-0"
-                       style={{ color: "oklch(0.32 0.04 45)" }}>
-                    羽化登仙
                   </div>
                 </div>
               </div>
@@ -85,41 +86,41 @@ function Index() {
         </div>
 
         {/* Hero text on wooden desk — sits directly under the sky, book overlaps */}
-        <div className="mx-auto max-w-4xl px-6 pt-24 md:pt-28 pb-14 text-center">
-          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--accent)] mb-5">
-            <span className="h-px w-8 bg-[color:var(--accent)]" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-[color:var(--accent)]" />
+        <div className="mx-auto max-w-4xl px-6 pt-14 md:pt-16 pb-14 text-center">
+          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-5">
+            <span className="h-px w-8 bg-muted-foreground" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-muted-foreground" />
           </div>
-          <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance text-[color:var(--cream)]">
+          <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance text-foreground">
             Enfin comprendre le coréen.{" "}
-            <span className="text-[color:var(--cream)]/80 italic font-hand text-3xl md:text-5xl block mt-3">
+            <span className="text-foreground/80 italic font-hand text-3xl md:text-5xl block mt-3">
               En 15 min par jour, grâce à des histoires illustrées que vous n'aurez pas envie de lâcher.
             </span>
           </h1>
-          <p className="mt-6 text-base md:text-lg text-[color:var(--cream)]/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-base md:text-lg text-foreground/80 max-w-2xl mx-auto leading-relaxed">
             Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
             les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
             K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
             dictionnaire.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-[color:var(--cream)] text-[color:var(--cream-foreground)] hover:bg-[color:var(--cream)]/90 h-12 px-6 rounded-full">
+            <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6 rounded-full">
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 Lire ma première histoire — gratuit
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-[color:var(--cream)]/50 bg-transparent text-[color:var(--cream)] hover:bg-[color:var(--cream)]/10">
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-foreground/30 bg-transparent text-foreground hover:bg-cream/30">
               <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
             </Button>
           </div>
-          <p className="mt-4 text-xs text-[color:var(--cream)]/60">
+          <p className="mt-4 text-xs text-foreground/60">
             Aucune carte requise · Lecture imagée · B1 → B2 · Tous les registres
           </p>
         </div>
       </section>
 
       {/* PROBLÈME */}
-      <section className="border-t border-border/60 bg-card/40">
+      <section className="border-t border-border/60 bg-card/80">
         <div className="mx-auto max-w-3xl px-6 py-24">
           <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3 flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" /> Le problème
@@ -127,7 +128,7 @@ function Index() {
           <h2 className="font-display text-4xl md:text-5xl text-balance">
             Vous êtes bloqué·e entre « débutant » et « natif » — et personne ne fait rien pour vous.
           </h2>
-          <div className="mt-8 space-y-5 text-lg text-cream/85 leading-relaxed">
+          <div className="mt-8 space-y-5 text-lg text-foreground/85 leading-relaxed">
             <p>
               Vous avez appris le Hangeul en une après-midi. Vous connaissez 안녕하세요, 사랑해, 감사합니다.
               Vous suivez à peu près une chanson de BTS sous-titrée. Et après ?
@@ -138,7 +139,7 @@ function Index() {
               Vous regardez une interview : si vous quittez les sous-titres une seconde, vous êtes perdu·e.
               Vous essayez des manuels « intermédiaires » : ils sont soit pour vrais débutants, soit pour quasi-natifs.
             </p>
-            <p className="font-display text-2xl text-cream italic">
+            <p className="font-display text-2xl text-foreground/90 italic">
               Le marché est saturé de contenu pour débutants. Pour le niveau intermédiaire, il n'y a rien.
             </p>
           </div>
@@ -154,7 +155,7 @@ function Index() {
           <h2 className="font-display text-4xl md:text-5xl text-balance">
             Ce n'est pas un manque de travail. C'est une mauvaise méthode.
           </h2>
-          <div className="mt-8 space-y-5 text-lg text-cream/85 leading-relaxed">
+          <div className="mt-8 space-y-5 text-lg text-foreground/85 leading-relaxed">
             <p>
               Apprendre 150 mots par semaine, copier des chansons, réviser des fiches de grammaire
               décontextualisées — vous l'avez fait, et vous avez oublié 80% trois mois plus tard.
@@ -168,14 +169,14 @@ function Index() {
             </p>
             <p>
               Pour le coréen, ce contenu « entre les deux » n'existait pas.{" "}
-              <strong className="text-cream">Jusqu'ici.</strong>
+              <strong className="text-foreground">Jusqu'ici.</strong>
             </p>
           </div>
         </div>
       </section>
 
       {/* MÉCANISME SOLUTION */}
-      <section id="methode" className="border-t border-border/60 bg-card/40">
+      <section id="methode" className="border-t border-border/60 bg-card/80">
         <div className="mx-auto max-w-5xl px-6 py-24">
           <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">La méthode</div>
           <h2 className="font-display text-4xl md:text-5xl text-balance max-w-3xl">
@@ -208,7 +209,7 @@ function Index() {
           </div>
           <div className="mt-12 rounded-xl border border-border bg-card p-6 md:p-8">
             <p className="text-sm uppercase tracking-wider text-accent mb-2">Bonus inclus</p>
-            <p className="text-cream/90">
+            <p className="text-foreground/90">
               Chaque histoire mélange <strong>tous les registres</strong> du coréen : narration
               littéraire, dialogues polis (-요), familier (반말), formel (-ㅂ니다), pensées intérieures,
               SMS, panneaux, cris. Vous travaillez en parallèle ce qu'aucune méthode classique ne
@@ -285,7 +286,7 @@ function Index() {
       </section>
 
       {/* CITATION / CTA FINAL */}
-      <section className="border-t border-border/60 bg-card/40">
+      <section className="border-t border-border/60 bg-card/80">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center">
           <Quote className="h-6 w-6 text-accent mx-auto mb-4" />
           <p className="font-display text-2xl md:text-3xl text-balance leading-snug">
@@ -333,7 +334,7 @@ function Feature({ icon, kicker, title, body }: { icon: React.ReactNode; kicker:
 
 function Bullet({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-3 text-cream/85">
+    <div className="flex gap-3 text-foreground/85">
       <span className="text-accent mt-1">✦</span>
       <span>{children}</span>
     </div>

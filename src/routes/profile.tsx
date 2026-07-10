@@ -70,7 +70,7 @@ function ProfilePage() {
                 {user.vocab.map((v, i) => (
                   <li key={i} className="px-4 py-3 flex items-center justify-between">
                     <div>
-                      <span className="font-korean text-lg text-cream">{v.ko}</span>
+                      <span className="font-korean text-lg text-foreground">{v.ko}</span>
                       <span className="text-sm text-muted-foreground ml-3">{v.fr}</span>
                     </div>
                     <span className="text-xs text-muted-foreground">{v.series}</span>
@@ -89,7 +89,7 @@ function ProfilePage() {
                   <li key={q.id} className="rounded-lg border border-border/60 bg-card/60 p-4 flex items-start gap-4">
                     <Mail className="h-4 w-4 text-accent mt-1" />
                     <div className="flex-1">
-                      <p className="font-korean text-cream">{q.ko}</p>
+                      <p className="font-korean text-foreground">{q.ko}</p>
                       <div className="text-xs text-muted-foreground mt-1">{q.category}</div>
                     </div>
                     <Badge variant="outline" className="border-accent/40 text-accent">{q.status === "queued" ? "En file" : "Répondu"}</Badge>

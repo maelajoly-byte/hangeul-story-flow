@@ -67,7 +67,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
         <div className="text-xs uppercase tracking-wider text-muted-foreground">
           Épisode {ep.episode} · Partie {ep.part}/{ep.totalParts}
         </div>
-        <div className="font-display text-sm ml-2 text-cream/90 truncate">{ep.title}</div>
+        <div className="font-display text-sm ml-2 text-foreground/90 truncate">{ep.title}</div>
         <div className="ml-auto flex items-center gap-2">
           <span className="text-xs text-muted-foreground tabular-nums">{idx + 1} / {total}</span>
           <Button variant="ghost" size="icon" onClick={() => setFs((v) => !v)} aria-label="Plein écran">

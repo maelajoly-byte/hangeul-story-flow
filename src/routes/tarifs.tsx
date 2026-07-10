@@ -82,7 +82,7 @@ function Tarifs() {
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-6 py-20">
         <div className="max-w-2xl">
-          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">Tarifs</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Tarifs</div>
           <h1 className="font-display text-5xl md:text-6xl text-balance">
             Pas d'abonnement. Vous payez une fois, vous gardez à vie.
           </h1>
@@ -96,12 +96,12 @@ function Tarifs() {
           {PLANS.map((p) => (
             <div
               key={p.name}
-              className={`rounded-2xl border p-7 flex flex-col ${p.highlight ? "border-accent/60 bg-accent/5 glow-accent" : "border-border bg-card"}`}
+              className={`rounded-2xl border p-7 flex flex-col ${p.highlight ? "border-accent/60 bg-card glow-accent" : "border-border bg-card"}`}
             >
               <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.name}</div>
               <div className="font-display text-5xl mt-2">{p.price}</div>
               <p className="text-sm text-muted-foreground mt-1">{p.desc}</p>
-              <ul className="mt-6 space-y-2.5 text-sm text-cream/85 flex-1">
+              <ul className="mt-6 space-y-2.5 text-sm text-foreground/85 flex-1">
                 {p.features.map((f) => (
                   <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />{f}</li>
                 ))}
@@ -138,7 +138,7 @@ function Tarifs() {
 function Faq({ q, a }: { q: string; a: string }) {
   return (
     <div className="border-b border-border/60 pb-5">
-      <h3 className="font-display text-lg text-cream">{q}</h3>
+      <h3 className="font-display text-lg text-foreground">{q}</h3>
       <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{a}</p>
     </div>
   );
