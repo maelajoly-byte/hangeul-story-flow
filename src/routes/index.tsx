@@ -57,28 +57,40 @@ function Index() {
                   <span key={i} className="block h-[3px] w-8 rounded-full bg-[oklch(0.95_0.02_85_/_0.85)]" />
                 ))}
               </div>
-              {/* Cream page inset — leaves ~28px of blue cover showing left/right/top */}
-              <div className="relative mx-6 mt-7 rounded-[3px] paper-grain"
+              {/* Two-page spread — left page (hanja) + right page (korean + french) */}
+              <div className="relative mx-6 mt-7 grid grid-cols-2 rounded-[3px] overflow-hidden"
                    style={{
-                     background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
-                <div className="px-4 md:px-12 pt-2 md:pt-4 pb-4 md:pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-baseline gap-2 md:gap-3">
-                      <div className="font-hand-kr text-[2rem] md:text-[3.2rem] leading-[0.9] text-foreground select-none">
-                        우화등선
-                      </div>
-                      <span className="font-korean text-sm md:text-lg tracking-[0.1em]"
-                            style={{ color: "oklch(0.32 0.04 45)" }}>
-                        羽化登仙
-                      </span>
-                    </div>
-                    <p className="mt-1 md:mt-1.5 font-hand text-sm md:text-lg leading-snug"
-                       style={{ color: "oklch(0.28 0.03 45)" }}>
-                      « Quitte ta chrysalide et envole-toi comme un être céleste. »
-                    </p>
+                {/* center spine shadow */}
+                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-6"
+                     style={{
+                       background:
+                         "linear-gradient(90deg, transparent 0%, oklch(0.28 0.03 45 / 0.28) 45%, oklch(0.20 0.02 45 / 0.35) 50%, oklch(0.28 0.03 45 / 0.28) 55%, transparent 100%)",
+                     }} />
+                {/* LEFT PAGE — Hanja */}
+                <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex items-center justify-center"
+                     style={{
+                       background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
+                     }}>
+                  <div className="font-korean text-2xl md:text-5xl tracking-[0.15em] leading-none select-none"
+                       style={{ color: "oklch(0.20 0.02 45)" }}>
+                    羽化登仙
                   </div>
+                </div>
+                {/* RIGHT PAGE — Hangeul + French translation */}
+                <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex flex-col items-start justify-center gap-1 md:gap-2"
+                     style={{
+                       background: "linear-gradient(180deg, oklch(0.97 0.018 80) 0%, oklch(0.94 0.022 76) 100%)",
+                     }}>
+                  <div className="font-hand-kr text-[1.8rem] md:text-[3rem] leading-[0.9] select-none"
+                       style={{ color: "oklch(0.20 0.02 45)" }}>
+                    우화등선
+                  </div>
+                  <p className="font-hand text-xs md:text-base leading-snug"
+                     style={{ color: "oklch(0.28 0.03 45)" }}>
+                    « Quitte ta chrysalide et envole-toi comme un être céleste. »
+                  </p>
                 </div>
               </div>
             </div>
