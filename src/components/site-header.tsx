@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useUser } from "@/lib/user-store";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
 
 export function SiteHeader() {
   const { user, signInWithGoogle, signOut } = useUser();
