@@ -15,19 +15,15 @@ export function SiteHeader() {
           <span className="font-korean text-xs text-muted-foreground hidden sm:inline">중급 한국어</span>
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
+          <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
           <Link to="/library" className="hover:text-foreground transition-colors">Bibliothèque</Link>
-          <Link to="/tarifs" className="hover:text-foreground transition-colors">Tarifs</Link>
-          <Link to="/pourquoi" className="hover:text-foreground transition-colors">Pourquoi ce projet</Link>
-          <Link to="/profile" className="hover:text-foreground transition-colors">Profil</Link>
-          {user.premium && (
-            <span className="inline-flex items-center gap-1 text-gold">
-              <Sparkles className="h-3.5 w-3.5" /> Premium
-            </span>
-          )}
+          <Link to="/pourquoi" className="hover:text-foreground transition-colors">Mon Histoire</Link>
         </nav>
         <div className="flex items-center gap-2">
           {user.signedIn ? (
-            <Button variant="ghost" size="sm" onClick={signOut}>{user.pseudo}</Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/profile">{user.pseudo}</Link>
+            </Button>
           ) : (
             <Button size="sm" onClick={signInWithGoogle} className="bg-cream text-cream-foreground hover:bg-cream/90">
               Se connecter
