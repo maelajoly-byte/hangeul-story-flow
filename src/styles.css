@@ -106,6 +106,16 @@
 @utility text-balance { text-wrap: balance; }
 @utility glow-accent { box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent), 0 10px 40px -10px color-mix(in oklab, var(--accent) 60%, transparent); }
 
+/* Alternating section blocks — dark oak block writes in warm brown */
+@utility section-oak {
+  background-color: var(--secondary);
+  --foreground: oklch(0.72 0.066 72.68);
+  --muted-foreground: oklch(0.72 0.066 72.68 / 0.75);
+  --accent: oklch(0.72 0.066 72.68);
+  --border: oklch(0.72 0.066 72.68 / 0.35);
+  color: oklch(0.72 0.066 72.68);
+}
+
 /* Notebook / paper texture utilities */
 @utility paper-grain {
   background-image:
