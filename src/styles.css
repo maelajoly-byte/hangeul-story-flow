@@ -45,24 +45,24 @@
   --radius: 0.75rem;
   /* Warm analog / modern stationery palette */
   --background: oklch(0.72 0.066 72.68);        /* warm desk brown #bf9f77 */
-  --foreground: oklch(0.30 0.036 30.2);          /* dark coffee ink */
-  --card: oklch(0.99 0.005 95.1);                 /* cream paper #FDFCF8 */
-  --card-foreground: oklch(0.30 0.036 30.2);
+  --foreground: oklch(0.52 0.076 57.2);          /* dark oak #8B5E3C — writing on brown */
+  --card: oklch(0.52 0.076 57.2);                 /* dark oak block */
+  --card-foreground: oklch(0.72 0.066 72.68);     /* warm desk brown writing on dark oak */
   --popover: oklch(0.99 0.005 95.1);
   --popover-foreground: oklch(0.30 0.036 30.2);
   --primary: oklch(0.30 0.036 30.2);             /* dark ink */
   --primary-foreground: oklch(0.99 0.005 95.1);
   --secondary: oklch(0.52 0.076 57.2);           /* dark oak #8B5E3C */
-  --secondary-foreground: oklch(0.99 0.005 95.1);
-  --muted: oklch(0.52 0.076 57.2);                /* dark oak */
-  --muted-foreground: oklch(0.30 0.036 30.2 / 0.65);
-  --accent: oklch(0.71 0.078 71.24);             /* light oak #C19A6B */
-  --accent-foreground: oklch(0.30 0.036 30.2);
+  --secondary-foreground: oklch(0.72 0.066 72.68);
+  --muted: oklch(0.52 0.076 57.2);
+  --muted-foreground: oklch(0.52 0.076 57.2 / 0.75);
+  --accent: oklch(0.52 0.076 57.2);              /* dark oak accent for lines/kickers */
+  --accent-foreground: oklch(0.72 0.066 72.68);
   --destructive: oklch(0.55 0.18 30);
   --destructive-foreground: oklch(0.99 0.005 95.1);
-  --border: oklch(0.52 0.076 57.2);              /* dark oak */
+  --border: oklch(0.52 0.076 57.2 / 0.4);
   --input: oklch(0.52 0.076 57.2);
-  --ring: oklch(0.71 0.078 71.24);
+  --ring: oklch(0.52 0.076 57.2);
   --cream: oklch(0.99 0.005 95.1);
   --cream-foreground: oklch(0.30 0.036 30.2);
   --gold: oklch(0.52 0.076 57.2);                 /* dark oak */
@@ -105,6 +105,16 @@
 
 @utility text-balance { text-wrap: balance; }
 @utility glow-accent { box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent), 0 10px 40px -10px color-mix(in oklab, var(--accent) 60%, transparent); }
+
+/* Alternating section blocks — dark oak block writes in warm brown */
+@utility section-oak {
+  background-color: var(--secondary);
+  --foreground: oklch(0.72 0.066 72.68);
+  --muted-foreground: oklch(0.72 0.066 72.68 / 0.75);
+  --accent: oklch(0.72 0.066 72.68);
+  --border: oklch(0.72 0.066 72.68 / 0.35);
+  color: oklch(0.72 0.066 72.68);
+}
 
 /* Notebook / paper texture utilities */
 @utility paper-grain {

@@ -57,28 +57,40 @@ function Index() {
                   <span key={i} className="block h-[3px] w-8 rounded-full bg-[oklch(0.95_0.02_85_/_0.85)]" />
                 ))}
               </div>
-              {/* Cream page inset — leaves ~28px of blue cover showing left/right/top */}
-              <div className="relative mx-6 mt-7 rounded-[3px] paper-grain"
+              {/* Two-page spread — left page (hanja) + right page (korean + french) */}
+              <div className="relative mx-6 mt-7 grid grid-cols-2 rounded-[3px] overflow-hidden"
                    style={{
-                     background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
-                <div className="px-4 md:px-12 pt-2 md:pt-4 pb-4 md:pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-baseline gap-2 md:gap-3">
-                      <div className="font-hand-kr text-[2rem] md:text-[3.2rem] leading-[0.9] text-foreground select-none">
-                        우화등선
-                      </div>
-                      <span className="font-korean text-sm md:text-lg tracking-[0.1em]"
-                            style={{ color: "oklch(0.32 0.04 45)" }}>
-                        羽化登仙
-                      </span>
-                    </div>
-                    <p className="mt-1 md:mt-1.5 font-hand text-sm md:text-lg leading-snug"
-                       style={{ color: "oklch(0.28 0.03 45)" }}>
-                      « Quitte ta chrysalide et envole-toi comme un être céleste. »
-                    </p>
+                {/* center spine shadow */}
+                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-6"
+                     style={{
+                       background:
+                         "linear-gradient(90deg, transparent 0%, oklch(0.28 0.03 45 / 0.28) 45%, oklch(0.20 0.02 45 / 0.35) 50%, oklch(0.28 0.03 45 / 0.28) 55%, transparent 100%)",
+                     }} />
+                {/* LEFT PAGE — Hanja */}
+                <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex items-center justify-center"
+                     style={{
+                       background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
+                     }}>
+                  <div className="font-korean text-2xl md:text-5xl tracking-[0.15em] leading-none select-none"
+                       style={{ color: "oklch(0.20 0.02 45)" }}>
+                    羽化登仙
                   </div>
+                </div>
+                {/* RIGHT PAGE — Hangeul + French translation */}
+                <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex flex-col items-start justify-center gap-1 md:gap-2"
+                     style={{
+                       background: "linear-gradient(180deg, oklch(0.97 0.018 80) 0%, oklch(0.94 0.022 76) 100%)",
+                     }}>
+                  <div className="font-hand-kr text-[1.8rem] md:text-[3rem] leading-[0.9] select-none"
+                       style={{ color: "oklch(0.20 0.02 45)" }}>
+                    우화등선
+                  </div>
+                  <p className="font-hand text-xs md:text-base leading-snug"
+                     style={{ color: "oklch(0.28 0.03 45)" }}>
+                    « Quitte ta chrysalide et envole-toi comme un être céleste. »
+                  </p>
                 </div>
               </div>
             </div>
@@ -103,13 +115,13 @@ function Index() {
             dictionnaire.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6 rounded-full">
+            <Button asChild size="lg" className="bg-secondary text-[color:var(--background)] hover:bg-secondary/90 h-12 px-6 rounded-full">
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 Lire ma première histoire — gratuit
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-foreground/30 bg-transparent text-foreground hover:bg-cream/30">
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-foreground/50 bg-transparent text-foreground hover:bg-secondary/10">
               <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
             </Button>
           </div>
@@ -120,7 +132,7 @@ function Index() {
       </section>
 
       {/* PROBLÈME */}
-      <section className="border-t border-border/60 bg-card/80">
+      <section className="border-t border-border/60 section-oak">
         <div className="mx-auto max-w-3xl px-6 py-24">
           <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3 flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" /> Le problème
@@ -176,7 +188,7 @@ function Index() {
       </section>
 
       {/* MÉCANISME SOLUTION */}
-      <section id="methode" className="border-t border-border/60 bg-card/80">
+      <section id="methode" className="border-t border-border/60 section-oak">
         <div className="mx-auto max-w-5xl px-6 py-24">
           <div className="text-xs uppercase tracking-[0.2em] text-accent mb-3">La méthode</div>
           <h2 className="font-display text-4xl md:text-5xl text-balance max-w-3xl">
@@ -207,7 +219,7 @@ function Index() {
               body="Mot, particule ou terminaison qui résiste ? Vous cliquez. La traduction apparaît avec le rôle, la nuance et le registre. Puis vous repartez dans l'histoire."
             />
           </div>
-          <div className="mt-12 rounded-xl border border-border bg-card p-6 md:p-8">
+          <div className="mt-12 rounded-xl border border-[color:var(--foreground)]/40 p-6 md:p-8" style={{ backgroundColor: "oklch(0.72 0.066 72.68 / 0.15)" }}>
             <p className="text-sm uppercase tracking-wider text-accent mb-2">Bonus inclus</p>
             <p className="text-foreground/90">
               Chaque histoire mélange <strong>tous les registres</strong> du coréen : narration
@@ -235,22 +247,22 @@ function Index() {
           </p>
 
           <div className="mt-10 grid md:grid-cols-[1.2fr_1fr] gap-8 items-center">
-            <div className="rounded-2xl border border-accent/30 bg-card/60 p-6 md:p-8 glow-accent">
+            <div className="rounded-2xl border border-[color:var(--secondary)]/40 p-6 md:p-8" style={{ backgroundColor: "oklch(0.52 0.076 57.2)", color: "oklch(0.72 0.066 72.68)" }}>
               <div className="flex items-baseline justify-between mb-3">
-                <span className="text-xs uppercase tracking-wider text-accent">Histoire offerte · n°1</span>
-                <span className="text-xs text-muted-foreground">Niveau B1 — 8 épisodes</span>
+                <span className="text-xs uppercase tracking-wider" style={{ color: "oklch(0.72 0.066 72.68)" }}>Histoire offerte · n°1</span>
+                <span className="text-xs" style={{ color: "oklch(0.72 0.066 72.68 / 0.7)" }}>Niveau B1 — 8 épisodes</span>
               </div>
               <h3 className="font-display text-3xl">Ghost of the Past</h3>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-sm mt-2" style={{ color: "oklch(0.72 0.066 72.68 / 0.8)" }}>
                 Une lycéenne reçoit un message d'un numéro qu'elle a effacé il y a dix ans.
                 Mystère, drame, surnaturel léger — idéal pour démarrer.
               </p>
-              <Button asChild size="lg" className="mt-6 bg-accent text-accent-foreground hover:bg-accent/90 h-12">
+              <Button asChild size="lg" className="mt-6 h-12" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "oklch(0.30 0.036 30.2)" }}>
                 <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                   Lire le premier épisode <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
-              <p className="text-xs text-muted-foreground mt-3">
+              <p className="text-xs mt-3" style={{ color: "oklch(0.72 0.066 72.68 / 0.7)" }}>
                 Lecture immédiate · aucune carte bancaire · aucune inscription pour commencer
               </p>
             </div>
@@ -265,28 +277,28 @@ function Index() {
           </div>
 
           <div className="mt-16 grid md:grid-cols-2 gap-4 text-sm">
-            <Link to="/tarifs" className="rounded-xl border border-border bg-card/40 p-5 hover:border-accent/60 transition flex items-center justify-between">
+            <Link to="/tarifs" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "oklch(0.72 0.066 72.68)", borderColor: "oklch(0.52 0.076 57.2)" }}>
               <span>
                 <strong className="font-display text-base">Voir les formules</strong>
                 <br />
-                <span className="text-muted-foreground">Découverte gratuite, Pass série, Pack fondateur</span>
+                <span style={{ color: "oklch(0.72 0.066 72.68 / 0.75)" }}>Découverte gratuite, Pass série, Pack fondateur</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-accent" />
+              <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/pourquoi" className="rounded-xl border border-border bg-card/40 p-5 hover:border-accent/60 transition flex items-center justify-between">
+            <Link to="/pourquoi" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "oklch(0.72 0.066 72.68)", borderColor: "oklch(0.52 0.076 57.2)" }}>
               <span>
                 <strong className="font-display text-base">Pourquoi ce projet existe</strong>
                 <br />
-                <span className="text-muted-foreground">L'histoire derrière K·Intermédiaire</span>
+                <span style={{ color: "oklch(0.72 0.066 72.68 / 0.75)" }}>L'histoire derrière K·Intermédiaire</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-accent" />
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* CITATION / CTA FINAL */}
-      <section className="border-t border-border/60 bg-card/80">
+      <section className="border-t border-border/60 section-oak">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center">
           <Quote className="h-6 w-6 text-accent mx-auto mb-4" />
           <p className="font-display text-2xl md:text-3xl text-balance leading-snug">
@@ -296,7 +308,7 @@ function Index() {
           </p>
           <p className="text-sm text-muted-foreground mt-4">— Fondatrice de K·Intermédiaire</p>
           <div className="mt-8">
-            <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6">
+            <Button asChild size="lg" className="h-12 px-6" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "oklch(0.30 0.036 30.2)" }}>
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Eye className="h-4 w-4 mr-2" /> Lire ma première histoire — gratuit
               </Link>
