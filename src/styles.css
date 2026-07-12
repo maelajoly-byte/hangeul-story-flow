@@ -45,7 +45,7 @@
   --radius: 0.75rem;
   /* Warm analog / modern stationery palette */
   --background: oklch(0.72 0.066 72.68);        /* warm desk brown #bf9f77 */
-  --foreground: oklch(0.52 0.076 57.2);          /* dark oak #8B5E3C — writing on brown */
+  --foreground: oklch(1 0 0);                     /* white writing on brown */
   --card: oklch(0.52 0.076 57.2);                 /* dark oak block */
   --card-foreground: oklch(0.72 0.066 72.68);     /* warm desk brown writing on dark oak */
   --popover: oklch(0.99 0.005 95.1);
@@ -55,12 +55,12 @@
   --secondary: oklch(0.52 0.076 57.2);           /* dark oak #8B5E3C */
   --secondary-foreground: oklch(0.72 0.066 72.68);
   --muted: oklch(0.52 0.076 57.2);
-  --muted-foreground: oklch(0.52 0.076 57.2 / 0.75);
-  --accent: oklch(0.52 0.076 57.2);              /* dark oak accent for lines/kickers */
-  --accent-foreground: oklch(0.72 0.066 72.68);
+  --muted-foreground: oklch(1 0 0 / 0.8);
+  --accent: oklch(1 0 0);                         /* white accent for lines/kickers */
+  --accent-foreground: oklch(0.52 0.076 57.2);
   --destructive: oklch(0.55 0.18 30);
   --destructive-foreground: oklch(0.99 0.005 95.1);
-  --border: oklch(0.52 0.076 57.2 / 0.4);
+  --border: oklch(1 0 0 / 0.35);
   --input: oklch(0.52 0.076 57.2);
   --ring: oklch(0.52 0.076 57.2);
   --cream: oklch(0.99 0.005 95.1);
@@ -109,11 +109,11 @@
 /* Alternating section blocks — dark oak block writes in warm brown */
 @utility section-oak {
   background-color: var(--secondary);
-  --foreground: oklch(0.72 0.066 72.68);
-  --muted-foreground: oklch(0.72 0.066 72.68 / 0.75);
-  --accent: oklch(0.72 0.066 72.68);
-  --border: oklch(0.72 0.066 72.68 / 0.35);
-  color: oklch(0.72 0.066 72.68);
+  --foreground: oklch(1 0 0);
+  --muted-foreground: oklch(1 0 0 / 0.8);
+  --accent: oklch(1 0 0);
+  --border: oklch(1 0 0 / 0.35);
+  color: oklch(1 0 0);
 }
 
 /* Notebook / paper texture utilities */

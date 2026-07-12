@@ -40,7 +40,7 @@ function Index() {
               "radial-gradient(ellipse 220px 40px at 15% 30%, white, transparent 70%), radial-gradient(ellipse 180px 30px at 75% 60%, white, transparent 70%), radial-gradient(ellipse 160px 28px at 45% 15%, white, transparent 70%)" }} />
 
           {/* The book — only top ~1/3 visible; extends below the sky */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[25%] w-[min(92vw,860px)]">
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[10%] w-[min(92vw,860px)]">
             <div className="relative">
               {/* Silk cover — visible on left/right edges + top */}
               <div aria-hidden
@@ -58,7 +58,7 @@ function Index() {
                 ))}
               </div>
               {/* Two-page spread — left page (hanja) + right page (korean + french) */}
-              <div className="relative mx-6 mt-7 grid grid-cols-2 rounded-[3px] overflow-hidden"
+              <div className="relative mx-6 mt-7 grid grid-cols-2 rounded-[3px] overflow-hidden min-h-[180px] md:min-h-[240px]"
                    style={{
                      boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)",
                    }}>
@@ -68,29 +68,26 @@ function Index() {
                        background:
                          "linear-gradient(90deg, transparent 0%, oklch(0.28 0.03 45 / 0.28) 45%, oklch(0.20 0.02 45 / 0.35) 50%, oklch(0.28 0.03 45 / 0.28) 55%, transparent 100%)",
                      }} />
-                {/* LEFT PAGE — Hanja */}
-                <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex items-center justify-center"
+                {/* LEFT PAGE — Hangeul + French translation */}
+                <div className="paper-grain px-3 md:px-8 py-4 md:py-6 flex flex-col items-start justify-center gap-2"
                      style={{
                        background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)",
                      }}>
-                  <div className="font-korean text-2xl md:text-5xl tracking-[0.15em] leading-none select-none"
-                       style={{ color: "oklch(0.20 0.02 45)" }}>
-                    羽化登仙
+                  <div className="font-hand-kr text-[1.6rem] md:text-[2.6rem] leading-[0.95] select-none text-black">
+                    우화등선
                   </div>
+                  <p className="font-hand text-xs md:text-base leading-snug text-black">
+                    « Quitte ta chrysalide et envole-toi comme un être céleste. »
+                  </p>
                 </div>
-                {/* RIGHT PAGE — Hangeul + French translation */}
-                <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex flex-col items-start justify-center gap-1 md:gap-2"
+                {/* RIGHT PAGE — Hanja */}
+                <div className="paper-grain px-3 md:px-8 py-4 md:py-6 flex items-center justify-center"
                      style={{
                        background: "linear-gradient(180deg, oklch(0.97 0.018 80) 0%, oklch(0.94 0.022 76) 100%)",
                      }}>
-                  <div className="font-hand-kr text-[1.8rem] md:text-[3rem] leading-[0.9] select-none"
-                       style={{ color: "oklch(0.20 0.02 45)" }}>
-                    우화등선
+                  <div className="font-korean text-2xl md:text-5xl tracking-[0.15em] leading-none select-none text-black">
+                    羽化登仙
                   </div>
-                  <p className="font-hand text-xs md:text-base leading-snug"
-                     style={{ color: "oklch(0.28 0.03 45)" }}>
-                    « Quitte ta chrysalide et envole-toi comme un être céleste. »
-                  </p>
                 </div>
               </div>
             </div>
