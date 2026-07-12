@@ -115,13 +115,13 @@ function Index() {
             dictionnaire.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-cream text-cream-foreground hover:bg-cream/90 h-12 px-6 rounded-full">
+            <Button asChild size="lg" className="bg-secondary text-[color:var(--background)] hover:bg-secondary/90 h-12 px-6 rounded-full">
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 Lire ma première histoire — gratuit
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-foreground/30 bg-transparent text-foreground hover:bg-cream/30">
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-foreground/50 bg-transparent text-foreground hover:bg-secondary/10">
               <a href="#methode">Comment ça marche <ArrowRight className="h-4 w-4 ml-2" /></a>
             </Button>
           </div>
