@@ -16,7 +16,7 @@ export function SiteHeader() {
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
           <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
           <Link to="/library" className="hover:text-foreground transition-colors">Bibliothèque</Link>
-          <Link to="/pourquoi" className="hover:text-foreground transition-colors">Mon Histoire</Link>
+          <Link to="/pourquoi" className="hover:text-foreground transition-colors">Genèse</Link>
         </nav>
         <div className="flex items-center gap-2">
           {user.signedIn ? (

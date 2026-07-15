@@ -26,7 +26,7 @@ function Index() {
       {/* SKY + CENTERED CHINESE BOOK */}
       <section className="relative">
         <div
-          className="relative w-full overflow-hidden flex items-center justify-center"
+          className="relative w-full overflow-hidden flex items-end justify-center pt-32 md:pt-48"
           style={{
             background:
               "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
@@ -266,7 +266,7 @@ function Index() {
             </Link>
             <Link to="/pourquoi" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "#ffffff", borderColor: "oklch(0.52 0.076 57.2)" }}>
               <span>
-                <strong className="font-display text-base">Mon Histoire</strong>
+                <strong className="font-display text-base">Genèse</strong>
                 <br />
                 <span style={{ color: "rgba(255,255,255,0.75)" }}>Pourquoi K·Intermédiaire existe</span>
               </span>
@@ -301,7 +301,7 @@ function Index() {
           <span>© K·Intermédiaire — 중급 한국어</span>
           <span className="flex gap-4">
             <Link to="/library" className="hover:text-foreground">Bibliothèque</Link>
-            <Link to="/pourquoi" className="hover:text-foreground">Mon Histoire</Link>
+            <Link to="/pourquoi" className="hover:text-foreground">Genèse</Link>
           </span>
         </div>
       </footer>
