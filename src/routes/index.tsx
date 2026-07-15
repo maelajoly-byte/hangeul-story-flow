@@ -26,7 +26,7 @@ function Index() {
       {/* SKY + CENTERED CHINESE BOOK */}
       <section className="relative">
         <div
-          className="relative w-full overflow-hidden flex items-center justify-center py-6 md:py-10"
+          className="relative w-full overflow-hidden flex items-center justify-center"
           style={{
             background:
               "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
@@ -40,21 +40,15 @@ function Index() {
           <div className="relative w-[min(92vw,860px)]">
             {/* Silk cover */}
             <div aria-hidden
-              className="absolute inset-0 rounded-[6px]"
+              className="absolute inset-y-0 -left-0 -right-0 rounded-none"
               style={{
                 background:
                   "linear-gradient(180deg, oklch(0.34 0.076 243.88) 0%, oklch(0.30 0.07 243.88) 100%)",
                 boxShadow:
                   "0 20px 40px -12px rgba(0,0,0,0.45), 0 30px 80px -30px rgba(0,0,0,0.5)",
               }} />
-            {/* thread binding stitches on top */}
-            <div aria-hidden className="absolute top-2 left-0 right-0 flex justify-around px-10">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className="block h-[3px] w-8 rounded-full bg-[oklch(0.95_0.02_85_/_0.85)]" />
-              ))}
-            </div>
             {/* Two-page spread */}
-            <div className="relative mx-4 md:mx-6 mt-6 mb-3 md:mt-7 md:mb-4 grid grid-cols-2 rounded-[3px] overflow-hidden min-h-[130px] md:min-h-[200px]"
+            <div className="relative mx-4 md:mx-6 my-0 grid grid-cols-2 overflow-hidden min-h-[130px] md:min-h-[200px]"
                  style={{ boxShadow: "inset 0 1px 0 rgba(0,0,0,0.05)" }}>
               <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-6"
                    style={{
