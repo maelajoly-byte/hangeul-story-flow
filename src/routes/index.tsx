@@ -266,7 +266,7 @@ function Index() {
             </Link>
             <Link to="/pourquoi" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "#ffffff", borderColor: "oklch(0.52 0.076 57.2)" }}>
               <span>
-                <strong className="font-display text-base">Mon Histoire</strong>
+                <strong className="font-display text-base">Genèse</strong>
                 <br />
                 <span style={{ color: "rgba(255,255,255,0.75)" }}>Pourquoi K·Intermédiaire existe</span>
               </span>
@@ -301,7 +301,7 @@ function Index() {
           <span>© K·Intermédiaire — 중급 한국어</span>
           <span className="flex gap-4">
             <Link to="/library" className="hover:text-foreground">Bibliothèque</Link>
-            <Link to="/pourquoi" className="hover:text-foreground">Mon Histoire</Link>
+            <Link to="/pourquoi" className="hover:text-foreground">Genèse</Link>
           </span>
         </div>
       </footer>
