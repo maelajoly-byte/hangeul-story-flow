@@ -242,7 +242,7 @@ function Index() {
                 Une lycéenne reçoit un message d'un numéro qu'elle a effacé il y a dix ans.
                 Mystère, drame, surnaturel léger — idéal pour démarrer.
               </p>
-              <Button asChild size="lg" className="mt-6 h-12" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "oklch(0.30 0.036 30.2)" }}>
+              <Button asChild size="lg" className="mt-6 h-12" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "#ffffff" }}>
                 <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                   Lire le premier épisode <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
@@ -262,19 +262,19 @@ function Index() {
           </div>
 
           <div className="mt-16 grid md:grid-cols-2 gap-4 text-sm">
-            <Link to="/tarifs" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "oklch(0.72 0.066 72.68)", borderColor: "oklch(0.52 0.076 57.2)" }}>
+            <Link to="/library" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "#ffffff", borderColor: "oklch(0.52 0.076 57.2)" }}>
               <span>
-                <strong className="font-display text-base">Voir les formules</strong>
+                <strong className="font-display text-base">Bibliothèque</strong>
                 <br />
-                <span style={{ color: "oklch(0.72 0.066 72.68 / 0.75)" }}>Découverte gratuite, Pass série, Pack fondateur</span>
+                <span style={{ color: "rgba(255,255,255,0.75)" }}>Découvrir les 9 histoires</span>
               </span>
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/pourquoi" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "oklch(0.72 0.066 72.68)", borderColor: "oklch(0.52 0.076 57.2)" }}>
+            <Link to="/pourquoi" className="rounded-xl border p-5 transition flex items-center justify-between" style={{ backgroundColor: "oklch(0.52 0.076 57.2 / 0.85)", color: "#ffffff", borderColor: "oklch(0.52 0.076 57.2)" }}>
               <span>
-                <strong className="font-display text-base">Pourquoi ce projet existe</strong>
+                <strong className="font-display text-base">Mon Histoire</strong>
                 <br />
-                <span style={{ color: "oklch(0.72 0.066 72.68 / 0.75)" }}>L'histoire derrière K·Intermédiaire</span>
+                <span style={{ color: "rgba(255,255,255,0.75)" }}>Pourquoi K·Intermédiaire existe</span>
               </span>
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -293,7 +293,7 @@ function Index() {
           </p>
           <p className="text-sm text-muted-foreground mt-4">— Fondatrice de K·Intermédiaire</p>
           <div className="mt-8">
-            <Button asChild size="lg" className="h-12 px-6" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "oklch(0.30 0.036 30.2)" }}>
+            <Button asChild size="lg" className="h-12 px-6" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "#ffffff" }}>
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
                 <Eye className="h-4 w-4 mr-2" /> Lire ma première histoire — gratuit
               </Link>
@@ -307,8 +307,7 @@ function Index() {
           <span>© K·Intermédiaire — 중급 한국어</span>
           <span className="flex gap-4">
             <Link to="/library" className="hover:text-foreground">Bibliothèque</Link>
-            <Link to="/tarifs" className="hover:text-foreground">Tarifs</Link>
-            <Link to="/pourquoi" className="hover:text-foreground">Pourquoi ce projet</Link>
+            <Link to="/pourquoi" className="hover:text-foreground">Mon Histoire</Link>
           </span>
         </div>
       </footer>
