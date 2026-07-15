@@ -26,7 +26,7 @@ function Index() {
       {/* SKY + CENTERED CHINESE BOOK */}
       <section className="relative">
         <div
-          className="relative w-full overflow-hidden flex items-center justify-center"
+          className="relative w-full overflow-hidden flex items-end justify-center pt-32 md:pt-48"
           style={{
             background:
               "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
