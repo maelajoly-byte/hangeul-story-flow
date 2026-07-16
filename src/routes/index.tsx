@@ -26,7 +26,7 @@ function Index() {
       {/* SKY + CENTERED CHINESE BOOK */}
       <section className="relative">
         <div
-          className="relative w-full overflow-hidden flex items-end justify-center pt-32 md:pt-48"
+          className="relative w-full overflow-hidden flex items-end justify-center pt-3 md:pt-5"
           style={{
             background:
               "linear-gradient(180deg, oklch(0.88 0.05 230) 0%, oklch(0.82 0.06 225) 60%, oklch(0.78 0.07 220) 100%)",
@@ -56,7 +56,7 @@ function Index() {
                        "linear-gradient(90deg, transparent 0%, oklch(0.28 0.03 45 / 0.28) 45%, oklch(0.20 0.02 45 / 0.35) 50%, oklch(0.28 0.03 45 / 0.28) 55%, transparent 100%)",
                    }} />
               {/* LEFT PAGE — Hangeul + French translation */}
-              <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex flex-col items-start justify-center gap-1.5 md:gap-2"
+              <div className="paper-grain px-3 md:px-8 pt-3 md:pt-6 pb-2 md:pb-3 flex flex-col items-start justify-center gap-1.5 md:gap-2"
                    style={{ background: "linear-gradient(180deg, oklch(0.98 0.015 82) 0%, oklch(0.95 0.02 78) 100%)" }}>
                 <div className="font-hand-kr text-[1.35rem] md:text-[2.4rem] leading-[0.95] select-none text-black">
                   우화등선
@@ -66,7 +66,7 @@ function Index() {
                 </p>
               </div>
               {/* RIGHT PAGE — Hanja */}
-              <div className="paper-grain px-3 md:px-8 py-3 md:py-6 flex items-center justify-center"
+              <div className="paper-grain px-3 md:px-8 pt-3 md:pt-6 pb-2 md:pb-3 flex items-center justify-center"
                    style={{ background: "linear-gradient(180deg, oklch(0.97 0.018 80) 0%, oklch(0.94 0.022 76) 100%)" }}>
                 <div className="font-korean text-2xl md:text-5xl tracking-[0.15em] leading-none select-none text-black">
                   羽化登仙
@@ -77,7 +77,7 @@ function Index() {
         </div>
 
         {/* Hero text on wooden desk — sits directly under the sky, book overlaps */}
-        <div className="mx-auto max-w-4xl px-6 pt-14 md:pt-16 pb-14 text-center">
+        <div className="mx-auto max-w-4xl px-6 pt-8 md:pt-10 pb-10 text-center">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-5">
             <span className="h-px w-8 bg-muted-foreground" /> Méthode pour niveau intermédiaire · B1 / B2 <span className="h-px w-8 bg-muted-foreground" />
           </div>
