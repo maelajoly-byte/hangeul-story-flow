@@ -3,11 +3,13 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export interface UserState {
   signedIn: boolean;
   pseudo: string;
-  premium: boolean;
   unlockedSeries: string[];
-  vocab: { ko: string; fr: string; series: string }[];
   progress: Record<string, { episode: number; part: number; slide: number }>;
-  marked: { understood: number[]; later: number[] };
+  slidesRead: number;
+  activeDays: string[];
+  weeklyMinutes: number;
+  checkedElements: { ko: string; fr: string; category: string; series: string; ts: number }[];
+  comments: { id: string; body: string; series: string; episode: number; part: number; ts: number }[];
   queries: { id: string; ko: string; category: string; status: "queued" | "answered"; ts: number }[];
   notif: { essential: boolean; community: boolean; marketing: boolean };
 }
@@ -15,11 +17,13 @@ export interface UserState {
 const defaultState: UserState = {
   signedIn: false,
   pseudo: "Lecteur·rice",
-  premium: true,
   unlockedSeries: ["ghost-of-the-past"],
-  vocab: [],
   progress: {},
-  marked: { understood: [], later: [] },
+  slidesRead: 0,
+  activeDays: [],
+  weeklyMinutes: 0,
+  checkedElements: [],
+  comments: [],
   queries: [],
   notif: { essential: true, community: true, marketing: false },
 };
@@ -29,7 +33,9 @@ interface Ctx {
   set: (patch: Partial<UserState> | ((s: UserState) => Partial<UserState>)) => void;
   signInWithGoogle: () => void;
   signOut: () => void;
-  addVocab: (v: { ko: string; fr: string; series: string }) => void;
+  addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
+  addComment: (c: { body: string; series: string; episode: number; part: number }) => void;
+  markSlideRead: () => void;
   unlockSeries: (id: string) => void;
   submitQuery: (q: { ko: string; category: string }) => void;
   saveProgress: (seriesId: string, episode: number, part: number, slide: number) => void;
@@ -63,8 +69,27 @@ export function UserProvider({ children }: { children: ReactNode }) {
     signInWithGoogle: () =>
       set({ signedIn: true, pseudo: user.pseudo === "Lecteur·rice" ? "Yeon_07" : user.pseudo }),
     signOut: () => set({ signedIn: false }),
-    addVocab: (v) =>
-      set((s) => ({ vocab: [v, ...s.vocab.filter((x) => x.ko !== v.ko)].slice(0, 200) })),
+    addCheckedElement: (v) =>
+      set((s) => ({
+        checkedElements: [
+          { ...v, ts: Date.now() },
+          ...s.checkedElements.filter((x) => x.ko !== v.ko),
+        ].slice(0, 500),
+      })),
+    addComment: (c) =>
+      set((s) => ({
+        comments: [
+          { id: crypto.randomUUID(), ts: Date.now(), ...c },
+          ...s.comments,
+        ].slice(0, 200),
+      })),
+    markSlideRead: () => {
+      const today = new Date().toISOString().slice(0, 10);
+      set((s) => ({
+        slidesRead: (s.slidesRead ?? 0) + 1,
+        activeDays: s.activeDays.includes(today) ? s.activeDays : [...s.activeDays, today],
+      }));
+    },
     unlockSeries: (id) =>
       set((s) => ({ unlockedSeries: Array.from(new Set([...s.unlockedSeries, id])) })),
     submitQuery: (q) =>
