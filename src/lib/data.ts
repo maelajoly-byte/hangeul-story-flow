@@ -6,7 +6,8 @@ export interface Series {
   title: string;
   titleKo: string;
   synopsis: string;
-  level: string;
+  /** Difficulty on a 1–5 scale (script complexity + register range). */
+  stars: number;
   episodes: number;
   status: SeriesStatus;
   moods: string[];
@@ -23,8 +24,8 @@ export const SERIES: Series[] = [
     title: "Ghost of the Past",
     titleKo: "과거의 유령",
     synopsis: "Une lycéenne reçoit un message d'un numéro qu'elle a effacé il y a dix ans.",
-    level: "B1 — Accessible",
-    episodes: 8,
+    stars: 1,
+    episodes: 16,
     status: "available",
     moods: ["Mystère", "Drame", "Surnaturel léger"],
     cover: { from: "#0b1220", to: "#2b1450", symbol: "유" },
@@ -32,17 +33,17 @@ export const SERIES: Series[] = [
     warnings: ["Atmosphère sombre", "Apparition fantomatique"],
     tips: [
       "Cliquez sur chaque particule pour comprendre la nuance.",
-      "N'hésitez pas à marquer une diapo « à revoir » sans la résoudre.",
+      "Laissez le contexte faire le travail : les mots reviennent d'eux-mêmes.",
     ],
   },
-  { id: "reality", order: 2, title: "Reality", titleKo: "현실", synopsis: "Un cadre fatigué découvre que ses collègues ne se souviennent plus de lui.", level: "B1 → B2", episodes: 10, status: "available", moods: ["Drame", "Psychologique"], cover: { from: "#1a1a2e", to: "#0f3460", symbol: "현" } },
-  { id: "supernatural-chase", order: 3, title: "Supernatural Chase", titleKo: "초자연 추격", synopsis: "Une chasseuse de fantômes traque une entité qui change de visage.", level: "B2", episodes: 12, status: "in_progress", moods: ["Action", "Surnaturel", "Suspense"], cover: { from: "#1b1035", to: "#5b2a86", symbol: "초" } },
-  { id: "z-virus", order: 4, title: "Z-Virus", titleKo: "Z-바이러스", synopsis: "Un campus universitaire isolé, un virus qui ne dit pas son nom.", level: "B2", episodes: 14, status: "coming_soon", moods: ["Horreur", "Survie"], cover: { from: "#1a0b0b", to: "#5b1f1f", symbol: "Z" } },
-  { id: "clash", order: 5, title: "Clash", titleKo: "충돌", synopsis: "Deux familles, une fusion d'entreprise, un secret qui resurgit.", level: "B2", episodes: 10, status: "coming_soon", moods: ["Drame", "Corporate"], cover: { from: "#0c1a2b", to: "#1f4068", symbol: "충" } },
-  { id: "elevator-game", order: 6, title: "Elevator Game", titleKo: "엘리베이터 게임", synopsis: "Sept étages. Cinq règles. Une seule sortie.", level: "B2", episodes: 7, status: "coming_soon", moods: ["Horreur", "Mystère"], cover: { from: "#0a0a0a", to: "#2c2c2c", symbol: "엘" } },
-  { id: "shattered", order: 7, title: "Shattered", titleKo: "깨진", synopsis: "Le miroir de la salle de bain montre un autre appartement.", level: "B2", episodes: 9, status: "coming_soon", moods: ["Surnaturel", "Drame"], cover: { from: "#13202b", to: "#3d6478", symbol: "깨" } },
-  { id: "protocol-unknown", order: 8, title: "Protocol Unknown", titleKo: "미확인 프로토콜", synopsis: "Une IA d'aide à la décision commence à mentir — peut-être.", level: "B2+", episodes: 11, status: "coming_soon", moods: ["SF", "Thriller"], cover: { from: "#0a1f2c", to: "#0e7490", symbol: "미" } },
-  { id: "siren-call", order: 9, title: "Siren Call", titleKo: "세이렌의 부름", synopsis: "Un port de pêche, une voix dans la brume, et personne qui rentre.", level: "B2+", episodes: 12, status: "coming_soon", moods: ["Horreur folklorique", "Drame"], cover: { from: "#0b1f2b", to: "#264653", symbol: "세" } },
+  { id: "reality", order: 2, title: "Reality", titleKo: "현실", synopsis: "Un cadre fatigué découvre que ses collègues ne se souviennent plus de lui.", stars: 2, episodes: 10, status: "available", moods: ["Drame", "Psychologique"], cover: { from: "#1a1a2e", to: "#0f3460", symbol: "현" } },
+  { id: "supernatural-chase", order: 3, title: "Supernatural Chase", titleKo: "초자연 추격", synopsis: "Une chasseuse de fantômes traque une entité qui change de visage.", stars: 3, episodes: 12, status: "in_progress", moods: ["Action", "Surnaturel", "Suspense"], cover: { from: "#1b1035", to: "#5b2a86", symbol: "초" } },
+  { id: "z-virus", order: 4, title: "Z-Virus", titleKo: "Z-바이러스", synopsis: "Un campus universitaire isolé, un virus qui ne dit pas son nom.", stars: 3, episodes: 14, status: "coming_soon", moods: ["Horreur", "Survie"], cover: { from: "#1a0b0b", to: "#5b1f1f", symbol: "Z" } },
+  { id: "clash", order: 5, title: "Clash", titleKo: "충돌", synopsis: "Deux familles, une fusion d'entreprise, un secret qui resurgit.", stars: 4, episodes: 10, status: "coming_soon", moods: ["Drame", "Corporate"], cover: { from: "#0c1a2b", to: "#1f4068", symbol: "충" } },
+  { id: "elevator-game", order: 6, title: "Elevator Game", titleKo: "엘리베이터 게임", synopsis: "Sept étages. Cinq règles. Une seule sortie.", stars: 4, episodes: 7, status: "coming_soon", moods: ["Horreur", "Mystère"], cover: { from: "#0a0a0a", to: "#2c2c2c", symbol: "엘" } },
+  { id: "shattered", order: 7, title: "Shattered", titleKo: "깨진", synopsis: "Le miroir de la salle de bain montre un autre appartement.", stars: 4, episodes: 9, status: "coming_soon", moods: ["Surnaturel", "Drame"], cover: { from: "#13202b", to: "#3d6478", symbol: "깨" } },
+  { id: "protocol-unknown", order: 8, title: "Protocol Unknown", titleKo: "미확인 프로토콜", synopsis: "Une IA d'aide à la décision commence à mentir — peut-être.", stars: 5, episodes: 11, status: "coming_soon", moods: ["SF", "Thriller"], cover: { from: "#0a1f2c", to: "#0e7490", symbol: "미" } },
+  { id: "siren-call", order: 9, title: "Siren Call", titleKo: "세이렌의 부름", synopsis: "Un port de pêche, une voix dans la brume, et personne qui rentre.", stars: 5, episodes: 12, status: "coming_soon", moods: ["Horreur folklorique", "Drame"], cover: { from: "#0b1f2b", to: "#264653", symbol: "세" } },
 ];
 
 export type TokenCategory = "noun" | "verb" | "particle" | "adverb" | "ending" | "adjective";

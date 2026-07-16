@@ -1,6 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { useUser } from "@/lib/user-store";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, LogOut } from "lucide-react";
 
 export function SiteHeader() {
   const { user, signInWithGoogle, signOut } = useUser();
@@ -17,12 +24,23 @@ export function SiteHeader() {
           <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
           <Link to="/library" className="hover:text-foreground transition-colors">Bibliothèque</Link>
           <Link to="/pourquoi" className="hover:text-foreground transition-colors">Genèse</Link>
+          <Link to="/profile" className="hover:text-foreground transition-colors">Mon Compte</Link>
         </nav>
         <div className="flex items-center gap-2">
           {user.signedIn ? (
-            <Button asChild variant="ghost" size="sm">
-              <Link to="/profile">{user.pseudo}</Link>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-1">
+                  {user.pseudo}
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onClick={signOut}>
+                  <LogOut className="h-4 w-4 mr-2" /> Se déconnecter
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button size="sm" onClick={signInWithGoogle} className="bg-cream text-cream-foreground hover:bg-cream/90">
               Se connecter

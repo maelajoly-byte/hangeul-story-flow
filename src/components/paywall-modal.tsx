@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export function PaywallModal({
   open, onOpenChange, seriesId, reason,
 }: { open: boolean; onOpenChange: (b: boolean) => void; seriesId: string; reason: "series" | "grammar" }) {
-  const { unlockSeries, set } = useUser();
+  const { unlockSeries } = useUser();
   const s = getSeries(seriesId);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,7 +36,6 @@ export function PaywallModal({
             className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
             onClick={() => {
               unlockSeries(seriesId);
-              set({ premium: true });
               onOpenChange(false);
               toast.success("Paiement simulé — accès débloqué.");
             }}

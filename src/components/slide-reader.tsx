@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, Maximize2, BookmarkPlus, CheckCircle2, Eye, HelpCircle, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import type { EpisodePart, Slide } from "@/lib/data";
 import { WordSpan } from "./word-span";
 import { useUser } from "@/lib/user-store";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { SceneCanvas } from "./scene-canvas";
-import { RequestExplanationModal } from "./request-explanation-modal";
 
 const MASK_BG: Record<Slide["mask"], string> = {
   black: "#000000",
@@ -24,19 +23,20 @@ const MASK_FG: Record<Slide["mask"], string> = {
 };
 
 export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: string }) {
-  const { user, saveProgress, addVocab, set } = useUser();
+  const { user, saveProgress, markSlideRead } = useUser();
   const navigate = useNavigate();
   const [idx, setIdx] = useState(() => Math.min(user.progress[seriesId]?.slide ?? 0, ep.slides.length - 1));
   const [dir, setDir] = useState(0);
   const [fs, setFs] = useState(false);
-  const [reqOpen, setReqOpen] = useState(false);
 
   const slide = ep.slides[idx];
   const total = ep.slides.length;
 
   useEffect(() => {
     saveProgress(seriesId, ep.episode, ep.part, idx);
-  }, [idx, ep, seriesId, saveProgress]);
+    markSlideRead();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idx, ep.episode, ep.part, seriesId]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -50,13 +50,6 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
 
   const next = () => { if (idx < total - 1) { setDir(1); setIdx(idx + 1); } };
   const prev = () => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } };
-
-  const toggleMark = (kind: "understood" | "later") =>
-    set((s) => {
-      const arr = s.marked[kind];
-      const has = arr.includes(slide.id);
-      return { marked: { ...s.marked, [kind]: has ? arr.filter((x) => x !== slide.id) : [...arr, slide.id] } };
-    });
 
   return (
     <div className={`${fs ? "fixed inset-0 z-50 bg-slate-deep" : "relative"} flex flex-col`}>
@@ -108,9 +101,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
                   <p key={i} className="font-korean text-xl md:text-2xl leading-relaxed">
                     {line.tokens.map((tok, j) =>
                       tok.premium ? (
-                        <WordSpan key={j} token={tok} seriesId={seriesId} onAddVocab={(t) =>
-                          addVocab({ ko: t.ko, fr: t.explanation?.fr ?? "", series: seriesId })
-                        } />
+                        <WordSpan key={j} token={tok} seriesId={seriesId} />
                       ) : (
                         <span key={j} className="font-korean">{tok.ko}</span>
                       )
@@ -137,27 +128,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
             </motion.div>
           </AnimatePresence>
         </div>
-
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => toggleMark("understood")}>
-            <CheckCircle2 className="h-4 w-4 mr-1.5" />
-            {user.marked.understood.includes(slide.id) ? "Compris ✓" : "Marquer comme compris"}
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => toggleMark("later")}>
-            <Eye className="h-4 w-4 mr-1.5" />
-            {user.marked.later.includes(slide.id) ? "À revoir ✓" : "À revoir"}
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setReqOpen(true)}>
-            <HelpCircle className="h-4 w-4 mr-1.5" />
-            Demander une explication
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => addVocab({ ko: slide.caption ?? "", fr: "(diapo entière)", series: seriesId })}>
-            <BookmarkPlus className="h-4 w-4 mr-1.5" />
-            Sauver la diapo
-          </Button>
-        </div>
       </div>
-      <RequestExplanationModal open={reqOpen} onOpenChange={setReqOpen} defaultSelection={slide.caption ?? ""} />
     </div>
   );
 }

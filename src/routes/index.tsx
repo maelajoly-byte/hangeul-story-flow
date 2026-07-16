@@ -229,7 +229,7 @@ function Index() {
             <div className="rounded-2xl border border-[color:var(--secondary)]/40 p-6 md:p-8" style={{ backgroundColor: "oklch(0.52 0.076 57.2)", color: "oklch(0.72 0.066 72.68)" }}>
               <div className="flex items-baseline justify-between mb-3">
                 <span className="text-xs uppercase tracking-wider" style={{ color: "oklch(0.72 0.066 72.68)" }}>Histoire offerte · n°1</span>
-                <span className="text-xs" style={{ color: "oklch(0.72 0.066 72.68 / 0.7)" }}>Niveau B1 — 8 épisodes</span>
+                <span className="text-xs" style={{ color: "oklch(0.72 0.066 72.68 / 0.7)" }}>Difficulté ★☆☆☆☆ — 16 épisodes</span>
               </div>
               <h3 className="font-display text-3xl">Ghost of the Past</h3>
               <p className="text-sm mt-2" style={{ color: "oklch(0.72 0.066 72.68 / 0.8)" }}>
