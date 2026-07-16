@@ -3,7 +3,17 @@ import type { Series } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/user-store";
-import { Lock, Sparkles } from "lucide-react";
+import { Lock, Sparkles, Star } from "lucide-react";
+
+function Stars({ n }: { n: number }) {
+  return (
+    <span className="inline-flex items-center gap-0.5" aria-label={`Difficulté ${n} sur 5`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star key={i} className={`h-3.5 w-3.5 ${i < n ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />
+      ))}
+    </span>
+  );
+}
 
 export function SeriesCard({ s }: { s: Series }) {
   const { user } = useUser();
@@ -56,7 +66,7 @@ export function SeriesCard({ s }: { s: Series }) {
           {s.moods.map((m) => <Badge key={m} variant="secondary" className="text-[10px]">{m}</Badge>)}
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{s.level}</span>
+          <Stars n={s.stars} />
           <span>{s.episodes} épisodes</span>
         </div>
         {s.status === "coming_soon" ? (

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { Token } from "@/lib/data";
 import { PremiumPopup } from "./premium-popup";
-import { PaywallModal } from "./paywall-modal";
 import { useUser } from "@/lib/user-store";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -14,10 +13,9 @@ const COLOR: Record<string, string> = {
   adjective: "decoration-current/40",
 };
 
-export function WordSpan({ token, seriesId, onAddVocab }: { token: Token; seriesId: string; onAddVocab?: (t: Token) => void }) {
-  const { user } = useUser();
+export function WordSpan({ token, seriesId }: { token: Token; seriesId: string }) {
+  const { addCheckedElement } = useUser();
   const [open, setOpen] = useState(false);
-  const [paywall, setPaywall] = useState(false);
 
   if (!token.premium || !token.explanation) {
     return <span className="font-korean">{token.ko}</span>;
@@ -27,7 +25,15 @@ export function WordSpan({ token, seriesId, onAddVocab }: { token: Token; series
     <span
       role="button"
       tabIndex={0}
-      onClick={() => (user.premium ? setOpen(true) : setPaywall(true))}
+      onClick={() => {
+        setOpen(true);
+        addCheckedElement({
+          ko: token.ko,
+          fr: token.explanation?.fr ?? "",
+          category: token.category ?? "noun",
+          series: seriesId,
+        });
+      }}
       className={`font-korean cursor-pointer underline underline-offset-[6px] decoration-dotted decoration-1 transition-opacity hover:opacity-70 ${COLOR[token.category ?? "noun"] ?? ""}`}
     >
       {token.ko}
@@ -35,18 +41,11 @@ export function WordSpan({ token, seriesId, onAddVocab }: { token: Token; series
   );
 
   return (
-    <>
-      {user.premium ? (
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-          <PopoverContent className="w-80 p-0 border-border/60 bg-popover">
-            <PremiumPopup token={token} onSave={() => onAddVocab?.(token)} />
-          </PopoverContent>
-        </Popover>
-      ) : (
-        trigger
-      )}
-      <PaywallModal open={paywall} onOpenChange={setPaywall} seriesId={seriesId} reason="grammar" />
-    </>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <PopoverContent className="w-80 p-0 border-border/60 bg-popover">
+        <PremiumPopup token={token} />
+      </PopoverContent>
+    </Popover>
   );
 }

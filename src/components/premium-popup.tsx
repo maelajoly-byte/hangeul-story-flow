@@ -1,12 +1,8 @@
 import type { Token } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Bookmark } from "lucide-react";
-import { useState } from "react";
 
-export function PremiumPopup({ token, onSave }: { token: Token; onSave?: () => void }) {
+export function PremiumPopup({ token }: { token: Token }) {
   const e = token.explanation!;
-  const [saved, setSaved] = useState(false);
   return (
     <div className="p-4 space-y-3 text-sm">
       <div className="flex items-baseline justify-between">
@@ -27,10 +23,6 @@ export function PremiumPopup({ token, onSave }: { token: Token; onSave?: () => v
         <p className="font-korean text-cream">{e.example.ko}</p>
         <p className="text-xs text-muted-foreground mt-1">{e.example.fr}</p>
       </div>
-      <Button size="sm" variant="ghost" className="w-full justify-start text-xs" onClick={() => { onSave?.(); setSaved(true); }}>
-        <Bookmark className="h-3.5 w-3.5 mr-2" />
-        {saved ? "Ajouté au carnet" : "Sauvegarder dans mon carnet"}
-      </Button>
     </div>
   );
 }
