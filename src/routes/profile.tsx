@@ -9,15 +9,28 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSeries } from "@/lib/data";
-import { Sparkles, Mail } from "lucide-react";
+import { Mail, Search, Award } from "lucide-react";
+import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "Profil — K·Intermédiaire" }] }),
+  head: () => ({ meta: [{ title: "Mon Compte — K·Intermédiaire" }] }),
   component: ProfilePage,
 });
 
 function ProfilePage() {
   const { user, set, signInWithGoogle, signOut } = useUser();
+  const [search, setSearch] = useState("");
+
+  const weekActiveDays = useMemo(() => {
+    const now = Date.now();
+    return user.activeDays.filter((d) => now - new Date(d).getTime() < 7 * 86400_000).length;
+  }, [user.activeDays]);
+
+  const filteredChecked = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return user.checkedElements;
+    return user.checkedElements.filter((e) => e.ko.toLowerCase().includes(q) || e.fr.toLowerCase().includes(q));
+  }, [user.checkedElements, search]);
 
   if (!user.signedIn) {
     return (
@@ -40,40 +53,80 @@ function ProfilePage() {
       <main className="mx-auto max-w-5xl px-6 py-12">
         <header className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-accent">Profil</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-accent">Mon Compte</div>
             <h1 className="font-display text-4xl mt-1">{user.pseudo}</h1>
             <p className="text-sm text-muted-foreground mt-1">Votre nom et votre e-mail Google ne sont jamais affichés publiquement.</p>
           </div>
-          {user.premium && <Badge className="bg-gold/90 text-slate-deep border-0"><Sparkles className="h-3 w-3 mr-1" /> Premium actif</Badge>}
         </header>
 
         <Tabs defaultValue="stats" className="mt-10">
           <TabsList>
             <TabsTrigger value="stats">Statistiques</TabsTrigger>
-            <TabsTrigger value="vocab">Carnet ({user.vocab.length})</TabsTrigger>
-            <TabsTrigger value="queries">Demandes ({user.queries.length})</TabsTrigger>
+            <TabsTrigger value="checked">Éléments vérifiés ({user.checkedElements.length})</TabsTrigger>
+            <TabsTrigger value="comments">Mes commentaires ({user.comments.length})</TabsTrigger>
+            <TabsTrigger value="queries">Mes demandes ({user.queries.length})</TabsTrigger>
             <TabsTrigger value="passes">Mes pass</TabsTrigger>
             <TabsTrigger value="settings">Paramètres</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="stats" className="mt-6 grid sm:grid-cols-3 gap-4">
-            <Stat label="Diapos comprises" value={user.marked.understood.length} />
-            <Stat label="À revoir" value={user.marked.later.length} />
-            <Stat label="Mots sauvegardés" value={user.vocab.length} />
+          <TabsContent value="stats" className="mt-6 space-y-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Stat label="Slides lues" value={user.slidesRead} />
+              <Stat label="Activité (jours)" value={user.activeDays.length} sub={`${weekActiveDays} cette semaine`} />
+              <Stat label="Exposition hebdo (min)" value={user.weeklyMinutes} />
+            </div>
+            <div className="rounded-lg border border-border/60 bg-card/60 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Award className="h-4 w-4 text-accent" />
+                <h3 className="font-display text-lg">Badges</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Vos premiers badges apparaîtront ici au fil de votre lecture — régularité, curiosité, endurance…
+              </p>
+            </div>
           </TabsContent>
 
-          <TabsContent value="vocab" className="mt-6">
-            {user.vocab.length === 0 ? (
-              <Empty text="Sauvegardez vos premiers mots depuis une diapo." />
+          <TabsContent value="checked" className="mt-6 space-y-3">
+            <div className="relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Rechercher un mot ou une traduction…"
+                className="pl-9"
+              />
+            </div>
+            {filteredChecked.length === 0 ? (
+              <Empty text="Cliquez sur un mot ou une particule pendant votre lecture pour le retrouver ici." />
             ) : (
               <ul className="divide-y divide-border/60 border border-border/60 rounded-lg bg-card/60">
-                {user.vocab.map((v, i) => (
-                  <li key={i} className="px-4 py-3 flex items-center justify-between">
-                    <div>
+                {filteredChecked.map((v, i) => (
+                  <li key={i} className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
                       <span className="font-korean text-lg text-foreground">{v.ko}</span>
                       <span className="text-sm text-muted-foreground ml-3">{v.fr}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{v.series}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground shrink-0">{v.category}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </TabsContent>
+
+          <TabsContent value="comments" className="mt-6">
+            {user.comments.length === 0 ? (
+              <Empty text="Vos commentaires publiés sous les épisodes apparaîtront ici." />
+            ) : (
+              <ul className="space-y-3">
+                {user.comments.map((c) => (
+                  <li key={c.id} className="rounded-lg border border-border/60 bg-card/60 p-4">
+                    <p className="text-sm">{c.body}</p>
+                    <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{getSeries(c.series)?.title ?? c.series} · Ép. {c.episode}.{c.part}</span>
+                      <Link to="/read/$seriesId/$episode/$part" params={{ seriesId: c.series, episode: String(c.episode), part: String(c.part) }} className="text-accent hover:underline">
+                        Retrouver la conversation →
+                      </Link>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -107,7 +160,7 @@ function ProfilePage() {
                 <Link key={id} to="/series/$id" params={{ id }} className="rounded-lg border border-border/60 bg-card/60 p-4 hover:border-accent/50 transition-colors">
                   <div className="font-korean text-sm text-muted-foreground">{s.titleKo}</div>
                   <div className="font-display text-lg">{s.title}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{s.episodes} épisodes · {s.level}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{s.episodes} épisodes · {"★".repeat(s.stars)}{"☆".repeat(5 - s.stars)}</div>
                 </Link>
               );
             })}
@@ -139,11 +192,12 @@ function ProfilePage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value, sub }: { label: string; value: number; sub?: string }) {
   return (
     <div className="rounded-lg border border-border/60 bg-card/60 p-5">
       <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="font-display text-4xl mt-2 tabular-nums">{value}</div>
+      {sub && <div className="text-xs text-muted-foreground mt-1">{sub}</div>}
     </div>
   );
 }
