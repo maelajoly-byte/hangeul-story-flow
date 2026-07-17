@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { EPISODES, getSeries, type Series } from "@/lib/data";
 import { useUser } from "@/lib/user-store";
 import { PaywallModal } from "@/components/paywall-modal";
-import { AlertTriangle, BookOpen, Lock, Play, Sparkles, Star } from "lucide-react";
+import { AlertTriangle, BookOpen, ChevronLeft, ChevronRight, Heart, Lock, Play, Sparkles, Star } from "lucide-react";
 
 export const Route = createFileRoute("/series/$id")({
   head: ({ params }) => {
@@ -38,9 +38,14 @@ function SeriesPage() {
   const { user } = useUser();
   const navigate = useNavigate();
   const [paywall, setPaywall] = useState(false);
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 20;
   const unlocked = s.free || user.unlockedSeries.includes(s.id);
   const progress = user.progress[s.id];
   const parts = EPISODES[s.id] ?? [];
+  const completedEps = user.completedEpisodes?.[s.id] ?? [];
+  const completedParts = user.completedParts?.[s.id] ?? [];
+  const isEpisodeUnlocked = (ep: number) => ep === 1 || completedEps.includes(ep - 1);
 
   const partsByEpisode = useMemo(() => {
     const map = new Map<number, typeof parts>();
@@ -54,8 +59,13 @@ function SeriesPage() {
 
   const openPart = (ep: number, part: number) => {
     if (!unlocked) { setPaywall(true); return; }
+    if (!isEpisodeUnlocked(ep)) return;
     navigate({ to: "/read/$seriesId/$episode/$part", params: { seriesId: s.id, episode: String(ep), part: String(part) } });
   };
+
+  const totalPages = Math.max(1, Math.ceil(s.episodes / PER_PAGE));
+  const startEp = (page - 1) * PER_PAGE + 1;
+  const endEp = Math.min(s.episodes, page * PER_PAGE);
 
   return (
     <div className="min-h-screen">
@@ -111,11 +121,12 @@ function SeriesPage() {
         <section className="mx-auto max-w-4xl px-6 py-16">
           <h2 className="font-display text-3xl mb-1">Épisodes</h2>
           <p className="text-sm text-muted-foreground mb-8">Chaque épisode est découpé en parties courtes (≈ 6–10 diapos) pour une session ciblée de 5 à 8 minutes.</p>
-          <Accordion type="multiple" className="border border-border/60 rounded-lg overflow-hidden bg-card/50 divide-y divide-border/60">
-            {Array.from({ length: s.episodes }).map((_, i) => {
-              const epNum = i + 1;
+          <Accordion type="single" collapsible className="border border-border/60 rounded-lg overflow-hidden bg-card/50 divide-y divide-border/60">
+            {Array.from({ length: endEp - startEp + 1 }).map((_, i) => {
+              const epNum = startEp + i;
               const epParts = partsByEpisode.get(epNum) ?? [];
               const hasContent = epParts.length > 0;
+              const epUnlocked = isEpisodeUnlocked(epNum);
               return (
                 <AccordionItem key={epNum} value={`ep-${epNum}`} className="border-0">
                   <AccordionTrigger className="px-5 py-4 hover:bg-secondary/40 hover:no-underline">
@@ -126,16 +137,21 @@ function SeriesPage() {
                           {hasContent ? `Épisode ${epNum}` : `Épisode ${epNum}`}
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5">
-                          {hasContent ? `${epParts.length} partie${epParts.length > 1 ? "s" : ""}` : "Bientôt disponible"}
+                          {!epUnlocked ? "Terminez l'épisode précédent pour déverrouiller" :
+                            hasContent ? `${epParts.length} partie${epParts.length > 1 ? "s" : ""}` : "Bientôt disponible"}
                         </div>
                       </div>
-                      {!unlocked && <Lock className="h-4 w-4 text-muted-foreground" />}
+                      {(!unlocked || !epUnlocked) && <Lock className="h-4 w-4 text-muted-foreground" />}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-5 pb-4">
-                    {hasContent ? (
+                    {!epUnlocked ? (
+                      <p className="text-sm text-muted-foreground">Cet épisode se débloque après avoir terminé toutes les parties non optionnelles de l'épisode {epNum - 1}.</p>
+                    ) : hasContent ? (
                       <ul className="divide-y divide-border/40 border border-border/40 rounded-md overflow-hidden">
-                        {epParts.map((p) => (
+                        {epParts.map((p) => {
+                          const done = completedParts.includes(`${p.episode}-${p.part}`);
+                          return (
                           <li key={`${p.episode}-${p.part}`}>
                             <button
                               onClick={() => openPart(p.episode, p.part)}
@@ -143,13 +159,22 @@ function SeriesPage() {
                             >
                               <span className="font-display text-sm text-muted-foreground tabular-nums w-16">Partie {p.part}/{p.totalParts}</span>
                               <div className="flex-1 min-w-0">
-                                <div className="text-sm">{p.title}</div>
-                                <div className="text-[11px] text-muted-foreground">{p.slides.length} diapos</div>
+                                <div className="text-sm flex items-center gap-2">
+                                  {p.title}
+                                  {p.optional && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-pink-400/90">
+                                      <Heart className="h-3 w-3" /> Romance · optionnel
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] text-muted-foreground">
+                                  {p.slides.length} diapos {done && "· ✓ Terminée"}
+                                </div>
                               </div>
                               <Play className="h-4 w-4 text-accent" />
                             </button>
                           </li>
-                        ))}
+                        );})}
                       </ul>
                     ) : (
                       <p className="text-sm text-muted-foreground">Cet épisode arrivera prochainement.</p>
@@ -159,6 +184,19 @@ function SeriesPage() {
               );
             })}
           </Accordion>
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+                <ChevronLeft className="h-4 w-4 mr-1" /> Précédent
+              </Button>
+              <span className="text-xs text-muted-foreground tabular-nums">
+                Épisodes {startEp}–{endEp} sur {s.episodes}
+              </span>
+              <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
+                Suivant <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          )}
         </section>
       </main>
       <PaywallModal open={paywall} onOpenChange={setPaywall} seriesId={s.id} reason="series" />
