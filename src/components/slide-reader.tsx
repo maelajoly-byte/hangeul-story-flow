@@ -56,6 +56,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
   const prev = () => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } };
 
   return (
+    <>
     <div className={`${fs ? "fixed inset-0 z-50 bg-slate-deep" : "relative"} flex flex-col`}>
       <div className="flex items-center gap-4 px-6 py-3 border-b border-border/60 bg-background/60 backdrop-blur">
         <Button variant="ghost" size="icon" onClick={() => (fs ? setFs(false) : navigate({ to: "/series/$id", params: { id: seriesId } }))}>
@@ -134,7 +135,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
         </div>
       </div>
     </div>
-    ,
-    <MedalPopup key="medal-popup" />
+    <MedalPopup />
+    </>
   );
 }
