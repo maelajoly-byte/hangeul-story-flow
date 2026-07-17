@@ -207,6 +207,8 @@ export interface EpisodePart {
   totalParts: number;
   title: string;
   slides: Slide[];
+  /** Optional parts (romance side-arcs) are not required to unlock next episode. */
+  optional?: boolean;
 }
 
 export const EPISODES: Record<string, EpisodePart[]> = {

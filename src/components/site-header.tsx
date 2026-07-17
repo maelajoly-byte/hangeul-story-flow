@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, LogOut } from "lucide-react";
@@ -14,11 +15,31 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/70 border-b border-border/60">
       <div className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
+        {/* Mobile: click logo to open nav; Desktop: normal home link */}
+        <div className="md:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex flex-col items-start leading-tight group">
+                <span className="font-display text-lg tracking-tight inline-flex items-center gap-1">
+                  K<span className="text-accent">·</span>Intermédiaire
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                </span>
+                <span className="font-korean text-[10px] text-muted-foreground">중급 한국어</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              <DropdownMenuItem asChild><Link to="/">Accueil</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/library">Bibliothèque</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/pourquoi">Genèse</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/profile">Mon Compte</Link></DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <Link to="/" className="hidden md:flex items-center gap-2 group">
           <span className="font-display text-xl tracking-tight">
             K<span className="text-accent">·</span>Intermédiaire
           </span>
-          <span className="font-korean text-xs text-muted-foreground hidden sm:inline">중급 한국어</span>
+          <span className="font-korean text-xs text-muted-foreground">중급 한국어</span>
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
           <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
