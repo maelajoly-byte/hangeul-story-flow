@@ -219,6 +219,54 @@ function Stat({ label, value, sub }: { label: string; value: number; sub?: strin
 function Empty({ text }: { text: string }) {
   return <p className="text-sm text-muted-foreground border border-dashed border-border rounded-lg p-8 text-center">{text}</p>;
 }
+function MedalsSection({ earnedIds }: { earnedIds: string[] }) {
+  const earned = new Set(earnedIds);
+  return (
+    <div className="rounded-lg border border-border/60 bg-card/60 p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Award className="h-4 w-4 text-accent" />
+        <h3 className="font-display text-lg">Médailles</h3>
+        <span className="text-xs text-muted-foreground ml-auto">{earned.size} / {MEDALS.length}</span>
+      </div>
+      <TooltipProvider delayDuration={100}>
+        <div className="space-y-5">
+          {MEDAL_CATEGORIES.map((cat) => {
+            const items = MEDALS.filter((m) => m.category === cat.id);
+            return (
+              <div key={cat.id}>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">{cat.label}</div>
+                <div className="flex flex-wrap gap-2">
+                  {items.map((m) => {
+                    const got = earned.has(m.id);
+                    return (
+                      <Tooltip key={m.id}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs cursor-help transition-colors ${
+                              got
+                                ? "border-accent/60 bg-accent/10 text-accent"
+                                : "border-border/50 bg-muted/20 text-muted-foreground/60 grayscale"
+                            }`}
+                          >
+                            {got ? <Award className="h-3.5 w-3.5" /> : <Lock className="h-3 w-3" />}
+                            {m.name}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[240px] text-xs leading-relaxed">
+                          {m.description}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </TooltipProvider>
+    </div>
+  );
+}
 function NotifRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <div className="flex items-center justify-between py-3 border-b border-border/40">
