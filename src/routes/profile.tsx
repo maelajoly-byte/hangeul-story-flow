@@ -8,9 +8,12 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getSeries } from "@/lib/data";
-import { Mail, Search, Award } from "lucide-react";
-import { useMemo, useState } from "react";
+import { MEDALS, MEDAL_CATEGORIES } from "@/lib/medals";
+import { Mail, Search, Award, Lock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Mon Compte — K·Intermédiaire" }] }),
@@ -18,8 +21,13 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
-  const { user, set, signInWithGoogle, signOut } = useUser();
+  const { user, set, signInWithGoogle, signOut, markArchiveVisited } = useUser();
   const [search, setSearch] = useState("");
+  const [tab, setTab] = useState("stats");
+
+  useEffect(() => {
+    if (tab === "checked") markArchiveVisited();
+  }, [tab, markArchiveVisited]);
 
   const weekActiveDays = useMemo(() => {
     const now = Date.now();
@@ -59,14 +67,29 @@ function ProfilePage() {
           </div>
         </header>
 
-        <Tabs defaultValue="stats" className="mt-10">
-          <TabsList>
-            <TabsTrigger value="stats">Statistiques</TabsTrigger>
-            <TabsTrigger value="checked">Éléments vérifiés ({user.checkedElements.length})</TabsTrigger>
-            <TabsTrigger value="comments">Mes commentaires ({user.comments.length})</TabsTrigger>
-            <TabsTrigger value="queries">Mes demandes ({user.queries.length})</TabsTrigger>
-            <TabsTrigger value="passes">Mes pass</TabsTrigger>
-            <TabsTrigger value="settings">Paramètres</TabsTrigger>
+        <Tabs value={tab} onValueChange={setTab} className="mt-10">
+          {/* Mobile: dropdown */}
+          <div className="md:hidden mb-4">
+            <Select value={tab} onValueChange={setTab}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="stats">Statistiques</SelectItem>
+                <SelectItem value="checked">Éléments vérifiés ({user.checkedElements.length})</SelectItem>
+                <SelectItem value="comments">Mes commentaires ({user.comments.length})</SelectItem>
+                <SelectItem value="queries">Mes demandes ({user.queries.length})</SelectItem>
+                <SelectItem value="passes">Mes pass</SelectItem>
+                <SelectItem value="settings">Paramètres</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {/* Desktop: wrapped 2-line tab list */}
+          <TabsList className="hidden md:flex flex-wrap h-auto gap-1 bg-transparent p-0">
+            <TabsTrigger value="stats" className="data-[state=active]:bg-secondary">Statistiques</TabsTrigger>
+            <TabsTrigger value="checked" className="data-[state=active]:bg-secondary">Éléments vérifiés ({user.checkedElements.length})</TabsTrigger>
+            <TabsTrigger value="comments" className="data-[state=active]:bg-secondary">Mes commentaires ({user.comments.length})</TabsTrigger>
+            <TabsTrigger value="queries" className="data-[state=active]:bg-secondary">Mes demandes ({user.queries.length})</TabsTrigger>
+            <TabsTrigger value="passes" className="data-[state=active]:bg-secondary">Mes pass</TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-secondary">Paramètres</TabsTrigger>
           </TabsList>
 
           <TabsContent value="stats" className="mt-6 space-y-6">
@@ -75,15 +98,7 @@ function ProfilePage() {
               <Stat label="Activité (jours)" value={user.activeDays.length} sub={`${weekActiveDays} cette semaine`} />
               <Stat label="Exposition hebdo (min)" value={user.weeklyMinutes} />
             </div>
-            <div className="rounded-lg border border-border/60 bg-card/60 p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Award className="h-4 w-4 text-accent" />
-                <h3 className="font-display text-lg">Badges</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Vos premiers badges apparaîtront ici au fil de votre lecture — régularité, curiosité, endurance…
-              </p>
-            </div>
+            <MedalsSection earnedIds={user.earnedMedals ?? []} />
           </TabsContent>
 
           <TabsContent value="checked" className="mt-6 space-y-3">
@@ -203,6 +218,54 @@ function Stat({ label, value, sub }: { label: string; value: number; sub?: strin
 }
 function Empty({ text }: { text: string }) {
   return <p className="text-sm text-muted-foreground border border-dashed border-border rounded-lg p-8 text-center">{text}</p>;
+}
+function MedalsSection({ earnedIds }: { earnedIds: string[] }) {
+  const earned = new Set(earnedIds);
+  return (
+    <div className="rounded-lg border border-border/60 bg-card/60 p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Award className="h-4 w-4 text-accent" />
+        <h3 className="font-display text-lg">Médailles</h3>
+        <span className="text-xs text-muted-foreground ml-auto">{earned.size} / {MEDALS.length}</span>
+      </div>
+      <TooltipProvider delayDuration={100}>
+        <div className="space-y-5">
+          {MEDAL_CATEGORIES.map((cat) => {
+            const items = MEDALS.filter((m) => m.category === cat.id);
+            return (
+              <div key={cat.id}>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">{cat.label}</div>
+                <div className="flex flex-wrap gap-2">
+                  {items.map((m) => {
+                    const got = earned.has(m.id);
+                    return (
+                      <Tooltip key={m.id}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs cursor-help transition-colors ${
+                              got
+                                ? "border-accent/60 bg-accent/10 text-accent"
+                                : "border-border/50 bg-muted/20 text-muted-foreground/60 grayscale"
+                            }`}
+                          >
+                            {got ? <Award className="h-3.5 w-3.5" /> : <Lock className="h-3 w-3" />}
+                            {m.name}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[240px] text-xs leading-relaxed">
+                          {m.description}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </TooltipProvider>
+    </div>
+  );
 }
 function NotifRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (

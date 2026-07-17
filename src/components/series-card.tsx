@@ -3,15 +3,28 @@ import type { Series } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/user-store";
-import { Lock, Sparkles, Star } from "lucide-react";
+import { Info, Lock, Sparkles, Star } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 function Stars({ n }: { n: number }) {
   return (
-    <span className="inline-flex items-center gap-0.5" aria-label={`Difficulté ${n} sur 5`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} className={`h-3.5 w-3.5 ${i < n ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />
-      ))}
-    </span>
+    <TooltipProvider delayDuration={100}>
+      <span className="inline-flex items-center gap-1" aria-label={`Difficulté ${n} sur 5`}>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star key={i} className={`h-3.5 w-3.5 ${i < n ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />
+        ))}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button type="button" className="text-muted-foreground/70 hover:text-accent" aria-label="À propos de la note">
+              <Info className="h-3.5 w-3.5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-[240px] text-xs leading-relaxed">
+            La note combine la <strong>difficulté linguistique</strong> (registre, vocabulaire, structures) et l'<strong>ambition narrative</strong> de l'histoire. 1 étoile signifie une entrée en douceur, pensée pour prendre confiance — pas une histoire mineure. Chaque récit a été écrit avec la même exigence.
+          </TooltipContent>
+        </Tooltip>
+      </span>
+    </TooltipProvider>
   );
 }
 

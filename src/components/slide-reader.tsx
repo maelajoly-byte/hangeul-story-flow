@@ -8,6 +8,7 @@ import { useUser } from "@/lib/user-store";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { SceneCanvas } from "./scene-canvas";
+import { MedalPopup } from "./medal-popup";
 
 const MASK_BG: Record<Slide["mask"], string> = {
   black: "#000000",
@@ -23,7 +24,7 @@ const MASK_FG: Record<Slide["mask"], string> = {
 };
 
 export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: string }) {
-  const { user, saveProgress, markSlideRead } = useUser();
+  const { user, saveProgress, markSlideRead, completePart } = useUser();
   const navigate = useNavigate();
   const [idx, setIdx] = useState(() => Math.min(user.progress[seriesId]?.slide ?? 0, ep.slides.length - 1));
   const [dir, setDir] = useState(0);
@@ -35,8 +36,11 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
   useEffect(() => {
     saveProgress(seriesId, ep.episode, ep.part, idx);
     markSlideRead();
+    if (idx === total - 1) {
+      completePart(seriesId, ep.episode, ep.part, ep.part === ep.totalParts);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idx, ep.episode, ep.part, seriesId]);
+  }, [idx, ep.episode, ep.part, seriesId, total]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -52,6 +56,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
   const prev = () => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } };
 
   return (
+    <>
     <div className={`${fs ? "fixed inset-0 z-50 bg-slate-deep" : "relative"} flex flex-col`}>
       <div className="flex items-center gap-4 px-6 py-3 border-b border-border/60 bg-background/60 backdrop-blur">
         <Button variant="ghost" size="icon" onClick={() => (fs ? setFs(false) : navigate({ to: "/series/$id", params: { id: seriesId } }))}>
@@ -130,5 +135,7 @@ export function SlideReader({ ep, seriesId }: { ep: EpisodePart; seriesId: strin
         </div>
       </div>
     </div>
+    <MedalPopup />
+    </>
   );
 }
