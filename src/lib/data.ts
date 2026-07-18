@@ -17,6 +17,36 @@ export interface Series {
   tips?: string[];
 }
 
+export interface ReaderReview {
+  id: string;
+  author: string;
+  stars: number;
+  body: string;
+  lang: "fr" | "ko";
+}
+
+/** Approved reader reviews (moderated). Shown once a reader has finished the series. */
+export const READER_REVIEWS: Record<string, ReaderReview[]> = {
+  "ghost-of-the-past": [
+    { id: "r1", author: "Minji_22", stars: 5, lang: "fr",
+      body: "Une entrée en matière parfaite : les phrases sont courtes mais l'ambiance ne se relâche jamais. J'ai relu le dernier épisode deux fois." },
+    { id: "r2", author: "Loïc_FR", stars: 4, lang: "fr",
+      body: "Le rythme est très bien dosé. J'ai gagné en confiance sur les particules sans même m'en rendre compte." },
+    { id: "r3", author: "Yeon_07", stars: 5, lang: "ko",
+      body: "짧지만 여운이 오래 남아요. 다음 이야기가 벌써 궁금해집니다." },
+    { id: "r4", author: "Camille_L", stars: 5, lang: "fr",
+      body: "Je n'avais jamais tenu jusqu'au bout d'un contenu en coréen. Là, j'ai tout lu — et j'ai compris." },
+  ],
+  "reality": [
+    { id: "r1", author: "Ju_ne", stars: 4, lang: "fr",
+      body: "Plus exigeant que la première, mais l'ambiance vaut vraiment le détour." },
+  ],
+};
+
+export function getReaderReviews(seriesId: string) {
+  return READER_REVIEWS[seriesId] ?? [];
+}
+
 export const SERIES: Series[] = [
   {
     id: "ghost-of-the-past",
