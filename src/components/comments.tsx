@@ -70,7 +70,7 @@ export function Comments({ episodeKey }: { episodeKey: string }) {
         {(["fr", "ko"] as CommentLang[]).map((l) => (
           <button
             key={l}
-            onClick={() => setList((prev) => prev) || setLang(l)}
+            onClick={() => setLang(l)}
             className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
               lang === l
                 ? "bg-accent text-accent-foreground border-accent"
