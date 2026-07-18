@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { EPISODES, getSeries, type Series } from "@/lib/data";
 import { useUser } from "@/lib/user-store";
 import { PaywallModal } from "@/components/paywall-modal";
-import { AlertTriangle, BookOpen, ChevronLeft, ChevronRight, Heart, Lock, Play, Sparkles, Star } from "lucide-react";
+import { AlertTriangle, BookOpen, CheckCircle2, ChevronLeft, ChevronRight, Heart, Lock, Play, Sparkles, Star } from "lucide-react";
 
 export const Route = createFileRoute("/series/$id")({
   head: ({ params }) => {
@@ -43,9 +43,8 @@ function SeriesPage() {
   const unlocked = s.free || user.unlockedSeries.includes(s.id);
   const progress = user.progress[s.id];
   const parts = EPISODES[s.id] ?? [];
-  const completedEps = user.completedEpisodes?.[s.id] ?? [];
   const completedParts = user.completedParts?.[s.id] ?? [];
-  const isEpisodeUnlocked = (ep: number) => ep === 1 || completedEps.includes(ep - 1);
+  const isPartDone = (ep: number, part: number) => completedParts.includes(`${ep}-${part}`);
 
   const partsByEpisode = useMemo(() => {
     const map = new Map<number, typeof parts>();
@@ -57,9 +56,29 @@ function SeriesPage() {
     return map;
   }, [parts]);
 
+  const isEpisodeUnlocked = (ep: number) => {
+    if (ep === 1) return true;
+    const prev = partsByEpisode.get(ep - 1) ?? [];
+    if (prev.length === 0) return false;
+    // Only non-optional parts of the previous episode must be completed.
+    return prev.filter((p) => !p.optional).every((p) => isPartDone(p.episode, p.part));
+  };
+  const isEpisodeDone = (ep: number) => {
+    const eps = partsByEpisode.get(ep) ?? [];
+    if (eps.length === 0) return false;
+    return eps.filter((p) => !p.optional).every((p) => isPartDone(p.episode, p.part));
+  };
+  const isPartUnlocked = (ep: number, part: number) => {
+    if (!isEpisodeUnlocked(ep)) return false;
+    const eps = partsByEpisode.get(ep) ?? [];
+    // A part is unlocked if all previous non-optional parts of the same episode are done.
+    const previousRequired = eps.filter((p) => p.part < part && !p.optional);
+    return previousRequired.every((p) => isPartDone(p.episode, p.part));
+  };
+
   const openPart = (ep: number, part: number) => {
     if (!unlocked) { setPaywall(true); return; }
-    if (!isEpisodeUnlocked(ep)) return;
+    if (!isPartUnlocked(ep, part)) return;
     navigate({ to: "/read/$seriesId/$episode/$part", params: { seriesId: s.id, episode: String(ep), part: String(part) } });
   };
 
@@ -131,6 +150,13 @@ function SeriesPage() {
                 <AccordionItem key={epNum} value={`ep-${epNum}`} className="border-0">
                   <AccordionTrigger className="px-5 py-4 hover:bg-secondary/40 hover:no-underline">
                     <div className="flex items-center gap-5 w-full text-left">
+                      <span className="w-5 flex justify-center">
+                        {isEpisodeDone(epNum) ? (
+                          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                        ) : (!unlocked || !epUnlocked) ? (
+                          <Lock className="h-4 w-4 text-muted-foreground" />
+                        ) : null}
+                      </span>
                       <span className="font-display text-2xl text-muted-foreground tabular-nums w-14">Ép. {epNum}</span>
                       <div className="flex-1 min-w-0">
                         <div className="font-display text-lg">
@@ -141,7 +167,6 @@ function SeriesPage() {
                             hasContent ? `${epParts.length} partie${epParts.length > 1 ? "s" : ""}` : "Bientôt disponible"}
                         </div>
                       </div>
-                      {(!unlocked || !epUnlocked) && <Lock className="h-4 w-4 text-muted-foreground" />}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-5 pb-4">
@@ -151,12 +176,21 @@ function SeriesPage() {
                       <ul className="divide-y divide-border/40 border border-border/40 rounded-md overflow-hidden">
                         {epParts.map((p) => {
                           const done = completedParts.includes(`${p.episode}-${p.part}`);
+                          const pUnlocked = isPartUnlocked(p.episode, p.part);
                           return (
                           <li key={`${p.episode}-${p.part}`}>
                             <button
                               onClick={() => openPart(p.episode, p.part)}
-                              className="w-full px-4 py-3 flex items-center gap-4 text-left hover:bg-secondary/40 transition-colors"
+                              disabled={!pUnlocked}
+                              className="w-full px-4 py-3 flex items-center gap-4 text-left hover:bg-secondary/40 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                             >
+                              <span className="w-5 flex justify-center">
+                                {done ? (
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                ) : !pUnlocked ? (
+                                  <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                                ) : null}
+                              </span>
                               <span className="font-display text-sm text-muted-foreground tabular-nums w-16">Partie {p.part}/{p.totalParts}</span>
                               <div className="flex-1 min-w-0">
                                 <div className="text-sm flex items-center gap-2">
@@ -168,10 +202,10 @@ function SeriesPage() {
                                   )}
                                 </div>
                                 <div className="text-[11px] text-muted-foreground">
-                                  {p.slides.length} diapos {done && "· ✓ Terminée"}
+                                  {p.slides.length} diapos{done ? " · Terminée" : !pUnlocked ? " · Verrouillée" : ""}
                                 </div>
                               </div>
-                              <Play className="h-4 w-4 text-accent" />
+                              {pUnlocked && !done && <Play className="h-4 w-4 text-accent" />}
                             </button>
                           </li>
                         );})}
