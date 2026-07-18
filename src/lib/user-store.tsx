@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { evaluateNewMedals } from "./medals";
 
-export type CommentKind = "theorie" | "entraide" | "discuter" | "opinion" | "question";
+export type CommentKind = "theorie" | "entraide" | "discuter" | "opinion" | "question" | "resume";
+export type CommentLang = "fr" | "ko";
 
 export interface UserState {
   signedIn: boolean;
@@ -14,11 +15,13 @@ export interface UserState {
   activeDays: string[];
   weeklyMinutes: number;
   checkedElements: { ko: string; fr: string; category: string; series: string; ts: number }[];
-  comments: { id: string; body: string; kind: CommentKind; series: string; episode: number; part: number; ts: number }[];
+  comments: { id: string; body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number; ts: number }[];
   queries: { id: string; ko: string; category: string; status: "queued" | "answered"; ts: number }[];
   notif: { essential: boolean; community: boolean; marketing: boolean };
   earnedMedals: string[];
   pendingMedalPopup: string | null;
+  /** Personal rating given to a fully-read series (1..5). */
+  seriesRatings?: Record<string, { stars: number; body?: string; lang?: CommentLang; ts: number; pending: boolean }>;
   reclickedElements?: number;
   visitedArchive?: boolean;
   earlyMorningRead?: number;
@@ -42,6 +45,7 @@ const defaultState: UserState = {
   notif: { essential: true, community: true, marketing: false },
   earnedMedals: [],
   pendingMedalPopup: null,
+  seriesRatings: {},
 };
 
 interface Ctx {
@@ -50,7 +54,8 @@ interface Ctx {
   signInWithGoogle: () => void;
   signOut: () => void;
   addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
-  addComment: (c: { body: string; kind: CommentKind; series: string; episode: number; part: number }) => void;
+  addComment: (c: { body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number }) => void;
+  rateSeries: (seriesId: string, stars: number, body?: string, lang?: CommentLang) => void;
   markSlideRead: () => void;
   unlockSeries: (id: string) => void;
   submitQuery: (q: { ko: string; category: string }) => void;
@@ -152,6 +157,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
       }),
     clearMedalPopup: () => set({ pendingMedalPopup: null }),
     markArchiveVisited: () => set({ visitedArchive: true }),
+    rateSeries: (seriesId, stars, body, lang) =>
+      set((s) => ({
+        seriesRatings: {
+          ...(s.seriesRatings ?? {}),
+          [seriesId]: { stars, body, lang, ts: Date.now(), pending: !!body },
+        },
+      })),
   };
 
   return <UserCtx.Provider value={value}>{children}</UserCtx.Provider>;
