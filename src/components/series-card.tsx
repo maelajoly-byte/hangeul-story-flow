@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import type { Series } from "@/lib/data";
+import { useEffect, useMemo, useState } from "react";
+import { getReaderReviews, type Series } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/user-store";
@@ -32,6 +33,18 @@ export function SeriesCard({ s }: { s: Series }) {
   const { user } = useUser();
   const unlocked = s.free || user.unlockedSeries.includes(s.id);
   const statusLabel = s.status === "available" ? "Disponible" : s.status === "in_progress" ? "En cours" : "Bientôt";
+
+  const reviews = useMemo(() => getReaderReviews(s.id), [s.id]);
+  const avgStars = reviews.length
+    ? Math.round((reviews.reduce((a, r) => a + r.stars, 0) / reviews.length) * 10) / 10
+    : null;
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    if (reviews.length <= 1) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % reviews.length), 6000);
+    return () => clearInterval(t);
+  }, [reviews.length]);
+  const current = reviews[idx];
 
   // Locked series: hide cover art, synopsis, moods, level, episodes.
   if (!unlocked) {
@@ -90,6 +103,22 @@ export function SeriesCard({ s }: { s: Series }) {
               <Sparkles className="h-4 w-4 mr-2" /> {s.free ? "Commencer" : "Reprendre"}
             </Link>
           </Button>
+        )}
+        {avgStars !== null && current && (
+          <div className="pt-2 border-t border-border/50 space-y-1.5">
+            <div className="flex items-center gap-2 text-xs">
+              <span className="inline-flex items-center gap-0.5" aria-label={`Note des lecteurs ${avgStars} sur 5`}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className={`h-3 w-3 ${i < Math.round(avgStars) ? "fill-gold text-gold" : "text-muted-foreground/30"}`} />
+                ))}
+              </span>
+              <span className="text-muted-foreground tabular-nums">{avgStars.toFixed(1)}</span>
+              <span className="text-muted-foreground/70">· {reviews.length} avis</span>
+            </div>
+            <blockquote className={`text-[11px] text-muted-foreground italic line-clamp-2 ${current.lang === "ko" ? "font-korean not-italic" : ""}`}>
+              « {current.body} » <span className="not-italic text-muted-foreground/70">— {current.author}</span>
+            </blockquote>
+          </div>
         )}
       </div>
     </article>
