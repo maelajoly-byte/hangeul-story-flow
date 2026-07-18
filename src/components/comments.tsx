@@ -42,20 +42,18 @@ export function Comments({ episodeKey }: { episodeKey: string }) {
 
   const t = {
     fr: {
-      title: "Discussion",
-      prompt: <>💬 Prompt : <em>« Qu'avez-vous compris ? Résumez en une phrase en français. »</em></>,
-      placeholder: "Votre résumé en une phrase…",
-      hint: "Partagez votre lecture avec les autres.",
+      title: "Commentaires",
+      prompt: <>Partage en commentaire ce que tu as compris de l'épisode, ce que tu en penses ou même tes théories !</>,
+      placeholder: "Dis-moi ce que tu en penses…",
       publish: "Publier",
       ago: "il y a",
       hours: "h",
       empty: "Aucun commentaire dans cette langue pour l'instant. Soyez le premier.",
     },
     ko: {
-      title: "토론",
-      prompt: <>💬 프롬프트 : <em>「무엇을 이해했나요? 한국어로 한 문장으로 요약해 주세요.」</em></>,
-      placeholder: "한 문장으로 요약해 주세요…",
-      hint: "다른 독자들과 감상을 나눠 보세요.",
+      title: "댓글",
+      prompt: <>이번 화에서 이해한 것, 느낀 점, 또는 여러분의 이론을 댓글로 나눠 주세요!</>,
+      placeholder: "여러분의 생각을 들려주세요…",
       publish: "게시",
       ago: "약",
       hours: "시간 전",
@@ -99,8 +97,7 @@ export function Comments({ episodeKey }: { episodeKey: string }) {
           ))}
         </div>
         <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={t.placeholder} rows={2} />
-        <div className="flex items-center justify-between mt-2 gap-3">
-          <span className="text-xs text-muted-foreground">{t.hint}</span>
+        <div className="flex items-center justify-end mt-2 gap-3">
           <Button
             size="sm"
             disabled={!text.trim()}
