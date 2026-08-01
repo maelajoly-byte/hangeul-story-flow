@@ -16,6 +16,10 @@ export interface UserState {
   weeklyMinutes: number;
   checkedElements: { ko: string; fr: string; category: string; series: string; ts: number }[];
   comments: { id: string; body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number; ts: number }[];
+  /** Replies the user wrote under someone else's comment. */
+  replies?: { id: string; body: string; parentAuthor: string; parentBody: string; series: string; episode: number; part: number; ts: number }[];
+  /** Replies other readers wrote under the user's comments. */
+  repliesReceived?: { id: string; author: string; body: string; parentBody: string; series: string; episode: number; part: number; ts: number }[];
   queries: { id: string; ko: string; category: string; status: "queued" | "answered"; ts: number }[];
   notif: { essential: boolean; community: boolean; marketing: boolean };
   earnedMedals: string[];
@@ -41,6 +45,8 @@ const defaultState: UserState = {
   weeklyMinutes: 0,
   checkedElements: [],
   comments: [],
+  replies: [],
+  repliesReceived: [],
   queries: [],
   notif: { essential: true, community: true, marketing: false },
   earnedMedals: [],
@@ -55,6 +61,8 @@ interface Ctx {
   signOut: () => void;
   addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
   addComment: (c: { body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number }) => void;
+  addReply: (r: { body: string; parentAuthor: string; parentBody: string; series: string; episode: number; part: number }) => void;
+  receiveReply: (r: { author: string; body: string; parentBody: string; series: string; episode: number; part: number }) => void;
   rateSeries: (seriesId: string, stars: number, body?: string, lang?: CommentLang) => void;
   markSlideRead: () => void;
   unlockSeries: (id: string) => void;
@@ -118,6 +126,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
           { id: crypto.randomUUID(), ts: Date.now(), ...c },
           ...s.comments,
         ].slice(0, 200),
+      })),
+    addReply: (r) =>
+      set((s) => ({
+        replies: [{ id: crypto.randomUUID(), ts: Date.now(), ...r }, ...(s.replies ?? [])].slice(0, 200),
+      })),
+    receiveReply: (r) =>
+      set((s) => ({
+        repliesReceived: [{ id: crypto.randomUUID(), ts: Date.now(), ...r }, ...(s.repliesReceived ?? [])].slice(0, 200),
       })),
     markSlideRead: () => {
       const today = new Date().toISOString().slice(0, 10);
