@@ -58,6 +58,8 @@ interface Ctx {
   user: UserState;
   set: (patch: Partial<UserState> | ((s: UserState) => Partial<UserState>)) => void;
   signInWithGoogle: () => void;
+  signInWithProvider: (p: "google" | "facebook") => void;
+  signInWithEmail: (email: string, pseudo?: string) => void;
   signOut: () => void;
   addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
   addComment: (c: { body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number }) => void;
@@ -108,6 +110,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     set,
     signInWithGoogle: () =>
       set({ signedIn: true, pseudo: user.pseudo === "Lecteur·rice" ? "Yeon_07" : user.pseudo }),
+    signInWithProvider: (p) =>
+      set({ signedIn: true, pseudo: user.pseudo === "Lecteur·rice" ? (p === "google" ? "Yeon_07" : "Minji_22") : user.pseudo }),
+    signInWithEmail: (email, pseudo) =>
+      set({
+        signedIn: true,
+        pseudo: pseudo?.trim() || (user.pseudo === "Lecteur·rice" ? email.split("@")[0] || "Lecteur·rice" : user.pseudo),
+      }),
     signOut: () => set({ signedIn: false }),
     addCheckedElement: (v) =>
       set((s) => {
