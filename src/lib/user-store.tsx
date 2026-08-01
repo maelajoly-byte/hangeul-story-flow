@@ -45,6 +45,8 @@ const defaultState: UserState = {
   weeklyMinutes: 0,
   checkedElements: [],
   comments: [],
+  replies: [],
+  repliesReceived: [],
   queries: [],
   notif: { essential: true, community: true, marketing: false },
   earnedMedals: [],
@@ -59,6 +61,8 @@ interface Ctx {
   signOut: () => void;
   addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
   addComment: (c: { body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number }) => void;
+  addReply: (r: { body: string; parentAuthor: string; parentBody: string; series: string; episode: number; part: number }) => void;
+  receiveReply: (r: { author: string; body: string; parentBody: string; series: string; episode: number; part: number }) => void;
   rateSeries: (seriesId: string, stars: number, body?: string, lang?: CommentLang) => void;
   markSlideRead: () => void;
   unlockSeries: (id: string) => void;
