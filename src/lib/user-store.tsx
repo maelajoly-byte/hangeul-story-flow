@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { evaluateNewMedals } from "./medals";
+import { consentStorage, onConsentChange } from "./cookie-consent";
 
 export type CommentKind = "theorie" | "entraide" | "discuter" | "opinion" | "question" | "resume";
 export type CommentLang = "fr" | "ko";
@@ -84,15 +85,35 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = consentStorage()?.getItem(KEY) ?? sessionStorage.getItem(KEY);
       if (raw) setUser({ ...defaultState, ...JSON.parse(raw) });
     } catch {}
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated) localStorage.setItem(KEY, JSON.stringify(user));
+    if (!hydrated) return;
+    try {
+      consentStorage()?.setItem(KEY, JSON.stringify(user));
+    } catch {}
   }, [user, hydrated]);
+
+  // When the visitor makes (or changes) their cookie choice, move the session
+  // to the matching storage and clear what is no longer allowed.
+  useEffect(() => {
+    return onConsentChange((level) => {
+      try {
+        const payload = JSON.stringify(user);
+        if (level === "refused") {
+          localStorage.removeItem(KEY);
+          sessionStorage.setItem(KEY, payload);
+        } else {
+          sessionStorage.removeItem(KEY);
+          localStorage.setItem(KEY, payload);
+        }
+      } catch {}
+    });
+  }, [user]);
 
   const set: Ctx["set"] = (patch) =>
     setUser((s) => {
