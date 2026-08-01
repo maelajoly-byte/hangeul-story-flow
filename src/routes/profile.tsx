@@ -10,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AuthModal } from "@/components/auth-modal";
+import { getConsent, setConsent, type ConsentLevel } from "@/lib/cookie-consent";
 import { getSeries } from "@/lib/data";
 import { MEDALS, MEDAL_CATEGORIES } from "@/lib/medals";
 import { Mail, Search, Award, Lock } from "lucide-react";
@@ -240,6 +242,8 @@ function ProfilePage() {
             </section>
             <Separator />
             <Button variant="ghost" onClick={signOut}>Se déconnecter</Button>
+            <Separator />
+            <CookieSettings />
           </TabsContent>
         </Tabs>
       </main>
