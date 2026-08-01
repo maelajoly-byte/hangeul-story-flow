@@ -127,6 +127,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
           ...s.comments,
         ].slice(0, 200),
       })),
+    addReply: (r) =>
+      set((s) => ({
+        replies: [{ id: crypto.randomUUID(), ts: Date.now(), ...r }, ...(s.replies ?? [])].slice(0, 200),
+      })),
+    receiveReply: (r) =>
+      set((s) => ({
+        repliesReceived: [{ id: crypto.randomUUID(), ts: Date.now(), ...r }, ...(s.repliesReceived ?? [])].slice(0, 200),
+      })),
     markSlideRead: () => {
       const today = new Date().toISOString().slice(0, 10);
       const hour = new Date().getHours();
