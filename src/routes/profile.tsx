@@ -16,14 +16,23 @@ import { Mail, Search, Award, Lock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/profile")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: typeof search['tab'] === "string" ? (search['tab'] as string) : undefined,
+  }),
   head: () => ({ meta: [{ title: "Mon Compte — K·Intermédiaire" }] }),
   component: ProfilePage,
 });
 
 function ProfilePage() {
-  const { user, set, signInWithGoogle, signOut, markArchiveVisited } = useUser();
+  const { user, set, signOut, markArchiveVisited } = useUser();
+  const { tab: tabParam } = Route.useSearch();
   const [search, setSearch] = useState("");
-  const [tab, setTab] = useState("stats");
+  const [tab, setTab] = useState(tabParam ?? "stats");
+  const [authOpen, setAuthOpen] = useState(false);
+
+  useEffect(() => {
+    if (tabParam) setTab(tabParam);
+  }, [tabParam]);
 
   useEffect(() => {
     if (tab === "checked") markArchiveVisited();
@@ -47,9 +56,10 @@ function ProfilePage() {
         <main className="mx-auto max-w-md px-6 py-32 text-center">
           <h1 className="font-display text-4xl">Connectez-vous</h1>
           <p className="text-muted-foreground mt-3 mb-8 text-sm">Votre vrai nom et votre e-mail restent privés — seul votre pseudonyme public est visible.</p>
-          <Button onClick={signInWithGoogle} className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
-            Continuer avec Google
+          <Button onClick={() => setAuthOpen(true)} className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
+            S'inscrire / Se connecter
           </Button>
+          <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
         </main>
       </div>
     );
