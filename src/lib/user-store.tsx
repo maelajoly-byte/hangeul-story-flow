@@ -16,6 +16,10 @@ export interface UserState {
   weeklyMinutes: number;
   checkedElements: { ko: string; fr: string; category: string; series: string; ts: number }[];
   comments: { id: string; body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number; ts: number }[];
+  /** Replies the user wrote under someone else's comment. */
+  replies?: { id: string; body: string; parentAuthor: string; parentBody: string; series: string; episode: number; part: number; ts: number }[];
+  /** Replies other readers wrote under the user's comments. */
+  repliesReceived?: { id: string; author: string; body: string; parentBody: string; series: string; episode: number; part: number; ts: number }[];
   queries: { id: string; ko: string; category: string; status: "queued" | "answered"; ts: number }[];
   notif: { essential: boolean; community: boolean; marketing: boolean };
   earnedMedals: string[];
