@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { UserProvider } from "../lib/user-store";
 import { Toaster } from "../components/ui/sonner";
+import { CookieBanner } from "../components/cookie-banner";
 
 function NotFoundComponent() {
   return (
@@ -135,6 +136,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <Outlet />
+        <CookieBanner />
         <Toaster />
       </UserProvider>
     </QueryClientProvider>
