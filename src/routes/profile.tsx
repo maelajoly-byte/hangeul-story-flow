@@ -129,23 +129,53 @@ function ProfilePage() {
           </TabsContent>
 
           <TabsContent value="comments" className="mt-6">
-            {user.comments.length === 0 ? (
-              <Empty text="Vos commentaires publiés sous les épisodes apparaîtront ici." />
-            ) : (
-              <ul className="space-y-3">
-                {user.comments.map((c) => (
-                  <li key={c.id} className="rounded-lg border border-border/60 bg-card/60 p-4">
-                    <p className="text-sm">{c.body}</p>
-                    <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                      <span>{getSeries(c.series)?.title ?? c.series} · Ép. {c.episode}.{c.part}</span>
-                      <Link to="/read/$seriesId/$episode/$part" params={{ seriesId: c.series, episode: String(c.episode), part: String(c.part) }} className="text-accent hover:underline">
-                        Retrouver la conversation →
-                      </Link>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <Tabs defaultValue="mine">
+              <TabsList className="bg-transparent p-0 gap-1">
+                <TabsTrigger value="mine" className="data-[state=active]:bg-secondary">Mes commentaires ({user.comments.length})</TabsTrigger>
+                <TabsTrigger value="received" className="data-[state=active]:bg-secondary">Réponses reçues ({(user.repliesReceived ?? []).length})</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="mine" className="mt-6">
+                {user.comments.length === 0 ? (
+                  <Empty text="Vos commentaires publiés sous les épisodes apparaîtront ici." />
+                ) : (
+                  <ul className="space-y-3">
+                    {user.comments.map((c) => (
+                      <li key={c.id} className="rounded-lg border border-border/60 bg-card/60 p-4">
+                        <p className="text-sm">{c.body}</p>
+                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{getSeries(c.series)?.title ?? c.series} · Ép. {c.episode}.{c.part}</span>
+                          <Link to="/read/$seriesId/$episode/$part" params={{ seriesId: c.series, episode: String(c.episode), part: String(c.part) }} className="text-accent hover:underline">
+                            Retrouver la conversation →
+                          </Link>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </TabsContent>
+
+              <TabsContent value="received" className="mt-6">
+                {(user.repliesReceived ?? []).length === 0 ? (
+                  <Empty text="Les réponses des autres lecteurs à vos commentaires apparaîtront ici." />
+                ) : (
+                  <ul className="space-y-3">
+                    {(user.repliesReceived ?? []).map((r) => (
+                      <li key={r.id} className="rounded-lg border border-border/60 bg-card/60 p-4">
+                        <p className="text-xs text-muted-foreground italic border-l-2 border-border/60 pl-3">« {r.parentBody} »</p>
+                        <p className="text-sm mt-2"><span className="font-medium text-accent">{r.author}</span> — {r.body}</p>
+                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{getSeries(r.series)?.title ?? r.series} · Ép. {r.episode}.{r.part}</span>
+                          <Link to="/read/$seriesId/$episode/$part" params={{ seriesId: r.series, episode: String(r.episode), part: String(r.part) }} className="text-accent hover:underline">
+                            Voir la réponse →
+                          </Link>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="queries" className="mt-6">
