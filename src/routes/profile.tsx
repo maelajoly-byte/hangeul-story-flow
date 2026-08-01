@@ -10,20 +10,31 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AuthModal } from "@/components/auth-modal";
+import { getConsent, setConsent, type ConsentLevel } from "@/lib/cookie-consent";
 import { getSeries } from "@/lib/data";
 import { MEDALS, MEDAL_CATEGORIES } from "@/lib/medals";
 import { Mail, Search, Award, Lock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/profile")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: typeof search['tab'] === "string" ? (search['tab'] as string) : undefined,
+  }),
   head: () => ({ meta: [{ title: "Mon Compte — K·Intermédiaire" }] }),
   component: ProfilePage,
 });
 
 function ProfilePage() {
-  const { user, set, signInWithGoogle, signOut, markArchiveVisited } = useUser();
+  const { user, set, signOut, markArchiveVisited } = useUser();
+  const { tab: tabParam } = Route.useSearch();
   const [search, setSearch] = useState("");
-  const [tab, setTab] = useState("stats");
+  const [tab, setTab] = useState(tabParam ?? "stats");
+  const [authOpen, setAuthOpen] = useState(false);
+
+  useEffect(() => {
+    if (tabParam) setTab(tabParam);
+  }, [tabParam]);
 
   useEffect(() => {
     if (tab === "checked") markArchiveVisited();
@@ -47,9 +58,10 @@ function ProfilePage() {
         <main className="mx-auto max-w-md px-6 py-32 text-center">
           <h1 className="font-display text-4xl">Connectez-vous</h1>
           <p className="text-muted-foreground mt-3 mb-8 text-sm">Votre vrai nom et votre e-mail restent privés — seul votre pseudonyme public est visible.</p>
-          <Button onClick={signInWithGoogle} className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
-            Continuer avec Google
+          <Button onClick={() => setAuthOpen(true)} className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
+            S'inscrire / Se connecter
           </Button>
+          <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
         </main>
       </div>
     );
@@ -230,6 +242,8 @@ function ProfilePage() {
             </section>
             <Separator />
             <Button variant="ghost" onClick={signOut}>Se déconnecter</Button>
+            <Separator />
+            <CookieSettings />
           </TabsContent>
         </Tabs>
       </main>
@@ -248,6 +262,29 @@ function Stat({ label, value, sub }: { label: string; value: number; sub?: strin
 }
 function Empty({ text }: { text: string }) {
   return <p className="text-sm text-muted-foreground border border-dashed border-border rounded-lg p-8 text-center">{text}</p>;
+}
+function CookieSettings() {
+  const [level, setLevel] = useState<ConsentLevel | null>(null);
+  useEffect(() => setLevel(getConsent()), []);
+  const choose = (l: ConsentLevel) => { setConsent(l); setLevel(l); };
+  const LABELS: Record<ConsentLevel, string> = { refused: "Refusés", essential: "Essentiels uniquement", all: "Tous les cookies" };
+  return (
+    <section>
+      <h3 className="font-display text-xl mb-3">Cookies &amp; confidentialité</h3>
+      <p className="text-xs text-muted-foreground mb-3">
+        Choix actuel : <strong className="text-foreground">{level ? LABELS[level] : "aucun choix enregistré"}</strong>.
+        Les cookies essentiels vous gardent connecté·e et mémorisent votre progression ; en cas de refus, rien n'est
+        conservé au-delà de l'onglet en cours.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {(["all", "essential", "refused"] as ConsentLevel[]).map((l) => (
+          <Button key={l} size="sm" variant={level === l ? "default" : "outline"} onClick={() => choose(l)}>
+            {LABELS[l]}
+          </Button>
+        ))}
+      </div>
+    </section>
+  );
 }
 function MedalsSection({ earnedIds }: { earnedIds: string[] }) {
   const earned = new Set(earnedIds);

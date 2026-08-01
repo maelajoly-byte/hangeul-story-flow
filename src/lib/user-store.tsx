@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { evaluateNewMedals } from "./medals";
+import { consentStorage, onConsentChange } from "./cookie-consent";
 
 export type CommentKind = "theorie" | "entraide" | "discuter" | "opinion" | "question" | "resume";
 export type CommentLang = "fr" | "ko";
@@ -58,6 +59,8 @@ interface Ctx {
   user: UserState;
   set: (patch: Partial<UserState> | ((s: UserState) => Partial<UserState>)) => void;
   signInWithGoogle: () => void;
+  signInWithProvider: (p: "google" | "facebook") => void;
+  signInWithEmail: (email: string, pseudo?: string) => void;
   signOut: () => void;
   addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
   addComment: (c: { body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number }) => void;
@@ -82,15 +85,35 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = consentStorage()?.getItem(KEY) ?? sessionStorage.getItem(KEY);
       if (raw) setUser({ ...defaultState, ...JSON.parse(raw) });
     } catch {}
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated) localStorage.setItem(KEY, JSON.stringify(user));
+    if (!hydrated) return;
+    try {
+      consentStorage()?.setItem(KEY, JSON.stringify(user));
+    } catch {}
   }, [user, hydrated]);
+
+  // When the visitor makes (or changes) their cookie choice, move the session
+  // to the matching storage and clear what is no longer allowed.
+  useEffect(() => {
+    return onConsentChange((level) => {
+      try {
+        const payload = JSON.stringify(user);
+        if (level === "refused") {
+          localStorage.removeItem(KEY);
+          sessionStorage.setItem(KEY, payload);
+        } else {
+          sessionStorage.removeItem(KEY);
+          localStorage.setItem(KEY, payload);
+        }
+      } catch {}
+    });
+  }, [user]);
 
   const set: Ctx["set"] = (patch) =>
     setUser((s) => {
@@ -108,6 +131,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     set,
     signInWithGoogle: () =>
       set({ signedIn: true, pseudo: user.pseudo === "Lecteur·rice" ? "Yeon_07" : user.pseudo }),
+    signInWithProvider: (p) =>
+      set({ signedIn: true, pseudo: user.pseudo === "Lecteur·rice" ? (p === "google" ? "Yeon_07" : "Minji_22") : user.pseudo }),
+    signInWithEmail: (email, pseudo) =>
+      set({
+        signedIn: true,
+        pseudo: pseudo?.trim() || (user.pseudo === "Lecteur·rice" ? email.split("@")[0] || "Lecteur·rice" : user.pseudo),
+      }),
     signOut: () => set({ signedIn: false }),
     addCheckedElement: (v) =>
       set((s) => {

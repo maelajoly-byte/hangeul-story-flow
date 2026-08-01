@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useUser } from "@/lib/user-store";
 import { Button } from "@/components/ui/button";
+import { AuthModal } from "@/components/auth-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,10 +10,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, BarChart3, ListChecks, MessageSquare, Mail, Ticket, Settings } from "lucide-react";
+
+const ACCOUNT_LINKS = [
+  { tab: "stats", label: "Statistiques", icon: BarChart3 },
+  { tab: "checked", label: "Éléments vérifiés", icon: ListChecks },
+  { tab: "comments", label: "Mes commentaires", icon: MessageSquare },
+  { tab: "queries", label: "Mes demandes", icon: Mail },
+  { tab: "passes", label: "Mes pass", icon: Ticket },
+  { tab: "settings", label: "Paramètres", icon: Settings },
+] as const;
 
 export function SiteHeader() {
-  const { user, signInWithGoogle, signOut } = useUser();
+  const { user, signOut } = useUser();
+  const [authOpen, setAuthOpen] = useState(false);
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/70 border-b border-border/60">
       <div className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
@@ -31,7 +43,6 @@ export function SiteHeader() {
               <DropdownMenuItem asChild><Link to="/">Accueil</Link></DropdownMenuItem>
               <DropdownMenuItem asChild><Link to="/library">Bibliothèque</Link></DropdownMenuItem>
               <DropdownMenuItem asChild><Link to="/pourquoi">Genèse</Link></DropdownMenuItem>
-              <DropdownMenuItem asChild><Link to="/profile">Mon Compte</Link></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -45,7 +56,6 @@ export function SiteHeader() {
           <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
           <Link to="/library" className="hover:text-foreground transition-colors">Bibliothèque</Link>
           <Link to="/pourquoi" className="hover:text-foreground transition-colors">Genèse</Link>
-          <Link to="/profile" className="hover:text-foreground transition-colors">Mon Compte</Link>
         </nav>
         <div className="flex items-center gap-2">
           {user.signedIn ? (
@@ -56,19 +66,28 @@ export function SiteHeader() {
                   <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuContent align="end" className="w-56">
+                {ACCOUNT_LINKS.map(({ tab, label, icon: Icon }) => (
+                  <DropdownMenuItem key={tab} asChild>
+                    <Link to="/profile" search={{ tab }}>
+                      <Icon className="h-4 w-4 mr-2" /> {label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut}>
                   <LogOut className="h-4 w-4 mr-2" /> Se déconnecter
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button size="sm" onClick={signInWithGoogle} className="bg-cream text-cream-foreground hover:bg-cream/90">
-              Se connecter
+            <Button size="sm" onClick={() => setAuthOpen(true)} className="bg-cream text-cream-foreground hover:bg-cream/90">
+              S'inscrire / Se connecter
             </Button>
           )}
         </div>
       </div>
+      <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
     </header>
   );
 }
