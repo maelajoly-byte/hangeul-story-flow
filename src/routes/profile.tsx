@@ -263,6 +263,29 @@ function Stat({ label, value, sub }: { label: string; value: number; sub?: strin
 function Empty({ text }: { text: string }) {
   return <p className="text-sm text-muted-foreground border border-dashed border-border rounded-lg p-8 text-center">{text}</p>;
 }
+function CookieSettings() {
+  const [level, setLevel] = useState<ConsentLevel | null>(null);
+  useEffect(() => setLevel(getConsent()), []);
+  const choose = (l: ConsentLevel) => { setConsent(l); setLevel(l); };
+  const LABELS: Record<ConsentLevel, string> = { refused: "Refusés", essential: "Essentiels uniquement", all: "Tous les cookies" };
+  return (
+    <section>
+      <h3 className="font-display text-xl mb-3">Cookies &amp; confidentialité</h3>
+      <p className="text-xs text-muted-foreground mb-3">
+        Choix actuel : <strong className="text-foreground">{level ? LABELS[level] : "aucun choix enregistré"}</strong>.
+        Les cookies essentiels vous gardent connecté·e et mémorisent votre progression ; en cas de refus, rien n'est
+        conservé au-delà de l'onglet en cours.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {(["all", "essential", "refused"] as ConsentLevel[]).map((l) => (
+          <Button key={l} size="sm" variant={level === l ? "default" : "outline"} onClick={() => choose(l)}>
+            {LABELS[l]}
+          </Button>
+        ))}
+      </div>
+    </section>
+  );
+}
 function MedalsSection({ earnedIds }: { earnedIds: string[] }) {
   const earned = new Set(earnedIds);
   return (
