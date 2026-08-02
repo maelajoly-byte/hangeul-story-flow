@@ -120,7 +120,7 @@ function ProfilePage() {
             <Tabs defaultValue="mine">
               <TabsList className="bg-transparent p-0 gap-1">
                 <TabsTrigger value="mine" className="data-[state=active]:bg-secondary">Mes commentaires ({user.comments.length})</TabsTrigger>
-                <TabsTrigger value="received" className="data-[state=active]:bg-secondary">Réponses reçues ({(user.repliesReceived ?? []).length})</TabsTrigger>
+                <TabsTrigger value="received" className="data-[state=active]:bg-secondary">Mes réponses ({(user.repliesReceived ?? []).length})</TabsTrigger>
               </TabsList>
 
               <TabsContent value="mine" className="mt-6">
