@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { evaluateNewMedals } from "./medals";
 import { consentStorage, onConsentChange } from "./cookie-consent";
+import { supabase } from "@/integrations/supabase/client";
+
+export const ADMIN_EMAIL = "maelajoly@gmail.com";
 
 export type CommentKind = "theorie" | "entraide" | "discuter" | "opinion" | "question" | "resume";
 export type CommentLang = "fr" | "ko";
@@ -8,6 +11,8 @@ export type CommentLang = "fr" | "ko";
 export interface UserState {
   signedIn: boolean;
   pseudo: string;
+  email?: string;
+  userId?: string;
   unlockedSeries: string[];
   progress: Record<string, { episode: number; part: number; slide: number }>;
   completedParts: Record<string, string[]>; // key: `${ep}-${part}`
@@ -37,6 +42,8 @@ export interface UserState {
 const defaultState: UserState = {
   signedIn: false,
   pseudo: "Lecteur·rice",
+  email: undefined,
+  userId: undefined,
   unlockedSeries: ["ghost-of-the-past"],
   progress: {},
   completedParts: {},
@@ -57,11 +64,12 @@ const defaultState: UserState = {
 
 interface Ctx {
   user: UserState;
+  isAdmin: boolean;
   set: (patch: Partial<UserState> | ((s: UserState) => Partial<UserState>)) => void;
   signInWithGoogle: () => void;
   signInWithProvider: (p: "google" | "facebook") => void;
   signInWithEmail: (email: string, pseudo?: string) => void;
-  signOut: () => void;
+  signOut: () => void | Promise<void>;
   addCheckedElement: (v: { ko: string; fr: string; category: string; series: string }) => void;
   addComment: (c: { body: string; kind: CommentKind; lang: CommentLang; series: string; episode: number; part: number }) => void;
   addReply: (r: { body: string; parentAuthor: string; parentBody: string; series: string; episode: number; part: number }) => void;
@@ -98,6 +106,31 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, [user, hydrated]);
 
+  // Real session (Lovable Cloud auth) drives identity + admin rights.
+  useEffect(() => {
+    const apply = (session: { user: { id: string; email?: string; user_metadata?: Record<string, unknown> } } | null) => {
+      if (!session?.user) {
+        setUser((s) => ({ ...s, signedIn: false, email: undefined, userId: undefined }));
+        return;
+      }
+      const u = session.user;
+      const meta = u.user_metadata ?? {};
+      const pseudo =
+        (meta['pseudo'] as string) ||
+        (meta['full_name'] as string) ||
+        (meta['name'] as string) ||
+        u.email?.split("@")[0] ||
+        "Lecteur·rice";
+      setUser((s) => ({ ...s, signedIn: true, email: u.email, userId: u.id, pseudo }));
+      // Keep a public profile row (used to route notifications).
+      void supabase.from("profiles").upsert({ id: u.id, email: u.email, pseudo }, { onConflict: "id" });
+    };
+
+    void supabase.auth.getSession().then(({ data }) => apply(data.session as never));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => apply(session as never));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
   // When the visitor makes (or changes) their cookie choice, move the session
   // to the matching storage and clear what is no longer allowed.
   useEffect(() => {
@@ -128,6 +161,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const value: Ctx = {
     user,
+    isAdmin: !!user.email && user.email.toLowerCase() === ADMIN_EMAIL,
     set,
     signInWithGoogle: () =>
       set({ signedIn: true, pseudo: user.pseudo === "Lecteur·rice" ? "Yeon_07" : user.pseudo }),
@@ -138,7 +172,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
         signedIn: true,
         pseudo: pseudo?.trim() || (user.pseudo === "Lecteur·rice" ? email.split("@")[0] || "Lecteur·rice" : user.pseudo),
       }),
-    signOut: () => set({ signedIn: false }),
+    signOut: async () => {
+      await supabase.auth.signOut();
+      set({ signedIn: false, email: undefined, userId: undefined });
+    },
     addCheckedElement: (v) =>
       set((s) => {
         const already = s.checkedElements.some((x) => x.ko === v.ko);
