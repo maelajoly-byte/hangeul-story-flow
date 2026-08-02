@@ -5,8 +5,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteHeader } from "@/components/site-header";
 import { useUser } from "@/lib/user-store";
 import {
-  createSlide, deleteSlide, listLexicon, listParts, listSlides,
-  upsertLexiconEntry, deleteLexiconEntry, updateSlide,
+  addSlide, deleteSlide, listLexicon, listParts, listSlides,
+  addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide,
 } from "@/lib/content";
 import { DbSlideReader } from "@/components/db-slide-reader";
 import { resolveLexiconRequests } from "@/lib/lexicon.functions";
@@ -110,7 +110,7 @@ function Editor() {
               ))}
               <Button variant="outline" size="sm" className="gap-1.5"
                 onClick={async () => {
-                  await createSlide({ part_id: current.id, position: slides.length + 1, media_url: null, hangeul: "", sfx_url: null, ambient_url: null });
+                  await addSlide(current.id, slides.length + 1);
                   refresh();
                 }}>
                 <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
@@ -121,12 +121,12 @@ function Editor() {
               {lexicon.map((l) => (
                 <div key={l.id} className="rounded-xl border border-border/60 p-3 grid gap-2 sm:grid-cols-[80px_1fr_2fr_auto] items-start">
                   <Input type="number" defaultValue={l.slide_position}
-                    onBlur={async (e) => { await upsertLexiconEntry({ ...l, slide_position: Number(e.target.value) }); refresh(); }} />
+                    onBlur={async (e) => { await updateLexiconEntry(l.id, { slide_position: Number(e.target.value) }); refresh(); }} />
                   <Input defaultValue={l.term} className="font-korean"
-                    onBlur={async (e) => { await upsertLexiconEntry({ ...l, term: e.target.value }); refresh(); }} />
+                    onBlur={async (e) => { await updateLexiconEntry(l.id, { term: e.target.value }); refresh(); }} />
                   <Textarea defaultValue={l.explanation} rows={2}
                     onBlur={async (e) => {
-                      await upsertLexiconEntry({ ...l, explanation: e.target.value });
+                      await updateLexiconEntry(l.id, { explanation: e.target.value });
                       refresh();
                       if (e.target.value.trim()) {
                         await resolve({ data: {
@@ -142,7 +142,7 @@ function Editor() {
               ))}
               <Button variant="outline" size="sm" className="gap-1.5"
                 onClick={async () => {
-                  await upsertLexiconEntry({ part_id: current.id, slide_position: slides[active]?.position ?? 1, term: "", explanation: "" });
+                  await addLexiconEntry({ part_id: current.id, slide_position: slides[active]?.position ?? 1, term: "", explanation: "" });
                   refresh();
                 }}>
                 <Plus className="h-3.5 w-3.5" /> Ajouter une entrée
