@@ -50,7 +50,7 @@ function CreatorHome() {
               className="rounded-xl border border-border/70 bg-card p-5 hover:border-accent transition-colors"
             >
               <div className="font-display text-xl">{s.title}</div>
-              <div className="text-xs text-muted-foreground mt-1">{s.episodes.length} épisodes</div>
+              <div className="text-xs text-muted-foreground mt-1">{s.episodes} épisodes</div>
             </Link>
           ))}
         </div>

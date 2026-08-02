@@ -43,7 +43,8 @@ function CreatorSeries() {
     );
   }
 
-  const episodes = series?.episodes.map((e, i) => i + 1) ?? [1];
+  const episodeCount = typeof series?.episodes === "number" ? series.episodes : 1;
+  const episodes = Array.from({ length: episodeCount }, (_, i) => i + 1);
   const allEpisodes = Array.from(new Set([...episodes, ...parts.map((p) => p.episode)])).sort((a, b) => a - b);
 
   const addPart = async (episode: number) => {
