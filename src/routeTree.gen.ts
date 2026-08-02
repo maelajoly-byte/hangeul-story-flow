@@ -15,7 +15,9 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PourquoiRouteImport } from './routes/pourquoi'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CreatorIndexRouteImport } from './routes/creator.index'
 import { Route as SeriesIdRouteImport } from './routes/series.$id'
+import { Route as CreatorSeriesIdRouteImport } from './routes/creator.$seriesId'
 import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 
 const TarifsRoute = TarifsRouteImport.update({
@@ -48,9 +50,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreatorIndexRoute = CreatorIndexRouteImport.update({
+  id: '/creator/',
+  path: '/creator/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeriesIdRoute = SeriesIdRouteImport.update({
   id: '/series/$id',
   path: '/series/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreatorSeriesIdRoute = CreatorSeriesIdRouteImport.update({
+  id: '/creator/$seriesId',
+  path: '/creator/$seriesId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
@@ -66,7 +78,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarifs': typeof TarifsRoute
+  '/creator/$seriesId': typeof CreatorSeriesIdRoute
   '/series/$id': typeof SeriesIdRoute
+  '/creator/': typeof CreatorIndexRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesByTo {
@@ -76,7 +90,9 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarifs': typeof TarifsRoute
+  '/creator/$seriesId': typeof CreatorSeriesIdRoute
   '/series/$id': typeof SeriesIdRoute
+  '/creator': typeof CreatorIndexRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRoutesById {
@@ -87,7 +103,9 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarifs': typeof TarifsRoute
+  '/creator/$seriesId': typeof CreatorSeriesIdRoute
   '/series/$id': typeof SeriesIdRoute
+  '/creator/': typeof CreatorIndexRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
 export interface FileRouteTypes {
@@ -99,7 +117,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/sitemap.xml'
     | '/tarifs'
+    | '/creator/$seriesId'
     | '/series/$id'
+    | '/creator/'
     | '/read/$seriesId/$episode/$part'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -109,7 +129,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/sitemap.xml'
     | '/tarifs'
+    | '/creator/$seriesId'
     | '/series/$id'
+    | '/creator'
     | '/read/$seriesId/$episode/$part'
   id:
     | '__root__'
@@ -119,7 +141,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/sitemap.xml'
     | '/tarifs'
+    | '/creator/$seriesId'
     | '/series/$id'
+    | '/creator/'
     | '/read/$seriesId/$episode/$part'
   fileRoutesById: FileRoutesById
 }
@@ -130,7 +154,9 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TarifsRoute: typeof TarifsRoute
+  CreatorSeriesIdRoute: typeof CreatorSeriesIdRoute
   SeriesIdRoute: typeof SeriesIdRoute
+  CreatorIndexRoute: typeof CreatorIndexRoute
   ReadSeriesIdEpisodePartRoute: typeof ReadSeriesIdEpisodePartRoute
 }
 
@@ -178,11 +204,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/creator/': {
+      id: '/creator/'
+      path: '/creator'
+      fullPath: '/creator/'
+      preLoaderRoute: typeof CreatorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/series/$id': {
       id: '/series/$id'
       path: '/series/$id'
       fullPath: '/series/$id'
       preLoaderRoute: typeof SeriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/creator/$seriesId': {
+      id: '/creator/$seriesId'
+      path: '/creator/$seriesId'
+      fullPath: '/creator/$seriesId'
+      preLoaderRoute: typeof CreatorSeriesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/read/$seriesId/$episode/$part': {
@@ -202,7 +242,9 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TarifsRoute: TarifsRoute,
+  CreatorSeriesIdRoute: CreatorSeriesIdRoute,
   SeriesIdRoute: SeriesIdRoute,
+  CreatorIndexRoute: CreatorIndexRoute,
   ReadSeriesIdEpisodePartRoute: ReadSeriesIdEpisodePartRoute,
 }
 export const routeTree = rootRouteImport
