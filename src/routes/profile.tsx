@@ -80,30 +80,6 @@ function ProfilePage() {
         </header>
 
         <Tabs value={tab} onValueChange={setTab} className="mt-10">
-          {/* Mobile: dropdown */}
-          <div className="md:hidden mb-4">
-            <Select value={tab} onValueChange={setTab}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="stats">Statistiques</SelectItem>
-                <SelectItem value="checked">Éléments vérifiés ({user.checkedElements.length})</SelectItem>
-                <SelectItem value="comments">Mes commentaires ({user.comments.length})</SelectItem>
-                <SelectItem value="queries">Mes demandes ({user.queries.length})</SelectItem>
-                <SelectItem value="passes">Mes pass</SelectItem>
-                <SelectItem value="settings">Paramètres</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {/* Desktop: wrapped 2-line tab list */}
-          <TabsList className="hidden md:flex flex-wrap h-auto gap-1 bg-transparent p-0">
-            <TabsTrigger value="stats" className="data-[state=active]:bg-secondary">Statistiques</TabsTrigger>
-            <TabsTrigger value="checked" className="data-[state=active]:bg-secondary">Éléments vérifiés ({user.checkedElements.length})</TabsTrigger>
-            <TabsTrigger value="comments" className="data-[state=active]:bg-secondary">Mes commentaires ({user.comments.length})</TabsTrigger>
-            <TabsTrigger value="queries" className="data-[state=active]:bg-secondary">Mes demandes ({user.queries.length})</TabsTrigger>
-            <TabsTrigger value="passes" className="data-[state=active]:bg-secondary">Mes pass</TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-secondary">Paramètres</TabsTrigger>
-          </TabsList>
-
           <TabsContent value="stats" className="mt-6 space-y-6">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <Stat label="Slides lues" value={user.slidesRead} />
