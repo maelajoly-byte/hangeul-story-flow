@@ -52,12 +52,23 @@ export function SiteHeader() {
           </span>
           <span className="font-korean text-xs text-muted-foreground">중급 한국어</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-          <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
-          <Link to="/library" className="hover:text-foreground transition-colors">Bibliothèque</Link>
-          <Link to="/pourquoi" className="hover:text-foreground transition-colors">Genèse</Link>
-        </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
+          <nav className="hidden md:flex items-center gap-2 text-sm">
+            {[
+              { to: "/", label: "Accueil" },
+              { to: "/library", label: "Bibliothèque" },
+              { to: "/pourquoi", label: "Genèse" },
+            ].map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                activeOptions={{ exact: l.to === "/" }}
+                className="rounded-md h-9 px-4 inline-flex items-center transition-all duration-200 text-muted-foreground hover:text-foreground hover:font-medium hover:[text-shadow:0_0_10px_color-mix(in_oklab,var(--cream)_70%,transparent)] data-[status=active]:bg-cream data-[status=active]:text-cream-foreground data-[status=active]:font-medium data-[status=active]:shadow-[0_0_28px_-4px_color-mix(in_oklab,var(--cream)_80%,transparent)]"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
           {user.signedIn ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
