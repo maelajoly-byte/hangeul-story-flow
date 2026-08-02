@@ -3,16 +3,57 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useUser } from "@/lib/user-store";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 
 export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
-  const { signInWithProvider, signInWithEmail } = useUser();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pseudo, setPseudo] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const close = () => onOpenChange(false);
+
+  const google = async () => {
+    setBusy(true);
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    setBusy(false);
+    if (result.error) {
+      toast.error("Connexion Google impossible", { description: result.error.message });
+      return;
+    }
+    if (result.redirected) return;
+    close();
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    if (mode === "signup") {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin, data: { pseudo } },
+      });
+      setBusy(false);
+      if (error) return toast.error("Inscription impossible", { description: error.message });
+      if (!data.session) {
+        toast.success("Vérifiez votre boîte mail", {
+          description: "Un lien de confirmation vous attend pour activer votre compte.",
+        });
+        close();
+        return;
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      setBusy(false);
+      if (error) return toast.error("Connexion impossible", { description: error.message });
+    }
+    toast.success("Bienvenue !");
+    close();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -26,22 +67,9 @@ export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange:
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
-          <Button
-            variant="outline"
-            className="w-full justify-center"
-            onClick={() => { signInWithProvider("google"); close(); }}
-          >
-            Continuer avec Google
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full justify-center"
-            onClick={() => { signInWithProvider("facebook"); close(); }}
-          >
-            Continuer avec Facebook
-          </Button>
-        </div>
+        <Button variant="outline" className="w-full justify-center" disabled={busy} onClick={google}>
+          Continuer avec Google
+        </Button>
 
         <div className="flex items-center gap-3 my-1">
           <div className="h-px flex-1 bg-border" />
@@ -49,14 +77,7 @@ export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange:
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        <form
-          className="space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            signInWithEmail(email, mode === "signup" ? pseudo : undefined);
-            close();
-          }}
-        >
+        <form className="space-y-3" onSubmit={submit}>
           {mode === "signup" && (
             <div>
               <Label htmlFor="pseudo" className="text-xs">Pseudonyme public</Label>
@@ -71,14 +92,14 @@ export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange:
             <Label htmlFor="password" className="text-xs">Mot de passe</Label>
             <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1" required minLength={6} />
           </div>
-          <Button type="submit" className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
+          <Button type="submit" disabled={busy} className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
             {mode === "signin" ? "Se connecter" : "Créer mon compte"}
           </Button>
         </form>
 
         <p className="text-xs text-muted-foreground text-center">
           {mode === "signin" ? "Pas encore de compte ? " : "Déjà inscrit·e ? "}
-          <button className="text-accent hover:underline" onClick={() => setMode(mode === "signin" ? "signup" : "signin")}>
+          <button type="button" className="text-accent hover:underline" onClick={() => setMode(mode === "signin" ? "signup" : "signin")}>
             {mode === "signin" ? "S'inscrire" : "Se connecter"}
           </button>
         </p>
