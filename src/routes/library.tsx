@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SeriesCard } from "@/components/series-card";
 import { SERIES } from "@/lib/data";
+import { useUser } from "@/lib/user-store";
+import { Link } from "@tanstack/react-router";
+import { PenLine } from "lucide-react";
 
 export const Route = createFileRoute("/library")({
   head: () => ({
@@ -18,10 +21,18 @@ export const Route = createFileRoute("/library")({
 });
 
 function Library() {
+  const { isAdmin } = useUser();
   return (
     <div className="min-h-screen">
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-6 py-16">
+        {isAdmin && (
+          <div className="flex justify-end mb-6">
+            <Link to="/creator" className="inline-flex items-center gap-2 rounded-full border border-accent px-4 py-2 text-sm text-accent hover:bg-accent hover:text-accent-foreground transition-colors">
+              <PenLine className="h-3.5 w-3.5" /> Creator Mode
+            </Link>
+          </div>
+        )}
         <div className="mb-12 max-w-3xl">
           <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Bibliothèque</div>
           <h1 className="font-display text-5xl text-balance">Neuf histoires, une progression.</h1>
