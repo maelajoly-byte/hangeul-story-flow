@@ -92,7 +92,10 @@ export function SiteHeader() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button size="sm" onClick={() => setAuthOpen(true)} className="bg-cream text-cream-foreground hover:bg-cream/90">
+            <Button
+              onClick={() => setAuthOpen(true)}
+              className="h-9 px-4 rounded-md text-sm font-medium bg-cream text-cream-foreground hover:bg-cream/90 shadow-[0_0_28px_-4px_color-mix(in_oklab,var(--cream)_80%,transparent)]"
+            >
               S'inscrire / Se connecter
             </Button>
           )}
