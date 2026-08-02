@@ -1,3 +1,4 @@
+import { NotificationBell } from "@/components/notification-bell";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useUser } from "@/lib/user-store";
@@ -70,6 +71,7 @@ export function SiteHeader() {
             ))}
           </nav>
           {user.signedIn ? (
+            <NotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="gap-1">
