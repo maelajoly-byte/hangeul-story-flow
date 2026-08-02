@@ -71,6 +71,7 @@ export function SiteHeader() {
             ))}
           </nav>
           {user.signedIn ? (
+            <div className="flex items-center gap-1">
             <NotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -93,6 +94,7 @@ export function SiteHeader() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           ) : (
             <Button
               onClick={() => setAuthOpen(true)}
