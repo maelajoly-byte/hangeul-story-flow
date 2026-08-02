@@ -14,13 +14,216 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lexicon_entries: {
+        Row: {
+          created_at: string
+          explanation: string
+          id: string
+          part_id: string
+          slide_position: number
+          term: string
+        }
+        Insert: {
+          created_at?: string
+          explanation?: string
+          id?: string
+          part_id: string
+          slide_position: number
+          term: string
+        }
+        Update: {
+          created_at?: string
+          explanation?: string
+          id?: string
+          part_id?: string
+          slide_position?: number
+          term?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lexicon_entries_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "story_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lexicon_requests: {
+        Row: {
+          answered_at: string | null
+          created_at: string
+          id: string
+          part_id: string
+          question: string
+          slide_position: number
+          status: string
+          term: string
+          user_id: string
+        }
+        Insert: {
+          answered_at?: string | null
+          created_at?: string
+          id?: string
+          part_id: string
+          question?: string
+          slide_position: number
+          status?: string
+          term: string
+          user_id: string
+        }
+        Update: {
+          answered_at?: string | null
+          created_at?: string
+          id?: string
+          part_id?: string
+          question?: string
+          slide_position?: number
+          status?: string
+          term?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lexicon_requests_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "story_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          pseudo: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          pseudo?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          pseudo?: string | null
+        }
+        Relationships: []
+      }
+      story_parts: {
+        Row: {
+          created_at: string
+          episode: number
+          id: string
+          optional: boolean
+          part: number
+          series_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          episode: number
+          id?: string
+          optional?: boolean
+          part: number
+          series_id: string
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          episode?: number
+          id?: string
+          optional?: boolean
+          part?: number
+          series_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      story_slides: {
+        Row: {
+          ambient_url: string | null
+          created_at: string
+          hangeul: string
+          id: string
+          media_url: string | null
+          part_id: string
+          position: number
+          sfx_url: string | null
+        }
+        Insert: {
+          ambient_url?: string | null
+          created_at?: string
+          hangeul?: string
+          id?: string
+          media_url?: string | null
+          part_id: string
+          position: number
+          sfx_url?: string | null
+        }
+        Update: {
+          ambient_url?: string | null
+          created_at?: string
+          hangeul?: string
+          id?: string
+          media_url?: string | null
+          part_id?: string
+          position?: number
+          sfx_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_slides_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "story_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
