@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/creator/$seriesId")({
+export const Route = createFileRoute("/creator/$seriesId/")({
   ssr: false,
   head: () => ({
     meta: [
