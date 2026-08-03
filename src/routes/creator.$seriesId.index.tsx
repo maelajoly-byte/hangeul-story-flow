@@ -3,11 +3,22 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/site-header";
 import { SERIES } from "@/lib/data";
 import { useUser } from "@/lib/user-store";
-import { createPart, listParts } from "@/lib/content";
+import { createPart, deletePartDeep, listParts, listSlides, listLexicon } from "@/lib/content";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Plus } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export const Route = createFileRoute("/creator/$seriesId/")({
   ssr: false,
@@ -28,6 +39,7 @@ function CreatorSeries() {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const series = SERIES.find((s) => s.id === seriesId);
+  const [pending, setPending] = useState<{ id: string; label: string; hasContent: boolean } | null>(null);
   const { data: parts = [] } = useQuery({
     queryKey: ["parts", seriesId],
     queryFn: () => listParts(seriesId),
@@ -69,6 +81,31 @@ function CreatorSeries() {
     }
   };
 
+  const askDelete = async (partId: string, label: string) => {
+    let hasContent = false;
+    try {
+      const [slides, lexicon] = await Promise.all([listSlides(partId), listLexicon(partId)]);
+      hasContent =
+        lexicon.length > 0 ||
+        slides.some((s) => s.hangeul.trim() || s.media_url || s.sfx_url || s.ambient_url);
+    } catch {
+      hasContent = true;
+    }
+    setPending({ id: partId, label, hasContent });
+  };
+
+  const confirmDelete = async () => {
+    if (!pending) return;
+    try {
+      await deletePartDeep(pending.id);
+      await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
+      toast.success("Partie supprimée");
+    } catch {
+      toast.error("Impossible de supprimer la partie.");
+    }
+    setPending(null);
+  };
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -82,15 +119,27 @@ function CreatorSeries() {
                 {parts
                   .filter((p) => p.episode === ep)
                   .map((p) => (
-                    <Link
+                    <div
                       key={p.id}
-                      to="/creator/$seriesId/$episode/$part"
-                      params={{ seriesId, episode: String(ep), part: String(p.part) }}
-                      className="block rounded-lg border border-border/60 px-4 py-2.5 hover:border-accent transition-colors"
+                      className="flex items-center gap-2 rounded-lg border border-border/60 px-4 py-2.5 hover:border-accent transition-colors"
                     >
-                      Partie {p.part} — {p.title}
-                      {p.optional && <span className="ml-2 text-xs text-muted-foreground">(optionnelle)</span>}
-                    </Link>
+                      <Link
+                        to="/creator/$seriesId/$episode/$part"
+                        params={{ seriesId, episode: String(ep), part: String(p.part) }}
+                        className="flex-1"
+                      >
+                        Partie {p.part} — {p.title}
+                        {p.optional && <span className="ml-2 text-xs text-muted-foreground">(optionnelle)</span>}
+                      </Link>
+                      <button
+                        type="button"
+                        aria-label={`Supprimer la partie ${p.part}`}
+                        onClick={() => askDelete(p.id, `Partie ${p.part} — ${p.title}`)}
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   ))}
                 <Button variant="outline" size="sm" onClick={() => addPart(ep)} className="gap-1.5">
                   <Plus className="h-3.5 w-3.5" /> Ajouter une partie
@@ -100,6 +149,23 @@ function CreatorSeries() {
           ))}
         </Accordion>
       </main>
+
+      <AlertDialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Supprimer « {pending?.label} » ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pending?.hasContent
+                ? "Cette partie contient du contenu (diapos, textes ou lexique). Êtes-vous sûre de vouloir la supprimer ? Cette action est irréversible."
+                : "Cette partie est vide. Elle sera définitivement supprimée."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>Supprimer</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
