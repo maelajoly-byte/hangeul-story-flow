@@ -111,6 +111,15 @@ export async function deletePart(id: string) {
   if (error) throw error;
 }
 
+/** Deletes a part along with its slides and lexicon entries. */
+export async function deletePartDeep(id: string) {
+  const { error: lexErr } = await supabase.from("lexicon_entries").delete().eq("part_id", id);
+  if (lexErr) throw lexErr;
+  const { error: slideErr } = await supabase.from("story_slides").delete().eq("part_id", id);
+  if (slideErr) throw slideErr;
+  await deletePart(id);
+}
+
 export async function addSlide(partId: string, position: number) {
   const { data, error } = await supabase
     .from("story_slides")
