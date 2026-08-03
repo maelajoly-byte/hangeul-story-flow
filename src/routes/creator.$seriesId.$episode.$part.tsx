@@ -14,7 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2 } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Plus, Save, Trash2, Layers } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
@@ -36,6 +39,11 @@ function Editor() {
   const qc = useQueryClient();
   const resolve = useServerFn(resolveLexiconRequests);
   const [active, setActive] = useState(0);
+  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string }>>>({});
+  const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
+  const [saving, setSaving] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkCount, setBulkCount] = useState("5");
 
   const { data: parts = [] } = useQuery({ queryKey: ["parts", seriesId], queryFn: () => listParts(seriesId), enabled: isAdmin });
   const current = parts.find((p) => p.episode === Number(episode) && p.part === Number(part));
@@ -64,6 +72,72 @@ function Editor() {
     qc.invalidateQueries({ queryKey: ["lexicon", current.id] });
   };
 
+  const previewSlides = slides.map((s) => {
+    const d = slideDrafts[s.id];
+    if (!d) return s;
+    return {
+      ...s,
+      ...(d.media_url !== undefined ? { media_url: d.media_url || null } : {}),
+      ...(d.hangeul !== undefined ? { hangeul: d.hangeul } : {}),
+      ...(d.sfx_url !== undefined ? { sfx_url: d.sfx_url || null } : {}),
+      ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
+    };
+  });
+
+  const dirty = Object.keys(slideDrafts).length > 0 || Object.keys(lexDrafts).length > 0;
+
+  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url", value: string) =>
+    setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
+
+  const setLexField = (id: string, key: "term" | "explanation" | "slide_position", value: string | number) =>
+    setLexDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
+
+  const saveAll = async () => {
+    setSaving(true);
+    try {
+      for (const [id, d] of Object.entries(slideDrafts)) {
+        await updateSlide(id, {
+          ...(d.media_url !== undefined ? { media_url: d.media_url || null } : {}),
+          ...(d.hangeul !== undefined ? { hangeul: d.hangeul } : {}),
+          ...(d.sfx_url !== undefined ? { sfx_url: d.sfx_url || null } : {}),
+          ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
+        });
+      }
+      for (const [id, d] of Object.entries(lexDrafts)) {
+        await updateLexiconEntry(id, d);
+        const entry = lexicon.find((l) => l.id === id);
+        const explanation = d.explanation ?? entry?.explanation ?? "";
+        const term = d.term ?? entry?.term ?? "";
+        const pos = d.slide_position ?? entry?.slide_position ?? 1;
+        if (explanation.trim() && term.trim()) {
+          await resolve({ data: { partId: current.id, slidePosition: pos, term, link: `/read/${seriesId}/${episode}/${part}` } }).catch(() => {});
+        }
+      }
+      setSlideDrafts({});
+      setLexDrafts({});
+      refresh();
+      toast.success("Modifications enregistrées");
+    } catch {
+      toast.error("Impossible d'enregistrer les modifications.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addSlides = async (count: number) => {
+    try {
+      let next = slides.length;
+      for (let i = 0; i < count; i++) {
+        next += 1;
+        await addSlide(current.id, next);
+      }
+      refresh();
+      toast.success(count > 1 ? `${count} diapos ajoutées` : "Diapo ajoutée");
+    } catch {
+      toast.error("Impossible d'ajouter les diapos.");
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -71,7 +145,7 @@ function Editor() {
         <div className="border-r border-border/60">
           <DbSlideReader
             part={current}
-            slides={slides}
+            slides={previewSlides}
             lexicon={lexicon}
             seriesId={seriesId}
             preview
@@ -81,6 +155,11 @@ function Editor() {
         </div>
 
         <div className="p-5 overflow-auto">
+          <div className="flex items-center justify-end mb-3">
+            <Button size="sm" className="gap-1.5" onClick={saveAll} disabled={!dirty || saving}>
+              <Save className="h-3.5 w-3.5" /> {saving ? "Enregistrement…" : "Enregistrer"}
+            </Button>
+          </div>
           <Tabs defaultValue="main">
             <TabsList>
               <TabsTrigger value="main">Tableau principal</TabsTrigger>
@@ -97,44 +176,36 @@ function Editor() {
                     </button>
                   </div>
                   <Input defaultValue={s.media_url ?? ""} placeholder="URL de la vidéo / image"
-                    onBlur={async (e) => { await updateSlide(s.id, { media_url: e.target.value || null }); refresh(); }} />
+                    onChange={(e) => setSlideField(s.id, "media_url", e.target.value)} />
                   <Textarea defaultValue={s.hangeul} rows={3} placeholder="Texte en hangeul pur" className="font-korean"
-                    onBlur={async (e) => { await updateSlide(s.id, { hangeul: e.target.value }); refresh(); }} />
+                    onChange={(e) => setSlideField(s.id, "hangeul", e.target.value)} />
                   <div className="grid grid-cols-2 gap-2">
                     <Input defaultValue={s.sfx_url ?? ""} placeholder="Audio fixe (bruitage)"
-                      onBlur={async (e) => { await updateSlide(s.id, { sfx_url: e.target.value || null }); refresh(); }} />
+                      onChange={(e) => setSlideField(s.id, "sfx_url", e.target.value)} />
                     <Input defaultValue={s.ambient_url ?? ""} placeholder="Audio ambiance (ou stop)"
-                      onBlur={async (e) => { await updateSlide(s.id, { ambient_url: e.target.value || null }); refresh(); }} />
+                      onChange={(e) => setSlideField(s.id, "ambient_url", e.target.value)} />
                   </div>
                 </div>
               ))}
-              <Button variant="outline" size="sm" className="gap-1.5"
-                onClick={async () => {
-                  await addSlide(current.id, slides.length + 1);
-                  refresh();
-                }}>
-                <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
-              </Button>
+              <div className="flex flex-wrap justify-end gap-2">
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
+                  <Layers className="h-3.5 w-3.5" /> Ajouter des diapos
+                </Button>
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSlides(1)}>
+                  <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="lex" className="space-y-3 mt-4">
               {lexicon.map((l) => (
                 <div key={l.id} className="rounded-xl border border-border/60 p-3 grid gap-2 sm:grid-cols-[80px_1fr_2fr_auto] items-start">
                   <Input type="number" defaultValue={l.slide_position}
-                    onBlur={async (e) => { await updateLexiconEntry(l.id, { slide_position: Number(e.target.value) }); refresh(); }} />
+                    onChange={(e) => setLexField(l.id, "slide_position", Number(e.target.value))} />
                   <Input defaultValue={l.term} className="font-korean"
-                    onBlur={async (e) => { await updateLexiconEntry(l.id, { term: e.target.value }); refresh(); }} />
+                    onChange={(e) => setLexField(l.id, "term", e.target.value)} />
                   <Textarea defaultValue={l.explanation} rows={2}
-                    onBlur={async (e) => {
-                      await updateLexiconEntry(l.id, { explanation: e.target.value });
-                      refresh();
-                      if (e.target.value.trim()) {
-                        await resolve({ data: {
-                          partId: current.id, slidePosition: l.slide_position, term: l.term,
-                          link: `/read/${seriesId}/${episode}/${part}`,
-                        } }).catch(() => {});
-                      }
-                    }} />
+                    onChange={(e) => setLexField(l.id, "explanation", e.target.value)} />
                   <button onClick={async () => { await deleteLexiconEntry(l.id); refresh(); }} aria-label="Supprimer l'entrée">
                     <Trash2 className="h-4 w-4 hover:text-destructive" />
                   </button>
@@ -151,6 +222,28 @@ function Editor() {
           </Tabs>
         </div>
       </main>
+
+      <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ajouter des diapos</DialogTitle>
+            <DialogDescription>Combien de diapos souhaitez-vous ajouter&nbsp;?</DialogDescription>
+          </DialogHeader>
+          <Input type="number" min={1} max={100} value={bulkCount} onChange={(e) => setBulkCount(e.target.value)} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkOpen(false)}>Annuler</Button>
+            <Button
+              onClick={async () => {
+                const n = Math.max(1, Math.min(100, Number(bulkCount) || 1));
+                setBulkOpen(false);
+                await addSlides(n);
+              }}
+            >
+              Ajouter
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
