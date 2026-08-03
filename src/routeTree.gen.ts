@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreatorIndexRouteImport } from './routes/creator.index'
 import { Route as SeriesIdRouteImport } from './routes/series.$id'
 import { Route as CreatorSeriesIdRouteImport } from './routes/creator.$seriesId'
+import { Route as CreatorSeriesIdIndexRouteImport } from './routes/creator.$seriesId.index'
 import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 import { Route as CreatorSeriesIdEpisodePartRouteImport } from './routes/creator.$seriesId.$episode.$part'
 
@@ -66,6 +67,11 @@ const CreatorSeriesIdRoute = CreatorSeriesIdRouteImport.update({
   path: '/creator/$seriesId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreatorSeriesIdIndexRoute = CreatorSeriesIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CreatorSeriesIdRoute,
+} as any)
 const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
   id: '/read/$seriesId/$episode/$part',
   path: '/read/$seriesId/$episode/$part',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/creator/$seriesId': typeof CreatorSeriesIdRouteWithChildren
   '/series/$id': typeof SeriesIdRoute
   '/creator/': typeof CreatorIndexRoute
+  '/creator/$seriesId/': typeof CreatorSeriesIdIndexRoute
   '/creator/$seriesId/$episode/$part': typeof CreatorSeriesIdEpisodePartRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
@@ -98,9 +105,9 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tarifs': typeof TarifsRoute
-  '/creator/$seriesId': typeof CreatorSeriesIdRouteWithChildren
   '/series/$id': typeof SeriesIdRoute
   '/creator': typeof CreatorIndexRoute
+  '/creator/$seriesId': typeof CreatorSeriesIdIndexRoute
   '/creator/$seriesId/$episode/$part': typeof CreatorSeriesIdEpisodePartRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
@@ -115,6 +122,7 @@ export interface FileRoutesById {
   '/creator/$seriesId': typeof CreatorSeriesIdRouteWithChildren
   '/series/$id': typeof SeriesIdRoute
   '/creator/': typeof CreatorIndexRoute
+  '/creator/$seriesId/': typeof CreatorSeriesIdIndexRoute
   '/creator/$seriesId/$episode/$part': typeof CreatorSeriesIdEpisodePartRoute
   '/read/$seriesId/$episode/$part': typeof ReadSeriesIdEpisodePartRoute
 }
@@ -130,6 +138,7 @@ export interface FileRouteTypes {
     | '/creator/$seriesId'
     | '/series/$id'
     | '/creator/'
+    | '/creator/$seriesId/'
     | '/creator/$seriesId/$episode/$part'
     | '/read/$seriesId/$episode/$part'
   fileRoutesByTo: FileRoutesByTo
@@ -140,9 +149,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/sitemap.xml'
     | '/tarifs'
-    | '/creator/$seriesId'
     | '/series/$id'
     | '/creator'
+    | '/creator/$seriesId'
     | '/creator/$seriesId/$episode/$part'
     | '/read/$seriesId/$episode/$part'
   id:
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/creator/$seriesId'
     | '/series/$id'
     | '/creator/'
+    | '/creator/$seriesId/'
     | '/creator/$seriesId/$episode/$part'
     | '/read/$seriesId/$episode/$part'
   fileRoutesById: FileRoutesById
@@ -238,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorSeriesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/creator/$seriesId/': {
+      id: '/creator/$seriesId/'
+      path: '/'
+      fullPath: '/creator/$seriesId/'
+      preLoaderRoute: typeof CreatorSeriesIdIndexRouteImport
+      parentRoute: typeof CreatorSeriesIdRoute
+    }
     '/read/$seriesId/$episode/$part': {
       id: '/read/$seriesId/$episode/$part'
       path: '/read/$seriesId/$episode/$part'
@@ -256,10 +273,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface CreatorSeriesIdRouteChildren {
+  CreatorSeriesIdIndexRoute: typeof CreatorSeriesIdIndexRoute
   CreatorSeriesIdEpisodePartRoute: typeof CreatorSeriesIdEpisodePartRoute
 }
 
 const CreatorSeriesIdRouteChildren: CreatorSeriesIdRouteChildren = {
+  CreatorSeriesIdIndexRoute: CreatorSeriesIdIndexRoute,
   CreatorSeriesIdEpisodePartRoute: CreatorSeriesIdEpisodePartRoute,
 }
 
