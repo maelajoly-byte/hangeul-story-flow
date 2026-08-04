@@ -7,6 +7,7 @@ export interface StoryPart {
   part: number;
   title: string;
   optional: boolean;
+  published: boolean;
 }
 
 export interface StorySlide {
@@ -101,7 +102,7 @@ export async function createPart(input: { series_id: string; episode: number; pa
   return data as StoryPart;
 }
 
-export async function updatePart(id: string, patch: Partial<Pick<StoryPart, "title" | "optional" | "part">>) {
+export async function updatePart(id: string, patch: Partial<Pick<StoryPart, "title" | "optional" | "part" | "published">>) {
   const { error } = await supabase.from("story_parts").update(patch).eq("id", id);
   if (error) throw error;
 }

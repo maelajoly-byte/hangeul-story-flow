@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { useUser } from "@/lib/user-store";
 import {
   addSlide, deleteSlide, listLexicon, listParts, listSlides,
-  addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide,
+  addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide, updatePart,
 } from "@/lib/content";
 import { DbSlideReader } from "@/components/db-slide-reader";
 import { resolveLexiconRequests } from "@/lib/lexicon.functions";
@@ -17,8 +17,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Save, Trash2, Layers } from "lucide-react";
+import { Plus, Save, Trash2, Layers, Globe, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+
+const MEDIA_BASE = "https://media.sebastien-rebiere.fr/";
 
 export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
   ssr: false,
@@ -44,6 +46,7 @@ function Editor() {
   const [saving, setSaving] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkCount, setBulkCount] = useState("5");
+  const [publishing, setPublishing] = useState(false);
 
   const { data: parts = [] } = useQuery({ queryKey: ["parts", seriesId], queryFn: () => listParts(seriesId), enabled: isAdmin });
   const current = parts.find((p) => p.episode === Number(episode) && p.part === Number(part));
@@ -138,6 +141,19 @@ function Editor() {
     }
   };
 
+  const togglePublish = async () => {
+    setPublishing(true);
+    try {
+      await updatePart(current.id, { published: !current.published });
+      await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
+      toast.success(current.published ? "Partie dépubliée" : "Partie publiée pour les lecteurs");
+    } catch {
+      toast.error("Impossible de modifier la publication.");
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -155,9 +171,19 @@ function Editor() {
         </div>
 
         <div className="p-5 overflow-auto">
-          <div className="flex items-center justify-end mb-3">
+          <div className="flex items-center justify-end gap-2 mb-3">
             <Button size="sm" className="gap-1.5" onClick={saveAll} disabled={!dirty || saving}>
               <Save className="h-3.5 w-3.5" /> {saving ? "Enregistrement…" : "Enregistrer"}
+            </Button>
+            <Button
+              size="sm"
+              variant={current.published ? "outline" : "default"}
+              className="gap-1.5"
+              onClick={togglePublish}
+              disabled={publishing}
+            >
+              {current.published ? <EyeOff className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
+              {current.published ? "Dépublier" : "Publier"}
             </Button>
           </div>
           <Tabs defaultValue="main">
@@ -175,7 +201,7 @@ function Editor() {
                       <Trash2 className="h-3.5 w-3.5 hover:text-destructive" />
                     </button>
                   </div>
-                  <Input defaultValue={s.media_url ?? ""} placeholder="URL de la vidéo / image"
+                  <Input defaultValue={s.media_url ?? MEDIA_BASE} placeholder="URL de la vidéo / image"
                     onChange={(e) => setSlideField(s.id, "media_url", e.target.value)} />
                   <Textarea defaultValue={s.hangeul} rows={3} placeholder="Texte en hangeul pur" className="font-korean"
                     onChange={(e) => setSlideField(s.id, "hangeul", e.target.value)} />

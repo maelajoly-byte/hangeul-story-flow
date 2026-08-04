@@ -187,7 +187,7 @@ export function DbSlideReader({
       <Progress value={((idx + 1) / total) * 100} className="rounded-none h-0.5" />
 
       <div className="flex-1 grid place-items-center p-4 md:p-8 bg-slate-deep">
-        <div className="relative w-full max-w-4xl aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl border border-border/40 bg-black">
+        <div className="relative mx-auto h-[70vh] max-h-[860px] aspect-[9/16] max-w-full rounded-[1.75rem] overflow-hidden shadow-2xl border border-border/40 bg-black">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div
               key={slide.id}
@@ -200,7 +200,14 @@ export function DbSlideReader({
             >
               {slide.media_url ? (
                 isVideo(slide.media_url) ? (
-                  <video src={slide.media_url} className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline />
+                  <video
+                    key={slide.media_url}
+                    src={slide.media_url}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    playsInline
+                  />
                 ) : (
                   <img src={slide.media_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
                 )

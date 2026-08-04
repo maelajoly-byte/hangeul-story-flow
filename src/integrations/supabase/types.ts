@@ -154,6 +154,7 @@ export type Database = {
           id: string
           optional: boolean
           part: number
+          published: boolean
           series_id: string
           title: string
         }
@@ -163,6 +164,7 @@ export type Database = {
           id?: string
           optional?: boolean
           part: number
+          published?: boolean
           series_id: string
           title?: string
         }
@@ -172,6 +174,7 @@ export type Database = {
           id?: string
           optional?: boolean
           part?: number
+          published?: boolean
           series_id?: string
           title?: string
         }
