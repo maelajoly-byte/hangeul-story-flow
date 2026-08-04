@@ -11,9 +11,19 @@ function Stars({ n }: { n: number }) {
   return (
     <TooltipProvider delayDuration={100}>
       <span className="inline-flex items-center gap-1" aria-label={`Difficulté ${n} sur 5`}>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} className={`h-3.5 w-3.5 ${i < n ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />
-        ))}
+        {Array.from({ length: 5 }).map((_, i) => {
+          const fill = Math.min(1, Math.max(0, n - i));
+          return (
+            <span key={i} className="relative inline-block h-3.5 w-3.5">
+              <Star className="absolute inset-0 h-3.5 w-3.5 text-muted-foreground/40" />
+              {fill > 0 && (
+                <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
+                  <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+                </span>
+              )}
+            </span>
+          );
+        })}
         <Tooltip>
           <TooltipTrigger asChild>
             <button type="button" className="text-muted-foreground/70 hover:text-accent" aria-label="À propos de la note">
@@ -29,9 +39,9 @@ function Stars({ n }: { n: number }) {
   );
 }
 
-export function SeriesCard({ s }: { s: Series }) {
+export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolean; onEdit?: () => void }) {
   const { user } = useUser();
-  const unlocked = s.free || user.unlockedSeries.includes(s.id);
+  const unlocked = creator || s.free || user.unlockedSeries.includes(s.id);
   const statusLabel = s.status === "available" ? "Disponible" : s.status === "in_progress" ? "En cours" : "Bientôt";
 
   const reviews = useMemo(() => getReaderReviews(s.id), [s.id]);
@@ -71,9 +81,13 @@ export function SeriesCard({ s }: { s: Series }) {
   return (
     <article className="group rounded-xl border border-border bg-card/70 overflow-hidden hover:border-accent/50 transition-colors">
       <div className="relative aspect-[3/4]" style={{ background: `linear-gradient(160deg, ${s.cover.from}, ${s.cover.to})` }}>
-        <div className="absolute inset-0 grid place-items-center">
-          <span className="font-korean text-[8rem] text-white/15 leading-none">{s.cover.symbol}</span>
-        </div>
+        {s.coverImageUrl ? (
+          <img src={s.coverImageUrl} alt={`Couverture de ${s.title}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 grid place-items-center">
+            <span className="font-korean text-[8rem] text-white/15 leading-none">{s.cover.symbol}</span>
+          </div>
+        )}
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-2">
           <Badge className="bg-black/60 text-cream border-0">#{s.order}</Badge>
@@ -95,7 +109,14 @@ export function SeriesCard({ s }: { s: Series }) {
           <Stars n={s.stars} />
           <span>{s.episodes} épisodes</span>
         </div>
-        {s.status === "coming_soon" ? (
+        {creator ? (
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="secondary" onClick={onEdit}>Éditer la fiche</Button>
+            <Button asChild className="bg-cream text-cream-foreground hover:bg-cream/90">
+              <Link to="/creator/$seriesId" params={{ seriesId: s.id }}>Modifier</Link>
+            </Button>
+          </div>
+        ) : s.status === "coming_soon" ? (
           <Button disabled className="w-full" variant="secondary">Bientôt disponible</Button>
         ) : (
           <Button asChild className="w-full bg-cream text-cream-foreground hover:bg-cream/90">

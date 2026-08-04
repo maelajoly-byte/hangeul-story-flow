@@ -12,6 +12,7 @@ export interface Series {
   status: SeriesStatus;
   moods: string[];
   cover: { from: string; to: string; symbol: string };
+  coverImageUrl?: string | null;
   free?: boolean;
   warnings?: string[];
   tips?: string[];

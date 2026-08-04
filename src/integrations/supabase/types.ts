@@ -147,6 +147,69 @@ export type Database = {
         }
         Relationships: []
       }
+      series: {
+        Row: {
+          cover_from: string
+          cover_image_url: string | null
+          cover_symbol: string
+          cover_to: string
+          created_at: string
+          episodes: number
+          free: boolean
+          id: string
+          moods: string[]
+          order_index: number
+          stars: number
+          status: string
+          synopsis: string
+          tips: string[]
+          title: string
+          title_ko: string
+          updated_at: string
+          warnings: string[]
+        }
+        Insert: {
+          cover_from?: string
+          cover_image_url?: string | null
+          cover_symbol?: string
+          cover_to?: string
+          created_at?: string
+          episodes?: number
+          free?: boolean
+          id: string
+          moods?: string[]
+          order_index?: number
+          stars?: number
+          status?: string
+          synopsis?: string
+          tips?: string[]
+          title?: string
+          title_ko?: string
+          updated_at?: string
+          warnings?: string[]
+        }
+        Update: {
+          cover_from?: string
+          cover_image_url?: string | null
+          cover_symbol?: string
+          cover_to?: string
+          created_at?: string
+          episodes?: number
+          free?: boolean
+          id?: string
+          moods?: string[]
+          order_index?: number
+          stars?: number
+          status?: string
+          synopsis?: string
+          tips?: string[]
+          title?: string
+          title_ko?: string
+          updated_at?: string
+          warnings?: string[]
+        }
+        Relationships: []
+      }
       story_parts: {
         Row: {
           created_at: string

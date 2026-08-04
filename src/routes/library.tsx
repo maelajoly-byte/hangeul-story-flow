@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/site-header";
 import { SeriesCard } from "@/components/series-card";
 import { SERIES } from "@/lib/data";
+import { listSeriesRows, rowToSeries } from "@/lib/series-db";
 import { useUser } from "@/lib/user-store";
 import { Link } from "@tanstack/react-router";
 import { PenLine } from "lucide-react";
@@ -22,6 +24,8 @@ export const Route = createFileRoute("/library")({
 
 function Library() {
   const { isAdmin } = useUser();
+  const { data: rows } = useQuery({ queryKey: ["series"], queryFn: listSeriesRows });
+  const series = rows?.length ? rows.map(rowToSeries) : SERIES;
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -43,7 +47,7 @@ function Library() {
           </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {SERIES.map((s) => <SeriesCard key={s.id} s={s} />)}
+          {series.map((s) => <SeriesCard key={s.id} s={s} />)}
         </div>
       </main>
     </div>
