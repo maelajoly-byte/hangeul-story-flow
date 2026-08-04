@@ -11,9 +11,19 @@ function Stars({ n }: { n: number }) {
   return (
     <TooltipProvider delayDuration={100}>
       <span className="inline-flex items-center gap-1" aria-label={`Difficulté ${n} sur 5`}>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} className={`h-3.5 w-3.5 ${i < n ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />
-        ))}
+        {Array.from({ length: 5 }).map((_, i) => {
+          const fill = Math.min(1, Math.max(0, n - i));
+          return (
+            <span key={i} className="relative inline-block h-3.5 w-3.5">
+              <Star className="absolute inset-0 h-3.5 w-3.5 text-muted-foreground/40" />
+              {fill > 0 && (
+                <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
+                  <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+                </span>
+              )}
+            </span>
+          );
+        })}
         <Tooltip>
           <TooltipTrigger asChild>
             <button type="button" className="text-muted-foreground/70 hover:text-accent" aria-label="À propos de la note">
@@ -29,9 +39,9 @@ function Stars({ n }: { n: number }) {
   );
 }
 
-export function SeriesCard({ s }: { s: Series }) {
+export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolean; onEdit?: () => void }) {
   const { user } = useUser();
-  const unlocked = s.free || user.unlockedSeries.includes(s.id);
+  const unlocked = creator || s.free || user.unlockedSeries.includes(s.id);
   const statusLabel = s.status === "available" ? "Disponible" : s.status === "in_progress" ? "En cours" : "Bientôt";
 
   const reviews = useMemo(() => getReaderReviews(s.id), [s.id]);
