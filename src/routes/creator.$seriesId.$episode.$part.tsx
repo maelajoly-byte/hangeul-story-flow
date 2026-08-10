@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BUBBLES, BUBBLE_POSITIONS } from "@/lib/bubbles";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
@@ -41,7 +43,7 @@ function Editor() {
   const qc = useQueryClient();
   const resolve = useServerFn(resolveLexiconRequests);
   const [active, setActive] = useState(0);
-  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string }>>>({});
+  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string }>>>({});
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
   const [saving, setSaving] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
@@ -84,12 +86,14 @@ function Editor() {
       ...(d.hangeul !== undefined ? { hangeul: d.hangeul } : {}),
       ...(d.sfx_url !== undefined ? { sfx_url: d.sfx_url || null } : {}),
       ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
+      ...(d.bubble_type !== undefined ? { bubble_type: d.bubble_type } : {}),
+      ...(d.bubble_position !== undefined ? { bubble_position: d.bubble_position } : {}),
     };
   });
 
   const dirty = Object.keys(slideDrafts).length > 0 || Object.keys(lexDrafts).length > 0;
 
-  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url", value: string) =>
+  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position", value: string) =>
     setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
 
   const setLexField = (id: string, key: "term" | "explanation" | "slide_position", value: string | number) =>
@@ -104,6 +108,8 @@ function Editor() {
           ...(d.hangeul !== undefined ? { hangeul: d.hangeul } : {}),
           ...(d.sfx_url !== undefined ? { sfx_url: d.sfx_url || null } : {}),
           ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
+          ...(d.bubble_type !== undefined ? { bubble_type: d.bubble_type } : {}),
+          ...(d.bubble_position !== undefined ? { bubble_position: d.bubble_position } : {}),
         });
       }
       for (const [id, d] of Object.entries(lexDrafts)) {
