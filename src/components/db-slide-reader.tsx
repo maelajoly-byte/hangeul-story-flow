@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/lib/user-store";
 import { submitLexiconRequest } from "@/lib/lexicon.functions";
+import { getBubble } from "@/lib/bubbles";
 
 function isVideo(url: string) {
   return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
