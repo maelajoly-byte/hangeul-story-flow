@@ -246,6 +246,8 @@ export type Database = {
       story_slides: {
         Row: {
           ambient_url: string | null
+          bubble_position: string
+          bubble_type: string
           created_at: string
           hangeul: string
           id: string
@@ -256,6 +258,8 @@ export type Database = {
         }
         Insert: {
           ambient_url?: string | null
+          bubble_position?: string
+          bubble_type?: string
           created_at?: string
           hangeul?: string
           id?: string
@@ -266,6 +270,8 @@ export type Database = {
         }
         Update: {
           ambient_url?: string | null
+          bubble_position?: string
+          bubble_type?: string
           created_at?: string
           hangeul?: string
           id?: string
