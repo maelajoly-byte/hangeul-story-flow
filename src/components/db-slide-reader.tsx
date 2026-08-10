@@ -218,9 +218,17 @@ export function DbSlideReader({
                 </div>
               )}
 
-              {slide.hangeul.trim() && (
-                <div className="absolute left-[6%] right-[6%] bottom-[8%] rounded-md bg-black/75 text-cream px-5 py-4 shadow-lg">
-                  <p className="font-korean text-xl md:text-2xl leading-relaxed">
+              {slide.hangeul.trim() && (() => {
+                const bubble = getBubble(slide.bubble_type);
+                const pos = (slide.bubble_position || "bottom") as "top" | "center" | "bottom";
+                const posStyle =
+                  pos === "top"
+                    ? { top: "14%", left: "50%", transform: "translateX(-50%)", width: "90%" }
+                    : pos === "center"
+                      ? { top: "42%", left: "50%", transform: "translate(-50%, -50%)", width: "88%" }
+                      : { bottom: "12%", left: "50%", transform: "translateX(-50%)", width: "90%" };
+                const text = (
+                  <p className={`font-korean leading-relaxed text-center ${bubble.url ? "text-base md:text-lg" : "text-xl md:text-2xl"}`}>
                     {segment(slide.hangeul, slideLexicon).map((seg, i) =>
                       seg.entry ? (
                         <Popover key={i}>
@@ -259,8 +267,30 @@ export function DbSlideReader({
                       ),
                     )}
                   </p>
-                </div>
-              )}
+                );
+                return (
+                  <div className="absolute" style={posStyle}>
+                    {bubble.url ? (
+                      <div className="relative w-full">
+                        <img src={bubble.url} alt="" className="w-full h-auto block select-none pointer-events-none" />
+                        <div
+                          className={`absolute flex items-center justify-center overflow-hidden ${bubble.darkText ? "text-cream" : "text-slate-900"}`}
+                          style={{
+                            left: `${bubble.inset.x}%`,
+                            right: `${bubble.inset.x}%`,
+                            top: `${bubble.inset.yTop}%`,
+                            bottom: `${bubble.inset.yBottom}%`,
+                          }}
+                        >
+                          {text}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-md bg-black/75 text-cream px-5 py-4 shadow-lg">{text}</div>
+                    )}
+                  </div>
+                );
+              })()}
 
               <button
                 onClick={() => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } }}
