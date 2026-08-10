@@ -217,6 +217,30 @@ function Editor() {
                     <Input defaultValue={s.ambient_url ?? ""} placeholder="Audio ambiance (ou stop)"
                       onChange={(e) => setSlideField(s.id, "ambient_url", e.target.value)} />
                   </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select
+                      defaultValue={s.bubble_type || "none"}
+                      onValueChange={(v) => setSlideField(s.id, "bubble_type", v)}
+                    >
+                      <SelectTrigger><SelectValue placeholder="Type de bulle" /></SelectTrigger>
+                      <SelectContent>
+                        {BUBBLES.map((b) => (
+                          <SelectItem key={b.id} value={b.id}>{b.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      defaultValue={s.bubble_position || "bottom"}
+                      onValueChange={(v) => setSlideField(s.id, "bubble_position", v)}
+                    >
+                      <SelectTrigger><SelectValue placeholder="Emplacement" /></SelectTrigger>
+                      <SelectContent>
+                        {BUBBLE_POSITIONS.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               ))}
               <div className="flex flex-wrap justify-end gap-2">
