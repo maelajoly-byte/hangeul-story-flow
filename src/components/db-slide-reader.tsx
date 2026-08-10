@@ -223,10 +223,10 @@ export function DbSlideReader({
                 const pos = (slide.bubble_position || "bottom") as "top" | "center" | "bottom";
                 const posStyle =
                   pos === "top"
-                    ? { top: "14%", left: "50%", transform: "translateX(-50%)", width: "90%" }
+                    ? { top: "8%", left: "50%", transform: "translateX(-50%)", width: "90%", zIndex: 10 }
                     : pos === "center"
-                      ? { top: "42%", left: "50%", transform: "translate(-50%, -50%)", width: "88%" }
-                      : { bottom: "12%", left: "50%", transform: "translateX(-50%)", width: "90%" };
+                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "88%", zIndex: 10 }
+                      : { bottom: "5%", left: "50%", transform: "translateX(-50%)", width: "90%", zIndex: 10 };
                 const text = (
                   <p className={`font-korean leading-relaxed text-center ${bubble.url ? "text-base md:text-lg" : "text-xl md:text-2xl"}`}>
                     {segment(slide.hangeul, slideLexicon).map((seg, i) =>
@@ -269,9 +269,9 @@ export function DbSlideReader({
                   </p>
                 );
                 return (
-                  <div className="absolute" style={posStyle}>
+                  <div className="absolute bg-transparent" style={posStyle}>
                     {bubble.url ? (
-                      <div className="relative w-full">
+                      <div className="relative w-full bg-transparent">
                         <img src={bubble.url} alt="" className="w-full h-auto block select-none pointer-events-none" />
                         <div
                           className={`absolute flex items-center justify-center overflow-hidden ${bubble.darkText ? "text-cream" : "text-slate-900"}`}
