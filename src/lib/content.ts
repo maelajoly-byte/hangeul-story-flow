@@ -18,6 +18,8 @@ export interface StorySlide {
   hangeul: string;
   sfx_url: string | null;
   ambient_url: string | null;
+  bubble_type: string;
+  bubble_position: string;
 }
 
 export interface LexiconEntry {
@@ -131,7 +133,10 @@ export async function addSlide(partId: string, position: number) {
   return data as StorySlide;
 }
 
-export async function updateSlide(id: string, patch: Partial<Pick<StorySlide, "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "position">>) {
+export async function updateSlide(
+  id: string,
+  patch: Partial<Pick<StorySlide, "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "position" | "bubble_type" | "bubble_position">>,
+) {
   const { error } = await supabase.from("story_slides").update(patch).eq("id", id);
   if (error) throw error;
 }
