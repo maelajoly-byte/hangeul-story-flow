@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { SiteHeader } from "@/components/site-header";
 import { useUser } from "@/lib/user-store";
@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BUBBLES, BUBBLE_POSITIONS } from "@/lib/bubbles";
+import { BUBBLES, BUBBLE_POSITIONS, getBubble } from "@/lib/bubbles";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
@@ -43,12 +43,14 @@ function Editor() {
   const qc = useQueryClient();
   const resolve = useServerFn(resolveLexiconRequests);
   const [active, setActive] = useState(0);
-  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string }>>>({});
+  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string; speaker_name: string }>>>({});
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
   const [saving, setSaving] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkCount, setBulkCount] = useState("5");
   const [publishing, setPublishing] = useState(false);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [bubbleTypes, setBubbleTypes] = useState<Record<string, string>>({});
 
   const { data: parts = [] } = useQuery({ queryKey: ["parts", seriesId], queryFn: () => listParts(seriesId), enabled: isAdmin });
   const current = parts.find((p) => p.episode === Number(episode) && p.part === Number(part));
