@@ -167,8 +167,8 @@ function Editor() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="grid lg:grid-cols-2 gap-0 min-h-[calc(100vh-64px)]">
-        <div className="border-r border-border/60">
+      <main className="grid lg:grid-cols-2 gap-0 min-h-[calc(100vh-64px)] items-start">
+        <div className="border-r border-border/60 lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
           <DbSlideReader
             part={current}
             slides={previewSlides}
@@ -203,8 +203,16 @@ function Editor() {
             </TabsList>
 
             <TabsContent value="main" className="space-y-3 mt-4">
-              {slides.map((s, i) => (
-                <div key={s.id} className={`rounded-xl border p-3 space-y-2 ${i === active ? "border-accent" : "border-border/60"}`} onClick={() => setActive(i)}>
+              {slides.map((s, i) => {
+                const bubbleId = bubbleTypes[s.id] ?? s.bubble_type ?? "none";
+                const hasNameTag = !!getBubble(bubbleId).nameTag;
+                return (
+                <div
+                  key={s.id}
+                  ref={(el) => { cardRefs.current[s.id] = el; }}
+                  className={`rounded-xl border p-3 space-y-2 ${i === active ? "border-accent" : "border-border/60"}`}
+                  onClick={() => setActive(i)}
+                >
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>Diapo {s.position}</span>
                     <button onClick={async () => { await deleteSlide(s.id); refresh(); }} aria-label="Supprimer la diapo">
@@ -224,7 +232,7 @@ function Editor() {
                   <div className="grid grid-cols-2 gap-2">
                     <Select
                       defaultValue={s.bubble_type || "none"}
-                      onValueChange={(v) => setSlideField(s.id, "bubble_type", v)}
+                      onValueChange={(v) => { setSlideField(s.id, "bubble_type", v); setBubbleTypes((p) => ({ ...p, [s.id]: v })); }}
                     >
                       <SelectTrigger><SelectValue placeholder="Type de bulle" /></SelectTrigger>
                       <SelectContent>
@@ -245,8 +253,17 @@ function Editor() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {hasNameTag && (
+                    <Input
+                      defaultValue={s.speaker_name ?? ""}
+                      placeholder="[nom] du personnage qui parle"
+                      className="font-korean"
+                      onChange={(e) => setSlideField(s.id, "speaker_name", e.target.value)}
+                    />
+                  )}
                 </div>
-              ))}
+                );
+              })}
               <div className="flex flex-wrap justify-end gap-2">
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
                   <Layers className="h-3.5 w-3.5" /> Ajouter des diapos
