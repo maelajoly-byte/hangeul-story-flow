@@ -221,12 +221,21 @@ export function DbSlideReader({
               {slide.hangeul.trim() && (() => {
                 const bubble = getBubble(slide.bubble_type);
                 const pos = (slide.bubble_position || "bottom") as "top" | "center" | "bottom";
-                const posStyle =
+                const w = `${bubble.scale ?? 100}%`;
+                const posStyle = bubble.fullScreen
+                  ? { inset: 0, width: "100%", zIndex: 10 }
+                  : pos === "top"
+                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 }
+                    : pos === "center"
+                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, zIndex: 10 }
+                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 };
+                const unused =
                   pos === "top"
                     ? { top: "8%", left: "50%", transform: "translateX(-50%)", width: "90%", zIndex: 10 }
                     : pos === "center"
                       ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "88%", zIndex: 10 }
                       : { bottom: "5%", left: "50%", transform: "translateX(-50%)", width: "90%", zIndex: 10 };
+                void unused;
                 const text = (
                   <p className={`font-korean leading-relaxed text-center ${bubble.url ? "text-base md:text-lg" : "text-xl md:text-2xl"}`}>
                     {segment(slide.hangeul, slideLexicon).map((seg, i) =>
