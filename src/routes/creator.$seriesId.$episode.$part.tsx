@@ -90,12 +90,13 @@ function Editor() {
       ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
       ...(d.bubble_type !== undefined ? { bubble_type: d.bubble_type } : {}),
       ...(d.bubble_position !== undefined ? { bubble_position: d.bubble_position } : {}),
+      ...(d.speaker_name !== undefined ? { speaker_name: d.speaker_name } : {}),
     };
   });
 
   const dirty = Object.keys(slideDrafts).length > 0 || Object.keys(lexDrafts).length > 0;
 
-  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position", value: string) =>
+  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position" | "speaker_name", value: string) =>
     setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
 
   const setLexField = (id: string, key: "term" | "explanation" | "slide_position", value: string | number) =>
@@ -112,6 +113,7 @@ function Editor() {
           ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
           ...(d.bubble_type !== undefined ? { bubble_type: d.bubble_type } : {}),
           ...(d.bubble_position !== undefined ? { bubble_position: d.bubble_position } : {}),
+          ...(d.speaker_name !== undefined ? { speaker_name: d.speaker_name } : {}),
         });
       }
       for (const [id, d] of Object.entries(lexDrafts)) {
