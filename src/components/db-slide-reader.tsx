@@ -229,13 +229,6 @@ export function DbSlideReader({
                     : pos === "center"
                       ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, zIndex: 10 }
                       : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 };
-                const unused =
-                  pos === "top"
-                    ? { top: "8%", left: "50%", transform: "translateX(-50%)", width: "90%", zIndex: 10 }
-                    : pos === "center"
-                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "88%", zIndex: 10 }
-                      : { bottom: "5%", left: "50%", transform: "translateX(-50%)", width: "90%", zIndex: 10 };
-                void unused;
                 const text = (
                   <p className={`font-korean leading-relaxed text-center ${bubble.url ? "text-base md:text-lg" : "text-xl md:text-2xl"}`}>
                     {segment(slide.hangeul, slideLexicon).map((seg, i) =>
@@ -280,15 +273,35 @@ export function DbSlideReader({
                 return (
                   <div className="absolute bg-transparent" style={posStyle}>
                     {bubble.url ? (
-                      <div className="relative w-full bg-transparent">
-                        <img src={bubble.url} alt="" className="w-full h-auto block select-none pointer-events-none" />
+                      <div className={`relative w-full bg-transparent ${bubble.fullScreen ? "h-full" : ""}`}>
+                        <img
+                          src={bubble.url}
+                          alt=""
+                          className={`block select-none pointer-events-none ${bubble.fullScreen ? "w-full h-full object-cover" : "w-full h-auto"}`}
+                        />
+                        {bubble.nameTag && slide.speaker_name?.trim() && (
+                          <div
+                            className="absolute flex items-center justify-center text-center text-slate-900 font-display leading-none overflow-hidden"
+                            style={{
+                              left: `${bubble.nameTag.left}%`,
+                              right: `${bubble.nameTag.right}%`,
+                              top: `${bubble.nameTag.top}%`,
+                              bottom: `${bubble.nameTag.bottom}%`,
+                              fontSize: "clamp(9px, 1.6vh, 15px)",
+                              padding: "2px 4px",
+                            }}
+                          >
+                            <span className="font-korean truncate">{slide.speaker_name}</span>
+                          </div>
+                        )}
                         <div
-                          className={`absolute flex items-center justify-center overflow-hidden ${bubble.darkText ? "text-cream" : "text-slate-900"}`}
+                          className={`absolute flex items-center justify-center text-center overflow-hidden ${bubble.darkText ? "text-cream" : "text-slate-900"}`}
                           style={{
                             left: `${bubble.inset.x}%`,
                             right: `${bubble.inset.x}%`,
                             top: `${bubble.inset.yTop}%`,
                             bottom: `${bubble.inset.yBottom}%`,
+                            padding: "10px",
                           }}
                         >
                           {text}
