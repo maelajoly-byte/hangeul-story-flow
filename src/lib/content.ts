@@ -20,6 +20,7 @@ export interface StorySlide {
   ambient_url: string | null;
   bubble_type: string;
   bubble_position: string;
+  speaker_name: string;
 }
 
 export interface LexiconEntry {
@@ -135,7 +136,7 @@ export async function addSlide(partId: string, position: number) {
 
 export async function updateSlide(
   id: string,
-  patch: Partial<Pick<StorySlide, "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "position" | "bubble_type" | "bubble_position">>,
+  patch: Partial<Pick<StorySlide, "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "position" | "bubble_type" | "bubble_position" | "speaker_name">>,
 ) {
   const { error } = await supabase.from("story_slides").update(patch).eq("id", id);
   if (error) throw error;

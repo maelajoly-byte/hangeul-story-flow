@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { SiteHeader } from "@/components/site-header";
 import { useUser } from "@/lib/user-store";
@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BUBBLES, BUBBLE_POSITIONS } from "@/lib/bubbles";
+import { BUBBLES, BUBBLE_POSITIONS, getBubble } from "@/lib/bubbles";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
@@ -43,17 +43,25 @@ function Editor() {
   const qc = useQueryClient();
   const resolve = useServerFn(resolveLexiconRequests);
   const [active, setActive] = useState(0);
-  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string }>>>({});
+  const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string; speaker_name: string }>>>({});
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
   const [saving, setSaving] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkCount, setBulkCount] = useState("5");
   const [publishing, setPublishing] = useState(false);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [bubbleTypes, setBubbleTypes] = useState<Record<string, string>>({});
 
   const { data: parts = [] } = useQuery({ queryKey: ["parts", seriesId], queryFn: () => listParts(seriesId), enabled: isAdmin });
   const current = parts.find((p) => p.episode === Number(episode) && p.part === Number(part));
   const { data: slides = [] } = useQuery({ queryKey: ["slides", current?.id], queryFn: () => listSlides(current!.id), enabled: !!current });
   const { data: lexicon = [] } = useQuery({ queryKey: ["lexicon", current?.id], queryFn: () => listLexicon(current!.id), enabled: !!current });
+
+  const activeSlideId = slides[active]?.id;
+  useEffect(() => {
+    if (!activeSlideId) return;
+    cardRefs.current[activeSlideId]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [activeSlideId]);
 
   if (!isAdmin) {
     return (
@@ -88,12 +96,13 @@ function Editor() {
       ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
       ...(d.bubble_type !== undefined ? { bubble_type: d.bubble_type } : {}),
       ...(d.bubble_position !== undefined ? { bubble_position: d.bubble_position } : {}),
+      ...(d.speaker_name !== undefined ? { speaker_name: d.speaker_name } : {}),
     };
   });
 
   const dirty = Object.keys(slideDrafts).length > 0 || Object.keys(lexDrafts).length > 0;
 
-  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position", value: string) =>
+  const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position" | "speaker_name", value: string) =>
     setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
 
   const setLexField = (id: string, key: "term" | "explanation" | "slide_position", value: string | number) =>
@@ -110,6 +119,7 @@ function Editor() {
           ...(d.ambient_url !== undefined ? { ambient_url: d.ambient_url || null } : {}),
           ...(d.bubble_type !== undefined ? { bubble_type: d.bubble_type } : {}),
           ...(d.bubble_position !== undefined ? { bubble_position: d.bubble_position } : {}),
+          ...(d.speaker_name !== undefined ? { speaker_name: d.speaker_name } : {}),
         });
       }
       for (const [id, d] of Object.entries(lexDrafts)) {
@@ -163,8 +173,8 @@ function Editor() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="grid lg:grid-cols-2 gap-0 min-h-[calc(100vh-64px)]">
-        <div className="border-r border-border/60">
+      <main className="grid lg:grid-cols-2 gap-0 min-h-[calc(100vh-64px)] items-start">
+        <div className="border-r border-border/60 lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
           <DbSlideReader
             part={current}
             slides={previewSlides}
@@ -199,8 +209,16 @@ function Editor() {
             </TabsList>
 
             <TabsContent value="main" className="space-y-3 mt-4">
-              {slides.map((s, i) => (
-                <div key={s.id} className={`rounded-xl border p-3 space-y-2 ${i === active ? "border-accent" : "border-border/60"}`} onClick={() => setActive(i)}>
+              {slides.map((s, i) => {
+                const bubbleId = bubbleTypes[s.id] ?? s.bubble_type ?? "none";
+                const hasNameTag = !!getBubble(bubbleId).nameTag;
+                return (
+                <div
+                  key={s.id}
+                  ref={(el) => { cardRefs.current[s.id] = el; }}
+                  className={`rounded-xl border p-3 space-y-2 ${i === active ? "border-accent" : "border-border/60"}`}
+                  onClick={() => setActive(i)}
+                >
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>Diapo {s.position}</span>
                     <button onClick={async () => { await deleteSlide(s.id); refresh(); }} aria-label="Supprimer la diapo">
@@ -220,7 +238,7 @@ function Editor() {
                   <div className="grid grid-cols-2 gap-2">
                     <Select
                       defaultValue={s.bubble_type || "none"}
-                      onValueChange={(v) => setSlideField(s.id, "bubble_type", v)}
+                      onValueChange={(v) => { setSlideField(s.id, "bubble_type", v); setBubbleTypes((p) => ({ ...p, [s.id]: v })); }}
                     >
                       <SelectTrigger><SelectValue placeholder="Type de bulle" /></SelectTrigger>
                       <SelectContent>
@@ -241,8 +259,17 @@ function Editor() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {hasNameTag && (
+                    <Input
+                      defaultValue={s.speaker_name ?? ""}
+                      placeholder="[nom] du personnage qui parle"
+                      className="font-korean"
+                      onChange={(e) => setSlideField(s.id, "speaker_name", e.target.value)}
+                    />
+                  )}
                 </div>
-              ))}
+                );
+              })}
               <div className="flex flex-wrap justify-end gap-2">
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
                   <Layers className="h-3.5 w-3.5" /> Ajouter des diapos
