@@ -57,6 +57,12 @@ function Editor() {
   const { data: slides = [] } = useQuery({ queryKey: ["slides", current?.id], queryFn: () => listSlides(current!.id), enabled: !!current });
   const { data: lexicon = [] } = useQuery({ queryKey: ["lexicon", current?.id], queryFn: () => listLexicon(current!.id), enabled: !!current });
 
+  const activeSlideId = slides[active]?.id;
+  useEffect(() => {
+    if (!activeSlideId) return;
+    cardRefs.current[activeSlideId]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [activeSlideId]);
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen">
