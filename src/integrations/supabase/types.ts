@@ -255,6 +255,7 @@ export type Database = {
           part_id: string
           position: number
           sfx_url: string | null
+          speaker_name: string
         }
         Insert: {
           ambient_url?: string | null
@@ -267,6 +268,7 @@ export type Database = {
           part_id: string
           position: number
           sfx_url?: string | null
+          speaker_name?: string
         }
         Update: {
           ambient_url?: string | null
@@ -279,6 +281,7 @@ export type Database = {
           part_id?: string
           position?: number
           sfx_url?: string | null
+          speaker_name?: string
         }
         Relationships: [
           {
