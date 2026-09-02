@@ -187,7 +187,7 @@ export function DbSlideReader({
       </div>
       <Progress value={((idx + 1) / total) * 100} className="rounded-none h-0.5" />
 
-      <div className="flex-1 grid place-items-center p-4 md:p-8 bg-slate-deep">
+      <div className="relative flex-1 grid place-items-center py-4 px-12 md:py-8 md:px-16 bg-slate-deep">
         <div className="relative mx-auto h-[70vh] max-h-[860px] aspect-[9/16] max-w-full rounded-[1.75rem] overflow-hidden shadow-2xl border border-border/40 bg-black">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div
