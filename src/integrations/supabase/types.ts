@@ -210,6 +210,33 @@ export type Database = {
         }
         Relationships: []
       }
+      story_episodes: {
+        Row: {
+          created_at: string
+          episode: number
+          id: string
+          series_id: string
+          title: string
+          title_ko: string
+        }
+        Insert: {
+          created_at?: string
+          episode: number
+          id?: string
+          series_id: string
+          title?: string
+          title_ko?: string
+        }
+        Update: {
+          created_at?: string
+          episode?: number
+          id?: string
+          series_id?: string
+          title?: string
+          title_ko?: string
+        }
+        Relationships: []
+      }
       story_parts: {
         Row: {
           created_at: string
@@ -220,6 +247,7 @@ export type Database = {
           published: boolean
           series_id: string
           title: string
+          title_ko: string
         }
         Insert: {
           created_at?: string
@@ -230,6 +258,7 @@ export type Database = {
           published?: boolean
           series_id: string
           title?: string
+          title_ko?: string
         }
         Update: {
           created_at?: string
@@ -240,6 +269,7 @@ export type Database = {
           published?: boolean
           series_id?: string
           title?: string
+          title_ko?: string
         }
         Relationships: []
       }
