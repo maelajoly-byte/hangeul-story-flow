@@ -315,31 +315,31 @@ export function DbSlideReader({
                         </div>
                       </div>
                     ) : (
-                      <div className="rounded-md bg-black/75 text-cream px-5 py-4 shadow-lg">{text}</div>
+                      <div className="text-cream [text-shadow:0_2px_6px_rgba(0,0,0,0.85)]">{text}</div>
                     )}
                   </div>
                 );
               })()}
-
-              <button
-                onClick={() => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } }}
-                disabled={idx === 0}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
-                aria-label="Diapo précédente"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => { if (idx < total - 1) { setDir(1); setIdx(idx + 1); } }}
-                disabled={idx === total - 1}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
-                aria-label="Diapo suivante"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
             </motion.div>
           </AnimatePresence>
         </div>
+
+        <button
+          onClick={() => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } }}
+          disabled={idx === 0}
+          className="absolute left-0 md:-left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
+          aria-label="Diapo précédente"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => { if (idx < total - 1) { setDir(1); setIdx(idx + 1); } }}
+          disabled={idx === total - 1}
+          className="absolute right-0 md:-right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
+          aria-label="Diapo suivante"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
 
       <Dialog open={!!question} onOpenChange={(v) => !v && setQuestion(null)}>
