@@ -225,12 +225,19 @@ export function DbSlideReader({
                 const posStyle = bubble.fullScreen
                   ? { inset: 0, width: "100%", zIndex: 10 }
                   : pos === "top"
-                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 }
+                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: "96%", zIndex: 10 }
                     : pos === "center"
-                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, zIndex: 10 }
-                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 };
+                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, maxWidth: "96%", zIndex: 10 }
+                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: "96%", zIndex: 10 };
                 const text = (
-                  <p className={`font-korean leading-relaxed text-center ${bubble.url ? "text-base md:text-lg" : "text-xl md:text-2xl"}`}>
+                  <p
+                    className="font-korean text-center whitespace-pre-line"
+                    style={{
+                      fontSize: bubble.url ? "clamp(10px, 1.7vh, 16px)" : "clamp(12px, 2.1vh, 20px)",
+                      lineHeight: 1.45,
+                      wordBreak: "keep-all",
+                    }}
+                  >
                     {segment(slide.hangeul, slideLexicon).map((seg, i) =>
                       seg.entry ? (
                         <Popover key={i}>
