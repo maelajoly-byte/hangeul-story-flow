@@ -54,7 +54,7 @@ export const BUBBLES: BubbleStyle[] = [
     nameTag: { left: 9, right: 72, top: 9, bottom: 75 },
   },
   {
-    id: "bp-dark", label: "BP · Dark", url: bpDark, darkText: true, scale: 110,
+    id: "bp-dark", label: "BP · Dark", url: bpDark, darkText: true, scale: 96,
     inset: { x: 26, yTop: 30, yBottom: 20 },
     nameTag: { left: 26, right: 55, top: 15, bottom: 73 },
   },
