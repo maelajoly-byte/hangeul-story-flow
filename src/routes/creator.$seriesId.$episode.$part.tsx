@@ -22,7 +22,10 @@ import {
 import { Plus, Save, Trash2, Layers, Globe, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
-const MEDIA_BASE = "https://media.sebastien-rebiere.fr/";
+const MEDIA_BASES: Record<string, string> = {
+  "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past\\GP1_Slides/",
+};
+const DEFAULT_MEDIA_BASE = "https://media.sebastien-rebiere.fr/";
 
 export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
   ssr: false,
@@ -40,6 +43,7 @@ export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
 function Editor() {
   const { seriesId, episode, part } = Route.useParams();
   const { isAdmin } = useUser();
+  const mediaBase = MEDIA_BASES[seriesId] ?? DEFAULT_MEDIA_BASE;
   const qc = useQueryClient();
   const resolve = useServerFn(resolveLexiconRequests);
   const [active, setActive] = useState(0);
@@ -225,7 +229,7 @@ function Editor() {
                       <Trash2 className="h-3.5 w-3.5 hover:text-destructive" />
                     </button>
                   </div>
-                  <Input defaultValue={s.media_url ?? MEDIA_BASE} placeholder="URL de la vidéo / image"
+                  <Input defaultValue={s.media_url ?? mediaBase} placeholder="URL de la vidéo / image"
                     onChange={(e) => setSlideField(s.id, "media_url", e.target.value)} />
                   <Textarea defaultValue={s.hangeul} rows={3} placeholder="Texte en hangeul pur" className="font-korean"
                     onChange={(e) => setSlideField(s.id, "hangeul", e.target.value)} />

@@ -187,7 +187,7 @@ export function DbSlideReader({
       </div>
       <Progress value={((idx + 1) / total) * 100} className="rounded-none h-0.5" />
 
-      <div className="flex-1 grid place-items-center p-4 md:p-8 bg-slate-deep">
+      <div className="relative flex-1 grid place-items-center py-4 px-12 md:py-8 md:px-16 bg-slate-deep">
         <div className="relative mx-auto h-[70vh] max-h-[860px] aspect-[9/16] max-w-full rounded-[1.75rem] overflow-hidden shadow-2xl border border-border/40 bg-black">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div
@@ -225,12 +225,19 @@ export function DbSlideReader({
                 const posStyle = bubble.fullScreen
                   ? { inset: 0, width: "100%", zIndex: 10 }
                   : pos === "top"
-                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 }
+                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: "96%", zIndex: 10 }
                     : pos === "center"
-                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, zIndex: 10 }
-                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, zIndex: 10 };
+                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, maxWidth: "96%", zIndex: 10 }
+                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: "96%", zIndex: 10 };
                 const text = (
-                  <p className={`font-korean leading-relaxed text-center ${bubble.url ? "text-base md:text-lg" : "text-xl md:text-2xl"}`}>
+                  <p
+                    className="font-korean text-center whitespace-pre-line"
+                    style={{
+                      fontSize: bubble.url ? "clamp(10px, 1.7vh, 16px)" : "clamp(12px, 2.1vh, 20px)",
+                      lineHeight: 1.45,
+                      wordBreak: "keep-all",
+                    }}
+                  >
                     {segment(slide.hangeul, slideLexicon).map((seg, i) =>
                       seg.entry ? (
                         <Popover key={i}>
@@ -308,31 +315,31 @@ export function DbSlideReader({
                         </div>
                       </div>
                     ) : (
-                      <div className="rounded-md bg-black/75 text-cream px-5 py-4 shadow-lg">{text}</div>
+                      <div className="text-cream [text-shadow:0_2px_6px_rgba(0,0,0,0.85)]">{text}</div>
                     )}
                   </div>
                 );
               })()}
-
-              <button
-                onClick={() => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } }}
-                disabled={idx === 0}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
-                aria-label="Diapo précédente"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => { if (idx < total - 1) { setDir(1); setIdx(idx + 1); } }}
-                disabled={idx === total - 1}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
-                aria-label="Diapo suivante"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
             </motion.div>
           </AnimatePresence>
         </div>
+
+        <button
+          onClick={() => { if (idx > 0) { setDir(-1); setIdx(idx - 1); } }}
+          disabled={idx === 0}
+          className="absolute left-0 md:-left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
+          aria-label="Diapo précédente"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => { if (idx < total - 1) { setDir(1); setIdx(idx + 1); } }}
+          disabled={idx === total - 1}
+          className="absolute right-0 md:-right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur grid place-items-center text-cream disabled:opacity-30"
+          aria-label="Diapo suivante"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
 
       <Dialog open={!!question} onOpenChange={(v) => !v && setQuestion(null)}>

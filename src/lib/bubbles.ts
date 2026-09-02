@@ -36,12 +36,12 @@ export interface BubbleStyle {
 const DEFAULT_INSET = { x: 10, yTop: 18, yBottom: 22 };
 
 export const BUBBLES: BubbleStyle[] = [
-  { id: "none", label: "Aucune (bandeau simple)", url: null, scale: 92, inset: { x: 6, yTop: 12, yBottom: 12 } },
+  { id: "none", label: "Aucune (texte seul)", url: null, scale: 92, inset: { x: 6, yTop: 12, yBottom: 12 } },
   { id: "bpp-narrator", label: "BPP · Narrator", url: narrator, darkText: true, scale: 104, inset: { x: 12, yTop: 22, yBottom: 22 } },
   { id: "bpp-classic", label: "BPP · Classic", url: classic, scale: 106, inset: { x: 10, yTop: 20, yBottom: 26 } },
   { id: "bpp-thinking", label: "BPP · Thinking", url: thinking, scale: 112, inset: { x: 20, yTop: 24, yBottom: 30 } },
   { id: "bpp-dark", label: "BPP · Dark", url: bppDark, darkText: true, scale: 110, inset: { x: 18, yTop: 26, yBottom: 26 } },
-  { id: "bpp-angry", label: "BPP · Angry", url: angry, darkText: true, scale: 108, inset: { x: 14, yTop: 22, yBottom: 22 } },
+  { id: "bpp-angry", label: "BPP · Angry", url: angry, darkText: true, scale: 90, inset: { x: 16, yTop: 24, yBottom: 24 } },
   { id: "bpp-cute", label: "BPP · Cute", url: cute.url, scale: 116, inset: { x: 24, yTop: 26, yBottom: 30 } },
   { id: "bpp-happy", label: "BPP · Happy", url: happy.url, scale: 110, inset: { x: 14, yTop: 24, yBottom: 24 } },
   { id: "bpp-stress", label: "BPP · Stress", url: stress.url, scale: 114, inset: { x: 20, yTop: 30, yBottom: 30 } },
@@ -54,7 +54,7 @@ export const BUBBLES: BubbleStyle[] = [
     nameTag: { left: 9, right: 72, top: 9, bottom: 75 },
   },
   {
-    id: "bp-dark", label: "BP · Dark", url: bpDark, darkText: true, scale: 110,
+    id: "bp-dark", label: "BP · Dark", url: bpDark, darkText: true, scale: 96,
     inset: { x: 26, yTop: 30, yBottom: 20 },
     nameTag: { left: 26, right: 55, top: 15, bottom: 73 },
   },
