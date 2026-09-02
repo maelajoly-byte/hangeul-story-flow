@@ -6,8 +6,17 @@ export interface StoryPart {
   episode: number;
   part: number;
   title: string;
+  title_ko: string;
   optional: boolean;
   published: boolean;
+}
+
+export interface StoryEpisode {
+  id: string;
+  series_id: string;
+  episode: number;
+  title: string;
+  title_ko: string;
 }
 
 export interface StorySlide {
@@ -53,6 +62,23 @@ export interface AppNotification {
 }
 
 /* ---------- reads ---------- */
+
+export async function listEpisodes(seriesId: string): Promise<StoryEpisode[]> {
+  const { data, error } = await supabase
+    .from("story_episodes")
+    .select("*")
+    .eq("series_id", seriesId)
+    .order("episode");
+  if (error) throw error;
+  return (data ?? []) as StoryEpisode[];
+}
+
+export async function upsertEpisode(input: { series_id: string; episode: number; title: string; title_ko: string }) {
+  const { error } = await supabase
+    .from("story_episodes")
+    .upsert(input as never, { onConflict: "series_id,episode" });
+  if (error) throw error;
+}
 
 export async function listParts(seriesId: string): Promise<StoryPart[]> {
   const { data, error } = await supabase
@@ -105,7 +131,7 @@ export async function createPart(input: { series_id: string; episode: number; pa
   return data as StoryPart;
 }
 
-export async function updatePart(id: string, patch: Partial<Pick<StoryPart, "title" | "optional" | "part" | "published">>) {
+export async function updatePart(id: string, patch: Partial<Pick<StoryPart, "title" | "title_ko" | "optional" | "part" | "published">>) {
   const { error } = await supabase.from("story_parts").update(patch).eq("id", id);
   if (error) throw error;
 }
