@@ -39,7 +39,7 @@ export const BUBBLES: BubbleStyle[] = [
   { id: "none", label: "Aucune (texte seul)", url: null, scale: 92, inset: { x: 6, yTop: 12, yBottom: 12 } },
   { id: "bpp-narrator", label: "BPP · Narrator", url: narrator, darkText: true, scale: 104, inset: { x: 12, yTop: 22, yBottom: 22 } },
   { id: "bpp-classic", label: "BPP · Classic", url: classic, scale: 106, inset: { x: 10, yTop: 20, yBottom: 26 } },
-  { id: "bpp-thinking", label: "BPP · Thinking", url: thinking, scale: 112, inset: { x: 20, yTop: 24, yBottom: 30 } },
+  { id: "bpp-thinking", label: "BPP · Thinking", url: thinking, scale: 126, inset: { x: 22, yTop: 26, yBottom: 32 } },
   { id: "bpp-dark", label: "BPP · Dark", url: bppDark, darkText: true, scale: 110, inset: { x: 18, yTop: 26, yBottom: 26 } },
   { id: "bpp-angry", label: "BPP · Angry", url: angry, darkText: true, scale: 90, inset: { x: 16, yTop: 24, yBottom: 24 } },
   { id: "bpp-cute", label: "BPP · Cute", url: cute.url, scale: 116, inset: { x: 24, yTop: 26, yBottom: 30 } },
