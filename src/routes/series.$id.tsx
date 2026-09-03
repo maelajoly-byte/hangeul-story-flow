@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { EPISODES, getSeries, type Series } from "@/lib/data";
+import { useQuery } from "@tanstack/react-query";
+import { getSeries, type Series } from "@/lib/data";
+import { listSeriesRows, rowToSeries } from "@/lib/series-db";
+import { listEpisodes, listParts } from "@/lib/content";
 import { useUser } from "@/lib/user-store";
 import { PaywallModal } from "@/components/paywall-modal";
 import { AlertTriangle, BookOpen, CheckCircle2, ChevronLeft, ChevronRight, Heart, Lock, Play, Sparkles, Star } from "lucide-react";
@@ -34,7 +37,12 @@ export const Route = createFileRoute("/series/$id")({
 });
 
 function SeriesPage() {
-  const { series: s } = Route.useLoaderData() as { series: Series };
+  const { series: fallback } = Route.useLoaderData() as { series: Series };
+  const { data: rows } = useQuery({ queryKey: ["series"], queryFn: listSeriesRows });
+  const row = rows?.find((r) => r.id === fallback.id);
+  const s = row ? rowToSeries(row) : fallback;
+  const { data: dbParts } = useQuery({ queryKey: ["parts", fallback.id], queryFn: () => listParts(fallback.id) });
+  const { data: dbEpisodes } = useQuery({ queryKey: ["episodes", fallback.id], queryFn: () => listEpisodes(fallback.id) });
   const { user } = useUser();
   const navigate = useNavigate();
   const [paywall, setPaywall] = useState(false);
@@ -42,7 +50,7 @@ function SeriesPage() {
   const PER_PAGE = 20;
   const unlocked = s.free || user.unlockedSeries.includes(s.id);
   const progress = user.progress[s.id];
-  const parts = EPISODES[s.id] ?? [];
+  const parts = dbParts ?? [];
   const completedParts = user.completedParts?.[s.id] ?? [];
   const isPartDone = (ep: number, part: number) => completedParts.includes(`${ep}-${part}`);
 
@@ -159,8 +167,16 @@ function SeriesPage() {
                       </span>
                       <span className="font-display text-2xl text-muted-foreground tabular-nums w-14">Ép. {epNum}</span>
                       <div className="flex-1 min-w-0">
-                        <div className="font-display text-lg">
-                          {hasContent ? `Épisode ${epNum}` : `Épisode ${epNum}`}
+                        <div className="font-display text-lg flex items-baseline gap-2">
+                          {(() => {
+                            const meta = dbEpisodes?.find((e) => e.episode === epNum);
+                            return (
+                              <>
+                                {meta?.title_ko && <span className="font-korean">{meta.title_ko}</span>}
+                                <span>{meta?.title || `Épisode ${epNum}`}</span>
+                              </>
+                            );
+                          })()}
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5">
                           {!epUnlocked ? "Terminez l'épisode précédent pour déverrouiller" :
@@ -191,9 +207,10 @@ function SeriesPage() {
                                   <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                                 ) : null}
                               </span>
-                              <span className="font-display text-sm text-muted-foreground tabular-nums w-16">Partie {p.part}/{p.totalParts}</span>
+                              <span className="font-display text-sm text-muted-foreground tabular-nums w-16">Partie {p.part}/{epParts.length}</span>
                               <div className="flex-1 min-w-0">
                                 <div className="text-sm flex items-center gap-2">
+                                  {p.title_ko && <span className="font-korean text-foreground/70">{p.title_ko}</span>}
                                   {p.title}
                                   {p.optional && (
                                     <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-pink-400/90">
@@ -202,7 +219,7 @@ function SeriesPage() {
                                   )}
                                 </div>
                                 <div className="text-[11px] text-muted-foreground">
-                                  {p.slides.length} diapos{done ? " · Terminée" : !pUnlocked ? " · Verrouillée" : ""}
+                                  {done ? "Terminée" : !pUnlocked ? "Verrouillée" : "À lire"}
                                 </div>
                               </div>
                               {pUnlocked && !done && <Play className="h-4 w-4 text-accent" />}
