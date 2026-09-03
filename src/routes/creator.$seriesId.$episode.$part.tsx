@@ -7,6 +7,7 @@ import { useUser } from "@/lib/user-store";
 import {
   addSlide, deleteSlide, listLexicon, listParts, listSlides,
   addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide, updatePart,
+  listEpisodes, upsertEpisode,
 } from "@/lib/content";
 import { DbSlideReader } from "@/components/db-slide-reader";
 import { resolveLexiconRequests } from "@/lib/lexicon.functions";
@@ -55,11 +56,15 @@ function Editor() {
   const [publishing, setPublishing] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [bubbleTypes, setBubbleTypes] = useState<Record<string, string>>({});
+  const [titleDraft, setTitleDraft] = useState<Partial<{ title: string; title_ko: string }>>({});
+  const [epDraft, setEpDraft] = useState<Partial<{ title: string; title_ko: string }>>({});
 
   const { data: parts = [] } = useQuery({ queryKey: ["parts", seriesId], queryFn: () => listParts(seriesId), enabled: isAdmin });
   const current = parts.find((p) => p.episode === Number(episode) && p.part === Number(part));
   const { data: slides = [] } = useQuery({ queryKey: ["slides", current?.id], queryFn: () => listSlides(current!.id), enabled: !!current });
   const { data: lexicon = [] } = useQuery({ queryKey: ["lexicon", current?.id], queryFn: () => listLexicon(current!.id), enabled: !!current });
+  const { data: episodes = [] } = useQuery({ queryKey: ["episodes", seriesId], queryFn: () => listEpisodes(seriesId), enabled: isAdmin });
+  const epMeta = episodes.find((e) => e.episode === Number(episode));
 
   const activeSlideId = slides[active]?.id;
   useEffect(() => {
@@ -104,7 +109,16 @@ function Editor() {
     };
   });
 
-  const dirty = Object.keys(slideDrafts).length > 0 || Object.keys(lexDrafts).length > 0;
+  const dirty =
+    Object.keys(slideDrafts).length > 0 ||
+    Object.keys(lexDrafts).length > 0 ||
+    Object.keys(titleDraft).length > 0 ||
+    Object.keys(epDraft).length > 0;
+
+  const goToSlidePosition = (pos: number) => {
+    const i = slides.findIndex((s) => s.position === pos);
+    if (i >= 0) setActive(i);
+  };
 
   const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position" | "speaker_name", value: string) =>
     setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
@@ -126,6 +140,19 @@ function Editor() {
           ...(d.speaker_name !== undefined ? { speaker_name: d.speaker_name } : {}),
         });
       }
+      if (Object.keys(titleDraft).length > 0) {
+        await updatePart(current.id, titleDraft);
+        await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
+      }
+      if (Object.keys(epDraft).length > 0) {
+        await upsertEpisode({
+          series_id: seriesId,
+          episode: Number(episode),
+          title: epDraft.title ?? epMeta?.title ?? "",
+          title_ko: epDraft.title_ko ?? epMeta?.title_ko ?? "",
+        });
+        await qc.invalidateQueries({ queryKey: ["episodes", seriesId] });
+      }
       for (const [id, d] of Object.entries(lexDrafts)) {
         await updateLexiconEntry(id, d);
         const entry = lexicon.find((l) => l.id === id);
@@ -138,6 +165,8 @@ function Editor() {
       }
       setSlideDrafts({});
       setLexDrafts({});
+      setTitleDraft({});
+      setEpDraft({});
       refresh();
       toast.success("Modifications enregistrées");
     } catch {
@@ -205,6 +234,19 @@ function Editor() {
               {current.published ? <EyeOff className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
               {current.published ? "Dépublier" : "Publier"}
             </Button>
+          </div>
+          <div className="rounded-xl border border-border/60 p-3 mb-4 grid gap-2 sm:grid-cols-2">
+            <div className="sm:col-span-2 text-xs uppercase tracking-wider text-muted-foreground">
+              Titres — Épisode {episode} · Partie {part}
+            </div>
+            <Input key={`epko-${epMeta?.id ?? "new"}`} defaultValue={epMeta?.title_ko ?? ""} className="font-korean"
+              placeholder="Nom coréen de l'épisode" onChange={(e) => setEpDraft((d) => ({ ...d, title_ko: e.target.value }))} />
+            <Input key={`epfr-${epMeta?.id ?? "new"}`} defaultValue={epMeta?.title ?? ""}
+              placeholder="Nom français de l'épisode" onChange={(e) => setEpDraft((d) => ({ ...d, title: e.target.value }))} />
+            <Input defaultValue={current.title_ko ?? ""} className="font-korean"
+              placeholder="Nom coréen de la partie" onChange={(e) => setTitleDraft((d) => ({ ...d, title_ko: e.target.value }))} />
+            <Input defaultValue={current.title ?? ""}
+              placeholder="Nom français de la partie" onChange={(e) => setTitleDraft((d) => ({ ...d, title: e.target.value }))} />
           </div>
           <Tabs defaultValue="main">
             <TabsList>
@@ -286,10 +328,17 @@ function Editor() {
 
             <TabsContent value="lex" className="space-y-3 mt-4">
               {lexicon.map((l) => (
-                <div key={l.id} className="rounded-xl border border-border/60 p-3 grid gap-2 sm:grid-cols-[80px_1fr_2fr_auto] items-start">
+                <div key={l.id}
+                  onClick={() => goToSlidePosition((lexDrafts[l.id]?.slide_position ?? l.slide_position) as number)}
+                  className="rounded-xl border border-border/60 p-3 grid gap-2 sm:grid-cols-[80px_1fr_2fr_auto] items-start">
                   <Input type="number" defaultValue={l.slide_position}
-                    onChange={(e) => setLexField(l.id, "slide_position", Number(e.target.value))} />
+                    onChange={(e) => {
+                      const pos = Number(e.target.value);
+                      setLexField(l.id, "slide_position", pos);
+                      goToSlidePosition(pos);
+                    }} />
                   <Input defaultValue={l.term} className="font-korean"
+                    onFocus={() => goToSlidePosition((lexDrafts[l.id]?.slide_position ?? l.slide_position) as number)}
                     onChange={(e) => setLexField(l.id, "term", e.target.value)} />
                   <Textarea defaultValue={l.explanation} rows={2}
                     onChange={(e) => setLexField(l.id, "explanation", e.target.value)} />
