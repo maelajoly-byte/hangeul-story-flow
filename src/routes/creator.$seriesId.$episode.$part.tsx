@@ -230,6 +230,65 @@ function Editor() {
     }
   };
 
+  const onPickFile = async (file: File) => {
+    setImportError("");
+    setParsed([]);
+    setImportName(file.name);
+    try {
+      const buf = await file.arrayBuffer();
+      const lines = parseScript(readDocxParagraphs(buf));
+      setParsed(lines);
+      if (lines.length !== slides.length) {
+        const diff = Math.abs(lines.length - slides.length);
+        setImportError(
+          `${slides.length} diapos dans la partie · ${lines.length} textes détectés dans le document — ` +
+          (lines.length < slides.length
+            ? `import impossible : il manque ${diff} texte(s)`
+            : `import impossible : ${diff} texte(s) en trop`),
+        );
+      }
+    } catch {
+      setImportError("Impossible de lire ce fichier .docx.");
+    }
+  };
+
+  const runImport = async () => {
+    setImportBusy(true);
+    try {
+      for (let i = 0; i < parsed.length; i++) {
+        const line = parsed[i]!;
+        const slide = slides[i]!;
+        await updateSlide(slide.id, {
+          hangeul: line.text,
+          bubble_type: line.bubble_type,
+          speaker_name: line.bubble_type === "bp-normal" ? line.speaker_name : "",
+        });
+      }
+      setImportOpen(false);
+      setParsed([]);
+      setImportName("");
+      refresh();
+      toast.success(`${parsed.length} diapos remplies depuis le script`);
+    } catch {
+      toast.error("Impossible d'importer le script.");
+    } finally {
+      setImportBusy(false);
+    }
+  };
+
+  const counts = {
+    bp: parsed.filter((p) => p.bubble_type === "bp-normal").length,
+    classic: parsed.filter((p) => p.bubble_type === "bpp-classic").length,
+    narrator: parsed.filter((p) => p.bubble_type === "bpp-narrator").length,
+  };
+  const overwritten = parsed.length === slides.length
+    ? parsed.filter((_, i) => (slides[i]?.hangeul ?? "").trim().length > 0).map((_, i) => i).length
+    : 0;
+  const filledPositions = parsed.length === slides.length
+    ? slides.filter((s) => (s.hangeul ?? "").trim().length > 0).map((s) => s.position)
+    : [];
+
+
   const togglePublish = async () => {
     setPublishing(true);
     try {
