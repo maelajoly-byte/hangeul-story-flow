@@ -57,6 +57,13 @@ function Editor() {
   const [bulkBase, setBulkBase] = useState(mediaBase);
   const [bulkPattern, setBulkPattern] = useState("{NUM}-GP1_E1_S{NUM}_nosound.mp4");
   const [bulkBusy, setBulkBusy] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importBusy, setImportBusy] = useState(false);
+  const [importName, setImportName] = useState("");
+  const [importError, setImportError] = useState("");
+  const [parsed, setParsed] = useState<ParsedLine[]>([]);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
 
   const [publishing, setPublishing] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
