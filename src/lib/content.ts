@@ -205,3 +205,17 @@ export async function markNotificationRead(id: string) {
   const { error } = await supabase.from("notifications").update({ read: true }).eq("id", id);
   if (error) throw error;
 }
+
+/** Bulk-create slides with a generated media URL. Skips positions that already exist. */
+export async function createSlidesBulk(
+  partId: string,
+  rows: { position: number; media_url: string }[],
+): Promise<number> {
+  if (rows.length === 0) return 0;
+  const { data, error } = await supabase
+    .from("story_slides")
+    .insert(rows.map((r) => ({ part_id: partId, position: r.position, media_url: r.media_url, hangeul: "" })))
+    .select("id");
+  if (error) throw error;
+  return (data ?? []).length;
+}
