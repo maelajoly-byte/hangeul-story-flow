@@ -281,9 +281,6 @@ function Editor() {
     classic: parsed.filter((p) => p.bubble_type === "bpp-classic").length,
     narrator: parsed.filter((p) => p.bubble_type === "bpp-narrator").length,
   };
-  const overwritten = parsed.length === slides.length
-    ? parsed.filter((_, i) => (slides[i]?.hangeul ?? "").trim().length > 0).map((_, i) => i).length
-    : 0;
   const filledPositions = parsed.length === slides.length
     ? slides.filter((s) => (s.hangeul ?? "").trim().length > 0).map((s) => s.position)
     : [];
