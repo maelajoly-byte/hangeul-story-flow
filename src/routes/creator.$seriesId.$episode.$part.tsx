@@ -22,7 +22,7 @@ import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from 
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Save, Trash2, Layers, Globe, EyeOff } from "lucide-react";
+import { Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 const MEDIA_BASES: Record<string, string> = {
@@ -413,6 +413,9 @@ function Editor() {
                 );
               })}
               <div className="flex flex-wrap justify-end gap-2">
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => { setParsed([]); setImportError(""); setImportName(""); setImportOpen(true); }}>
+                  <FileText className="h-3.5 w-3.5" /> Importer le script (.docx)
+                </Button>
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
                   <Layers className="h-3.5 w-3.5" /> Créer des diapos en masse
                 </Button>
@@ -516,6 +519,84 @@ function Editor() {
               }}
             >
               Créer les diapos
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Importer le script coréen (.docx)</DialogTitle>
+            <DialogDescription>
+              Le document couvre exactement cette partie : le 1<sup>er</sup> texte va sur la 1<sup>re</sup> diapo, et ainsi de suite.
+              Les lignes « Nom : » et les lignes vides ne comptent pas.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-3">
+            <div className="flex items-center gap-3">
+              <input
+                ref={fileRef}
+                type="file"
+                accept=".docx"
+                className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) onPickFile(f); }}
+              />
+              <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>Choisir un fichier .docx</Button>
+              <span className="text-xs text-muted-foreground">{importName || "Aucun fichier sélectionné"}</span>
+            </div>
+
+            {importError && <p className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">{importError}</p>}
+
+            {parsed.length > 0 && (
+              <>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                  <span>{slides.length} diapos dans la partie</span>
+                  <span>{parsed.length} textes détectés</span>
+                  <span>BP · Normal : {counts.bp}</span>
+                  <span>BPP · Classic : {counts.classic}</span>
+                  <span>BPP · Narrator : {counts.narrator}</span>
+                </div>
+                {filledPositions.length > 0 && !importError && (
+                  <p className="rounded-xl bg-amber-500/10 p-3 text-xs">
+                    Attention : {filledPositions.length} diapo(s) contiennent déjà du texte et seront remplacées
+                    (n° {filledPositions.join(", ")}).
+                  </p>
+                )}
+                <div className="max-h-[45vh] overflow-y-auto rounded-xl border border-border/60">
+                  <table className="w-full text-xs">
+                    <thead className="sticky top-0 bg-muted/70">
+                      <tr className="text-left">
+                        <th className="p-2 w-12">N°</th>
+                        <th className="p-2 w-32">Bulle</th>
+                        <th className="p-2 w-24">Personnage</th>
+                        <th className="p-2">Texte coréen</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {parsed.map((l, i) => {
+                        const existing = (slides[i]?.hangeul ?? "").trim().length > 0;
+                        return (
+                          <tr key={i} className="border-t border-border/50 align-top">
+                            <td className="p-2">{slides[i]?.position ?? l.index}{existing && <span className="ml-1 text-amber-600" title="Texte déjà présent">•</span>}</td>
+                            <td className="p-2">{BUBBLE_LABELS[l.bubble_type]}</td>
+                            <td className="p-2 font-korean">{l.bubble_type === "bp-normal" ? l.speaker_name || "—" : "—"}</td>
+                            <td className="p-2 font-korean whitespace-pre-wrap">{l.text}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setImportOpen(false)}>Annuler</Button>
+            <Button disabled={!!importError || parsed.length === 0 || importBusy} onClick={runImport}>
+              Confirmer l'import
             </Button>
           </DialogFooter>
         </DialogContent>
