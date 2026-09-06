@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteHeader } from "@/components/site-header";
 import { useUser } from "@/lib/user-store";
 import {
-  addSlide, deleteSlide, listLexicon, listParts, listSlides,
+  addSlide, createSlidesBulk, deleteSlide, listLexicon, listParts, listSlides,
   addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide, updatePart,
   listEpisodes, upsertEpisode,
 } from "@/lib/content";
@@ -24,7 +24,7 @@ import { Plus, Save, Trash2, Layers, Globe, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 const MEDIA_BASES: Record<string, string> = {
-  "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past\\GP1_Slides/",
+  "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past/GP1_Slides/",
 };
 const DEFAULT_MEDIA_BASE = "https://media.sebastien-rebiere.fr/";
 
@@ -52,7 +52,12 @@ function Editor() {
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
   const [saving, setSaving] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
-  const [bulkCount, setBulkCount] = useState("5");
+  const [bulkFrom, setBulkFrom] = useState("1");
+  const [bulkTo, setBulkTo] = useState("10");
+  const [bulkBase, setBulkBase] = useState(mediaBase);
+  const [bulkPattern, setBulkPattern] = useState("{NUM}-GP1_E1_S{NUM}_nosound.mp4");
+  const [bulkBusy, setBulkBusy] = useState(false);
+
   const [publishing, setPublishing] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [bubbleTypes, setBubbleTypes] = useState<Record<string, string>>({});
@@ -119,6 +124,32 @@ function Editor() {
     const i = slides.findIndex((s) => s.position === pos);
     if (i >= 0) setActive(i);
   };
+
+  const bulkPlan = (() => {
+    const from = Number(bulkFrom);
+    const to = Number(bulkTo);
+    if (!Number.isInteger(from) || !Number.isInteger(to) || from < 1 || to < from) {
+      return { error: "Indiquez une plage valide (première ≤ dernière).", rows: [] as { position: number; media_url: string }[], skipped: [] as number[], preview: [] as string[] };
+    }
+    if (to - from + 1 > 500) {
+      return { error: "Plage trop large (500 diapos maximum).", rows: [], skipped: [], preview: [] };
+    }
+    if (!bulkPattern.includes("{NUM}")) {
+      return { error: "Le modèle doit contenir {NUM}.", rows: [], skipped: [], preview: [] };
+    }
+    const base = bulkBase.endsWith("/") ? bulkBase : bulkBase + "/";
+    const existing = new Set(slides.map((s) => s.position));
+    const rows: { position: number; media_url: string }[] = [];
+    const skipped: number[] = [];
+    for (let n = from; n <= to; n++) {
+      if (existing.has(n)) { skipped.push(n); continue; }
+      rows.push({ position: n, media_url: base + bulkPattern.replaceAll("{NUM}", String(n).padStart(3, "0")) });
+    }
+    const preview = rows.length <= 6
+      ? rows.map((r) => r.media_url)
+      : [...rows.slice(0, 3).map((r) => r.media_url), "…", ...rows.slice(-3).map((r) => r.media_url)];
+    return { error: "", rows, skipped, preview };
+  })();
 
   const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position" | "speaker_name", value: string) =>
     setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
@@ -318,7 +349,7 @@ function Editor() {
               })}
               <div className="flex flex-wrap justify-end gap-2">
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
-                  <Layers className="h-3.5 w-3.5" /> Ajouter des diapos
+                  <Layers className="h-3.5 w-3.5" /> Créer des diapos en masse
                 </Button>
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSlides(1)}>
                   <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
@@ -360,26 +391,71 @@ function Editor() {
       </main>
 
       <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Ajouter des diapos</DialogTitle>
-            <DialogDescription>Combien de diapos souhaitez-vous ajouter&nbsp;?</DialogDescription>
+            <DialogTitle>Création de diapos en masse</DialogTitle>
+            <DialogDescription>
+              Les URL vidéo sont générées automatiquement. {"{NUM}"} est remplacé par le numéro sur 3 chiffres.
+            </DialogDescription>
           </DialogHeader>
-          <Input type="number" min={1} max={100} value={bulkCount} onChange={(e) => setBulkCount(e.target.value)} />
+          <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <label className="text-sm">Première diapo
+                <Input type="number" min={1} value={bulkFrom} onChange={(e) => setBulkFrom(e.target.value)} />
+              </label>
+              <label className="text-sm">Dernière diapo
+                <Input type="number" min={1} value={bulkTo} onChange={(e) => setBulkTo(e.target.value)} />
+              </label>
+            </div>
+            <label className="text-sm">URL de base du dossier média
+              <Input value={bulkBase} onChange={(e) => setBulkBase(e.target.value)} />
+            </label>
+            <label className="text-sm">Modèle de nom de fichier
+              <Input value={bulkPattern} onChange={(e) => setBulkPattern(e.target.value)} />
+            </label>
+
+            <div className="rounded-xl border border-border/60 bg-muted/40 p-3 text-xs">
+              {bulkPlan.error ? (
+                <p className="text-destructive">{bulkPlan.error}</p>
+              ) : (
+                <>
+                  <p className="mb-1 font-medium">
+                    Aperçu — {bulkPlan.rows.length} diapo(s) à créer
+                    {bulkPlan.skipped.length > 0 && ` · ${bulkPlan.skipped.length} déjà existante(s), ignorée(s) : ${bulkPlan.skipped.join(", ")}`}
+                  </p>
+                  <ul className="space-y-0.5 break-all font-mono">
+                    {bulkPlan.preview.map((line, i) => (
+                      <li key={i} className={line === "…" ? "text-muted-foreground" : ""}>{line}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setBulkOpen(false)}>Annuler</Button>
             <Button
+              disabled={!!bulkPlan.error || bulkPlan.rows.length === 0 || bulkBusy}
               onClick={async () => {
-                const n = Math.max(1, Math.min(100, Number(bulkCount) || 1));
-                setBulkOpen(false);
-                await addSlides(n);
+                setBulkBusy(true);
+                try {
+                  const n = await createSlidesBulk(current.id, bulkPlan.rows);
+                  setBulkOpen(false);
+                  refresh();
+                  toast.success(`${n} diapo(s) créée(s)`);
+                } catch {
+                  toast.error("Impossible de créer les diapos.");
+                } finally {
+                  setBulkBusy(false);
+                }
               }}
             >
-              Ajouter
+              Créer les diapos
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }
