@@ -52,7 +52,12 @@ function Editor() {
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
   const [saving, setSaving] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
-  const [bulkCount, setBulkCount] = useState("5");
+  const [bulkFrom, setBulkFrom] = useState("1");
+  const [bulkTo, setBulkTo] = useState("10");
+  const [bulkBase, setBulkBase] = useState("");
+  const [bulkPattern, setBulkPattern] = useState("{NUM}-GP1_E1_S{NUM}_nosound.mp4");
+  const [bulkBusy, setBulkBusy] = useState(false);
+
   const [publishing, setPublishing] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [bubbleTypes, setBubbleTypes] = useState<Record<string, string>>({});
