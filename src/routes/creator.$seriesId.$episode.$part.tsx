@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteHeader } from "@/components/site-header";
 import { useUser } from "@/lib/user-store";
 import {
-  addSlide, deleteSlide, listLexicon, listParts, listSlides,
+  addSlide, createSlidesBulk, deleteSlide, listLexicon, listParts, listSlides,
   addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide, updatePart,
   listEpisodes, upsertEpisode,
 } from "@/lib/content";
@@ -24,7 +24,7 @@ import { Plus, Save, Trash2, Layers, Globe, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 const MEDIA_BASES: Record<string, string> = {
-  "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past\\GP1_Slides/",
+  "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past/GP1_Slides/",
 };
 const DEFAULT_MEDIA_BASE = "https://media.sebastien-rebiere.fr/";
 
@@ -54,7 +54,7 @@ function Editor() {
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkFrom, setBulkFrom] = useState("1");
   const [bulkTo, setBulkTo] = useState("10");
-  const [bulkBase, setBulkBase] = useState("");
+  const [bulkBase, setBulkBase] = useState(mediaBase);
   const [bulkPattern, setBulkPattern] = useState("{NUM}-GP1_E1_S{NUM}_nosound.mp4");
   const [bulkBusy, setBulkBusy] = useState(false);
 
@@ -124,6 +124,32 @@ function Editor() {
     const i = slides.findIndex((s) => s.position === pos);
     if (i >= 0) setActive(i);
   };
+
+  const bulkPlan = (() => {
+    const from = Number(bulkFrom);
+    const to = Number(bulkTo);
+    if (!Number.isInteger(from) || !Number.isInteger(to) || from < 1 || to < from) {
+      return { error: "Indiquez une plage valide (première ≤ dernière).", rows: [] as { position: number; media_url: string }[], skipped: [] as number[], preview: [] as string[] };
+    }
+    if (to - from + 1 > 500) {
+      return { error: "Plage trop large (500 diapos maximum).", rows: [], skipped: [], preview: [] };
+    }
+    if (!bulkPattern.includes("{NUM}")) {
+      return { error: "Le modèle doit contenir {NUM}.", rows: [], skipped: [], preview: [] };
+    }
+    const base = bulkBase.endsWith("/") ? bulkBase : bulkBase + "/";
+    const existing = new Set(slides.map((s) => s.position));
+    const rows: { position: number; media_url: string }[] = [];
+    const skipped: number[] = [];
+    for (let n = from; n <= to; n++) {
+      if (existing.has(n)) { skipped.push(n); continue; }
+      rows.push({ position: n, media_url: base + bulkPattern.replaceAll("{NUM}", String(n).padStart(3, "0")) });
+    }
+    const preview = rows.length <= 6
+      ? rows.map((r) => r.media_url)
+      : [...rows.slice(0, 3).map((r) => r.media_url), "…", ...rows.slice(-3).map((r) => r.media_url)];
+    return { error: "", rows, skipped, preview };
+  })();
 
   const setSlideField = (id: string, key: "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "bubble_type" | "bubble_position" | "speaker_name", value: string) =>
     setSlideDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [key]: value } }));
