@@ -17,6 +17,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BUBBLES, BUBBLE_POSITIONS, getBubble } from "@/lib/bubbles";
+import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from "@/lib/docx-script";
+
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
