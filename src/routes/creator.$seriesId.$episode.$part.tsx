@@ -349,7 +349,7 @@ function Editor() {
               })}
               <div className="flex flex-wrap justify-end gap-2">
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
-                  <Layers className="h-3.5 w-3.5" /> Ajouter des diapos
+                  <Layers className="h-3.5 w-3.5" /> Créer des diapos en masse
                 </Button>
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSlides(1)}>
                   <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
