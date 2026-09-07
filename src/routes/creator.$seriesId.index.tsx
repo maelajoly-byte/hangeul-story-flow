@@ -118,7 +118,7 @@ function CreatorSeries() {
               <AccordionContent className="space-y-2 pb-4">
                 {parts
                   .filter((p) => p.episode === ep)
-                  .map((p) => (
+                  .map((p, idx, arr) => (
                     <div
                       key={p.id}
                       className="flex items-center gap-2 rounded-lg border border-border/60 px-4 py-2.5 hover:border-accent transition-colors"
@@ -133,6 +133,24 @@ function CreatorSeries() {
                       </Link>
                       <button
                         type="button"
+                        aria-label={`Monter la partie ${p.part}`}
+                        disabled={idx === 0}
+                        onClick={() => move(arr, idx, -1)}
+                        className="text-muted-foreground hover:text-accent disabled:opacity-30"
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Descendre la partie ${p.part}`}
+                        disabled={idx === arr.length - 1}
+                        onClick={() => move(arr, idx, 1)}
+                        className="text-muted-foreground hover:text-accent disabled:opacity-30"
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
                         aria-label={`Supprimer la partie ${p.part}`}
                         onClick={() => askDelete(p.id, `Partie ${p.part} — ${p.title}`)}
                         className="text-muted-foreground hover:text-destructive"
@@ -141,6 +159,7 @@ function CreatorSeries() {
                       </button>
                     </div>
                   ))}
+
                 <Button variant="outline" size="sm" onClick={() => addPart(ep)} className="gap-1.5">
                   <Plus className="h-3.5 w-3.5" /> Ajouter une partie
                 </Button>
