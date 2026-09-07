@@ -270,21 +270,18 @@ function Editor() {
     setImportName(file.name);
     try {
       const buf = await file.arrayBuffer();
-      const lines = parseScript(readDocxParagraphs(buf));
-      setParsed(lines);
-      if (lines.length !== slides.length) {
-        const diff = Math.abs(lines.length - slides.length);
-        setImportError(
-          `${slides.length} diapos dans la partie · ${lines.length} textes détectés dans le document — ` +
-          (lines.length < slides.length
-            ? `import impossible : il manque ${diff} texte(s)`
-            : `import impossible : ${diff} texte(s) en trop`),
-        );
-      }
+      setParsed(parseScript(readDocxParagraphs(buf)));
     } catch {
       setImportError("Impossible de lire ce fichier .docx.");
     }
   };
+
+  const mismatch =
+    parsed.length === 0 || parsed.length === slides.length
+      ? ""
+      : parsed.length < slides.length
+        ? `${slides.length} diapos · ${parsed.length} textes — il manque ${slides.length - parsed.length} texte(s). Ajoutez des lignes (même vides) ci-dessous.`
+        : `${slides.length} diapos · ${parsed.length} textes — ${parsed.length - slides.length} texte(s) en trop. Supprimez des lignes ci-dessous.`;
 
   const runImport = async () => {
     setImportBusy(true);
@@ -294,13 +291,11 @@ function Editor() {
         const slide = slides[i]!;
         await updateSlide(slide.id, {
           hangeul: line.text,
-          bubble_type: line.bubble_type,
+          bubble_type: line.text.trim() ? line.bubble_type : "none",
           speaker_name: line.bubble_type === "bp-normal" ? line.speaker_name : "",
         });
       }
       setImportOpen(false);
-      setParsed([]);
-      setImportName("");
       refresh();
       toast.success(`${parsed.length} diapos remplies depuis le script`);
     } catch {
@@ -318,6 +313,7 @@ function Editor() {
   const filledPositions = parsed.length === slides.length
     ? slides.filter((s) => (s.hangeul ?? "").trim().length > 0).map((s) => s.position)
     : [];
+
 
 
   const togglePublish = async () => {
