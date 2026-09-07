@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -7,7 +7,7 @@ import { useUser } from "@/lib/user-store";
 import {
   addSlide, createSlidesBulk, deleteSlide, listLexicon, listParts, listSlides,
   addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide, updatePart,
-  listEpisodes, upsertEpisode,
+  listEpisodes, upsertEpisode, insertSlideAt,
 } from "@/lib/content";
 import { DbSlideReader } from "@/components/db-slide-reader";
 import { resolveLexiconRequests } from "@/lib/lexicon.functions";
@@ -22,8 +22,9 @@ import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from 
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, CornerDownRight, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
 import { toast } from "sonner";
+
 
 const MEDIA_BASES: Record<string, string> = {
   "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past/GP1_Slides/",
