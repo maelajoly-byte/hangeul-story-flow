@@ -346,21 +346,48 @@ function Editor() {
         </div>
 
         <div className="p-5 overflow-auto">
-          <div className="flex items-center justify-end gap-2 mb-3">
-            <Button size="sm" className="gap-1.5" onClick={saveAll} disabled={!dirty || saving}>
-              <Save className="h-3.5 w-3.5" /> {saving ? "Enregistrement…" : "Enregistrer"}
-            </Button>
-            <Button
-              size="sm"
-              variant={current.published ? "outline" : "default"}
-              className="gap-1.5"
-              onClick={togglePublish}
-              disabled={publishing}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <Link to="/creator/$seriesId" params={{ seriesId }}>
+              <Button size="sm" variant="ghost" className="gap-1.5">
+                <ArrowLeft className="h-3.5 w-3.5" /> Toutes les parties
+              </Button>
+            </Link>
+            <Select
+              value={`${episode}/${part}`}
+              onValueChange={(v) => {
+                const [ep, pt] = v.split("/");
+                setActive(0);
+                navigate({ to: "/creator/$seriesId/$episode/$part", params: { seriesId, episode: ep!, part: pt! } });
+              }}
             >
-              {current.published ? <EyeOff className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
-              {current.published ? "Dépublier" : "Publier"}
-            </Button>
+              <SelectTrigger className="h-8 w-[280px] text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {[...parts]
+                  .sort((a, b) => a.episode - b.episode || a.part - b.part)
+                  .map((p) => (
+                    <SelectItem key={p.id} value={`${p.episode}/${p.part}`}>
+                      Épisode {p.episode} · Partie {p.part} — {p.title}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            <div className="ml-auto flex items-center gap-2">
+              <Button size="sm" className="gap-1.5" onClick={saveAll} disabled={!dirty || saving}>
+                <Save className="h-3.5 w-3.5" /> {saving ? "Enregistrement…" : "Enregistrer"}
+              </Button>
+              <Button
+                size="sm"
+                variant={current.published ? "outline" : "default"}
+                className="gap-1.5"
+                onClick={togglePublish}
+                disabled={publishing}
+              >
+                {current.published ? <EyeOff className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
+                {current.published ? "Dépublier" : "Publier"}
+              </Button>
+            </div>
           </div>
+
           <div className="rounded-xl border border-border/60 p-3 mb-4 grid gap-2 sm:grid-cols-2">
             <div className="sm:col-span-2 text-xs uppercase tracking-wider text-muted-foreground">
               Titres — Épisode {episode} · Partie {part}
