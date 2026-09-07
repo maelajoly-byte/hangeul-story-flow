@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/site-header";
 import { SERIES } from "@/lib/data";
 import { useUser } from "@/lib/user-store";
-import { createPart, deletePartDeep, listParts, listSlides, listLexicon } from "@/lib/content";
+import { createPart, deletePartDeep, listParts, listSlides, listLexicon, reorderParts } from "@/lib/content";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
@@ -16,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -97,7 +97,15 @@ function CreatorSeries() {
   const confirmDelete = async () => {
     if (!pending) return;
     try {
+      const removed = parts.find((p) => p.id === pending.id);
       await deletePartDeep(pending.id);
+      if (removed) {
+        const rest = parts
+          .filter((p) => p.episode === removed.episode && p.id !== removed.id)
+          .sort((a, b) => a.part - b.part)
+          .map((p) => p.id);
+        if (rest.length) await reorderParts(rest);
+      }
       await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
       toast.success("Partie supprimée");
     } catch {
@@ -105,6 +113,20 @@ function CreatorSeries() {
     }
     setPending(null);
   };
+
+  const move = async (arr: { id: string }[], idx: number, delta: number) => {
+    const next = [...arr];
+    const target = idx + delta;
+    if (target < 0 || target >= next.length) return;
+    [next[idx], next[target]] = [next[target]!, next[idx]!];
+    try {
+      await reorderParts(next.map((p) => p.id));
+      await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
+    } catch {
+      toast.error("Impossible de réordonner les parties.");
+    }
+  };
+
 
   return (
     <div className="min-h-screen">
@@ -118,7 +140,7 @@ function CreatorSeries() {
               <AccordionContent className="space-y-2 pb-4">
                 {parts
                   .filter((p) => p.episode === ep)
-                  .map((p) => (
+                  .map((p, idx, arr) => (
                     <div
                       key={p.id}
                       className="flex items-center gap-2 rounded-lg border border-border/60 px-4 py-2.5 hover:border-accent transition-colors"
@@ -133,6 +155,24 @@ function CreatorSeries() {
                       </Link>
                       <button
                         type="button"
+                        aria-label={`Monter la partie ${p.part}`}
+                        disabled={idx === 0}
+                        onClick={() => move(arr, idx, -1)}
+                        className="text-muted-foreground hover:text-accent disabled:opacity-30"
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Descendre la partie ${p.part}`}
+                        disabled={idx === arr.length - 1}
+                        onClick={() => move(arr, idx, 1)}
+                        className="text-muted-foreground hover:text-accent disabled:opacity-30"
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
                         aria-label={`Supprimer la partie ${p.part}`}
                         onClick={() => askDelete(p.id, `Partie ${p.part} — ${p.title}`)}
                         className="text-muted-foreground hover:text-destructive"
@@ -141,6 +181,7 @@ function CreatorSeries() {
                       </button>
                     </div>
                   ))}
+
                 <Button variant="outline" size="sm" onClick={() => addPart(ep)} className="gap-1.5">
                   <Plus className="h-3.5 w-3.5" /> Ajouter une partie
                 </Button>

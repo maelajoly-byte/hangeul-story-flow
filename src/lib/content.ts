@@ -160,6 +160,42 @@ export async function addSlide(partId: string, position: number) {
   return data as StorySlide;
 }
 
+/** Inserts a slide at `position`, shifting following slides one step down. */
+export async function insertSlideAt(partId: string, position: number) {
+  const slides = await listSlides(partId);
+  const toShift = slides.filter((s) => s.position >= position).sort((a, b) => b.position - a.position);
+  for (const s of toShift) {
+    const { error } = await supabase.from("story_slides").update({ position: s.position + 1 }).eq("id", s.id);
+    if (error) throw error;
+  }
+  return addSlide(partId, position);
+}
+
+/** Renumbers slides of a part to 1..n following the given id order. */
+export async function reorderSlides(orderedIds: string[]) {
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error } = await supabase.from("story_slides").update({ position: 10000 + i }).eq("id", orderedIds[i]!);
+    if (error) throw error;
+  }
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error } = await supabase.from("story_slides").update({ position: i + 1 }).eq("id", orderedIds[i]!);
+    if (error) throw error;
+  }
+}
+
+/** Renumbers parts of an episode to 1..n following the given id order. */
+export async function reorderParts(orderedIds: string[]) {
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error } = await supabase.from("story_parts").update({ part: 10000 + i }).eq("id", orderedIds[i]!);
+    if (error) throw error;
+  }
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error } = await supabase.from("story_parts").update({ part: i + 1 }).eq("id", orderedIds[i]!);
+    if (error) throw error;
+  }
+}
+
+
 export async function updateSlide(
   id: string,
   patch: Partial<Pick<StorySlide, "media_url" | "hangeul" | "sfx_url" | "ambient_url" | "position" | "bubble_type" | "bubble_position" | "speaker_name">>,

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -7,7 +7,7 @@ import { useUser } from "@/lib/user-store";
 import {
   addSlide, createSlidesBulk, deleteSlide, listLexicon, listParts, listSlides,
   addLexiconEntry, updateLexiconEntry, deleteLexiconEntry, updateSlide, updatePart,
-  listEpisodes, upsertEpisode,
+  listEpisodes, upsertEpisode, insertSlideAt,
 } from "@/lib/content";
 import { DbSlideReader } from "@/components/db-slide-reader";
 import { resolveLexiconRequests } from "@/lib/lexicon.functions";
@@ -22,8 +22,9 @@ import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from 
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, CornerDownRight, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
 import { toast } from "sonner";
+
 
 const MEDIA_BASES: Record<string, string> = {
   "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past/GP1_Slides/",
@@ -48,7 +49,9 @@ function Editor() {
   const { isAdmin } = useUser();
   const mediaBase = MEDIA_BASES[seriesId] ?? DEFAULT_MEDIA_BASE;
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const resolve = useServerFn(resolveLexiconRequests);
+
   const [active, setActive] = useState(0);
   const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string; speaker_name: string }>>>({});
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
@@ -230,27 +233,55 @@ function Editor() {
     }
   };
 
+  const insertAt = async (position: number) => {
+    try {
+      await insertSlideAt(current.id, position);
+      refresh();
+      toast.success(`Diapo insérée en position ${position}`);
+    } catch {
+      toast.error("Impossible d'insérer la diapo.");
+    }
+  };
+
+  /* --- édition de l'aperçu d'import --- */
+  const updateLine = (i: number, patch: Partial<ParsedLine>) =>
+    setParsed((prev) => prev.map((l, k) => (k === i ? { ...l, ...patch } : l)));
+  const insertLine = (i: number) =>
+    setParsed((prev) => {
+      const copy = [...prev];
+      copy.splice(i, 0, { index: i + 1, bubble_type: "bpp-narrator", speaker_name: "", text: "" });
+      return copy.map((l, k) => ({ ...l, index: k + 1 }));
+    });
+  const removeLine = (i: number) =>
+    setParsed((prev) => prev.filter((_, k) => k !== i).map((l, k) => ({ ...l, index: k + 1 })));
+  const moveLine = (i: number, delta: number) =>
+    setParsed((prev) => {
+      const t = i + delta;
+      if (t < 0 || t >= prev.length) return prev;
+      const copy = [...prev];
+      [copy[i], copy[t]] = [copy[t]!, copy[i]!];
+      return copy.map((l, k) => ({ ...l, index: k + 1 }));
+    });
+
+
   const onPickFile = async (file: File) => {
     setImportError("");
     setParsed([]);
     setImportName(file.name);
     try {
       const buf = await file.arrayBuffer();
-      const lines = parseScript(readDocxParagraphs(buf));
-      setParsed(lines);
-      if (lines.length !== slides.length) {
-        const diff = Math.abs(lines.length - slides.length);
-        setImportError(
-          `${slides.length} diapos dans la partie · ${lines.length} textes détectés dans le document — ` +
-          (lines.length < slides.length
-            ? `import impossible : il manque ${diff} texte(s)`
-            : `import impossible : ${diff} texte(s) en trop`),
-        );
-      }
+      setParsed(parseScript(readDocxParagraphs(buf)));
     } catch {
       setImportError("Impossible de lire ce fichier .docx.");
     }
   };
+
+  const mismatch =
+    parsed.length === 0 || parsed.length === slides.length
+      ? ""
+      : parsed.length < slides.length
+        ? `${slides.length} diapos · ${parsed.length} textes — il manque ${slides.length - parsed.length} texte(s). Ajoutez des lignes (même vides) ci-dessous.`
+        : `${slides.length} diapos · ${parsed.length} textes — ${parsed.length - slides.length} texte(s) en trop. Supprimez des lignes ci-dessous.`;
 
   const runImport = async () => {
     setImportBusy(true);
@@ -260,13 +291,11 @@ function Editor() {
         const slide = slides[i]!;
         await updateSlide(slide.id, {
           hangeul: line.text,
-          bubble_type: line.bubble_type,
+          bubble_type: line.text.trim() ? line.bubble_type : "none",
           speaker_name: line.bubble_type === "bp-normal" ? line.speaker_name : "",
         });
       }
       setImportOpen(false);
-      setParsed([]);
-      setImportName("");
       refresh();
       toast.success(`${parsed.length} diapos remplies depuis le script`);
     } catch {
@@ -284,6 +313,7 @@ function Editor() {
   const filledPositions = parsed.length === slides.length
     ? slides.filter((s) => (s.hangeul ?? "").trim().length > 0).map((s) => s.position)
     : [];
+
 
 
   const togglePublish = async () => {
@@ -316,21 +346,48 @@ function Editor() {
         </div>
 
         <div className="p-5 overflow-auto">
-          <div className="flex items-center justify-end gap-2 mb-3">
-            <Button size="sm" className="gap-1.5" onClick={saveAll} disabled={!dirty || saving}>
-              <Save className="h-3.5 w-3.5" /> {saving ? "Enregistrement…" : "Enregistrer"}
-            </Button>
-            <Button
-              size="sm"
-              variant={current.published ? "outline" : "default"}
-              className="gap-1.5"
-              onClick={togglePublish}
-              disabled={publishing}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <Link to="/creator/$seriesId" params={{ seriesId }}>
+              <Button size="sm" variant="ghost" className="gap-1.5">
+                <ArrowLeft className="h-3.5 w-3.5" /> Toutes les parties
+              </Button>
+            </Link>
+            <Select
+              value={`${episode}/${part}`}
+              onValueChange={(v) => {
+                const [ep, pt] = v.split("/");
+                setActive(0);
+                navigate({ to: "/creator/$seriesId/$episode/$part", params: { seriesId, episode: ep!, part: pt! } });
+              }}
             >
-              {current.published ? <EyeOff className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
-              {current.published ? "Dépublier" : "Publier"}
-            </Button>
+              <SelectTrigger className="h-8 w-[280px] text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {[...parts]
+                  .sort((a, b) => a.episode - b.episode || a.part - b.part)
+                  .map((p) => (
+                    <SelectItem key={p.id} value={`${p.episode}/${p.part}`}>
+                      Épisode {p.episode} · Partie {p.part} — {p.title}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            <div className="ml-auto flex items-center gap-2">
+              <Button size="sm" className="gap-1.5" onClick={saveAll} disabled={!dirty || saving}>
+                <Save className="h-3.5 w-3.5" /> {saving ? "Enregistrement…" : "Enregistrer"}
+              </Button>
+              <Button
+                size="sm"
+                variant={current.published ? "outline" : "default"}
+                className="gap-1.5"
+                onClick={togglePublish}
+                disabled={publishing}
+              >
+                {current.published ? <EyeOff className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
+                {current.published ? "Dépublier" : "Publier"}
+              </Button>
+            </div>
           </div>
+
           <div className="rounded-xl border border-border/60 p-3 mb-4 grid gap-2 sm:grid-cols-2">
             <div className="sm:col-span-2 text-xs uppercase tracking-wider text-muted-foreground">
               Titres — Épisode {episode} · Partie {part}
