@@ -49,7 +49,9 @@ function Editor() {
   const { isAdmin } = useUser();
   const mediaBase = MEDIA_BASES[seriesId] ?? DEFAULT_MEDIA_BASE;
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const resolve = useServerFn(resolveLexiconRequests);
+
   const [active, setActive] = useState(0);
   const [slideDrafts, setSlideDrafts] = useState<Record<string, Partial<{ media_url: string; hangeul: string; sfx_url: string; ambient_url: string; bubble_type: string; bubble_position: string; speaker_name: string }>>>({});
   const [lexDrafts, setLexDrafts] = useState<Record<string, Partial<{ term: string; explanation: string; slide_position: number }>>>({});
@@ -230,6 +232,37 @@ function Editor() {
       toast.error("Impossible d'ajouter les diapos.");
     }
   };
+
+  const insertAt = async (position: number) => {
+    try {
+      await insertSlideAt(current.id, position);
+      refresh();
+      toast.success(`Diapo insérée en position ${position}`);
+    } catch {
+      toast.error("Impossible d'insérer la diapo.");
+    }
+  };
+
+  /* --- édition de l'aperçu d'import --- */
+  const updateLine = (i: number, patch: Partial<ParsedLine>) =>
+    setParsed((prev) => prev.map((l, k) => (k === i ? { ...l, ...patch } : l)));
+  const insertLine = (i: number) =>
+    setParsed((prev) => {
+      const copy = [...prev];
+      copy.splice(i, 0, { index: i + 1, bubble_type: "bpp-narrator", speaker_name: "", text: "" });
+      return copy.map((l, k) => ({ ...l, index: k + 1 }));
+    });
+  const removeLine = (i: number) =>
+    setParsed((prev) => prev.filter((_, k) => k !== i).map((l, k) => ({ ...l, index: k + 1 })));
+  const moveLine = (i: number, delta: number) =>
+    setParsed((prev) => {
+      const t = i + delta;
+      if (t < 0 || t >= prev.length) return prev;
+      const copy = [...prev];
+      [copy[i], copy[t]] = [copy[t]!, copy[i]!];
+      return copy.map((l, k) => ({ ...l, index: k + 1 }));
+    });
+
 
   const onPickFile = async (file: File) => {
     setImportError("");
