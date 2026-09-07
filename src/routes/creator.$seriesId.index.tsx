@@ -97,7 +97,15 @@ function CreatorSeries() {
   const confirmDelete = async () => {
     if (!pending) return;
     try {
+      const removed = parts.find((p) => p.id === pending.id);
       await deletePartDeep(pending.id);
+      if (removed) {
+        const rest = parts
+          .filter((p) => p.episode === removed.episode && p.id !== removed.id)
+          .sort((a, b) => a.part - b.part)
+          .map((p) => p.id);
+        if (rest.length) await reorderParts(rest);
+      }
       await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
       toast.success("Partie supprimée");
     } catch {
@@ -105,6 +113,20 @@ function CreatorSeries() {
     }
     setPending(null);
   };
+
+  const move = async (arr: { id: string }[], idx: number, delta: number) => {
+    const next = [...arr];
+    const target = idx + delta;
+    if (target < 0 || target >= next.length) return;
+    [next[idx], next[target]] = [next[target]!, next[idx]!];
+    try {
+      await reorderParts(next.map((p) => p.id));
+      await qc.invalidateQueries({ queryKey: ["parts", seriesId] });
+    } catch {
+      toast.error("Impossible de réordonner les parties.");
+    }
+  };
+
 
   return (
     <div className="min-h-screen">
