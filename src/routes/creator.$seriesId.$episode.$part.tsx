@@ -68,6 +68,10 @@ function Editor() {
   const [importError, setImportError] = useState("");
   const [parsed, setParsed] = useState<ParsedLine[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [addMode, setAddMode] = useState<"end" | "at">("end");
+  const [addPos, setAddPos] = useState("1");
+  const [clearBusy, setClearBusy] = useState(false);
 
 
   const [publishing, setPublishing] = useState(false);
