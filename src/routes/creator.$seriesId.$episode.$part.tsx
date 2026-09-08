@@ -22,7 +22,7 @@ import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from 
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowLeft, ChevronDown, ChevronUp, CornerDownRight, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText, Eraser } from "lucide-react";
 import { toast } from "sonner";
 
 
@@ -68,6 +68,10 @@ function Editor() {
   const [importError, setImportError] = useState("");
   const [parsed, setParsed] = useState<ParsedLine[]>([]);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [addMode, setAddMode] = useState<"end" | "at">("end");
+  const [addPos, setAddPos] = useState("1");
+  const [clearBusy, setClearBusy] = useState(false);
 
 
   const [publishing, setPublishing] = useState(false);
@@ -292,6 +296,7 @@ function Editor() {
         await updateSlide(slide.id, {
           hangeul: line.text,
           bubble_type: line.text.trim() ? line.bubble_type : "none",
+          bubble_position: "center",
           speaker_name: line.bubble_type === "bp-normal" ? line.speaker_name : "",
         });
       }
@@ -304,6 +309,24 @@ function Editor() {
       setImportBusy(false);
     }
   };
+
+  /** Vide le texte, le type de bulle et le nom du personnage de toutes les diapos. */
+  const clearImported = async () => {
+    setClearBusy(true);
+    try {
+      for (const s of slides) {
+        await updateSlide(s.id, { hangeul: "", bubble_type: "none", speaker_name: "" });
+      }
+      setSlideDrafts({});
+      refresh();
+      toast.success("Script importé supprimé");
+    } catch {
+      toast.error("Impossible de supprimer le script importé.");
+    } finally {
+      setClearBusy(false);
+    }
+  };
+
 
   const counts = {
     bp: parsed.filter((p) => p.bubble_type === "bp-normal").length,
@@ -362,11 +385,12 @@ function Editor() {
             >
               <SelectTrigger className="h-8 w-[280px] text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
-                {[...parts]
-                  .sort((a, b) => a.episode - b.episode || a.part - b.part)
+                {parts
+                  .filter((p) => p.episode === Number(episode))
+                  .sort((a, b) => a.part - b.part)
                   .map((p) => (
                     <SelectItem key={p.id} value={`${p.episode}/${p.part}`}>
-                      Épisode {p.episode} · Partie {p.part} — {p.title}
+                      Partie {p.part} — {p.title}
                     </SelectItem>
                   ))}
               </SelectContent>
@@ -476,7 +500,8 @@ function Editor() {
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
                   <Layers className="h-3.5 w-3.5" /> Créer des diapos en masse
                 </Button>
-                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSlides(1)}>
+                <Button variant="outline" size="sm" className="gap-1.5"
+                  onClick={() => { setAddMode("end"); setAddPos(String(slides.length + 1)); setAddOpen(true); }}>
                   <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
                 </Button>
               </div>
@@ -621,14 +646,16 @@ function Editor() {
                     (n° {filledPositions.join(", ")}).
                   </p>
                 )}
+                {mismatch && <p className="rounded-xl bg-amber-500/10 p-3 text-xs">{mismatch}</p>}
                 <div className="max-h-[45vh] overflow-y-auto rounded-xl border border-border/60">
                   <table className="w-full text-xs">
                     <thead className="sticky top-0 bg-muted/70">
                       <tr className="text-left">
                         <th className="p-2 w-12">N°</th>
-                        <th className="p-2 w-32">Bulle</th>
-                        <th className="p-2 w-24">Personnage</th>
+                        <th className="p-2 w-36">Bulle</th>
+                        <th className="p-2 w-28">Personnage</th>
                         <th className="p-2">Texte coréen</th>
+                        <th className="p-2 w-24"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -636,24 +663,95 @@ function Editor() {
                         const existing = (slides[i]?.hangeul ?? "").trim().length > 0;
                         return (
                           <tr key={i} className="border-t border-border/50 align-top">
-                            <td className="p-2">{slides[i]?.position ?? l.index}{existing && <span className="ml-1 text-amber-600" title="Texte déjà présent">•</span>}</td>
-                            <td className="p-2">{BUBBLE_LABELS[l.bubble_type]}</td>
-                            <td className="p-2 font-korean">{l.bubble_type === "bp-normal" ? l.speaker_name || "—" : "—"}</td>
-                            <td className="p-2 font-korean whitespace-pre-wrap">{l.text}</td>
+                            <td className="p-2">
+                              {slides[i]?.position ?? l.index}
+                              {existing && <span className="ml-1 text-amber-600" title="Texte déjà présent">•</span>}
+                            </td>
+                            <td className="p-2">
+                              <Select value={l.bubble_type} onValueChange={(v) => updateLine(i, { bubble_type: v as ParsedLine["bubble_type"] })}>
+                                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  {Object.entries(BUBBLE_LABELS).map(([id, label]) => (
+                                    <SelectItem key={id} value={id}>{label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </td>
+                            <td className="p-2">
+                              {l.bubble_type === "bp-normal" ? (
+                                <Input className="h-8 font-korean text-xs" value={l.speaker_name}
+                                  onChange={(e) => updateLine(i, { speaker_name: e.target.value })} />
+                              ) : <span className="text-muted-foreground">—</span>}
+                            </td>
+                            <td className="p-2">
+                              <Textarea rows={2} className="font-korean text-xs" value={l.text}
+                                onChange={(e) => updateLine(i, { text: e.target.value })} />
+                            </td>
+                            <td className="p-2">
+                              <div className="flex items-center gap-1">
+                                <button onClick={() => moveLine(i, -1)} aria-label="Monter"><ChevronUp className="h-3.5 w-3.5" /></button>
+                                <button onClick={() => moveLine(i, 1)} aria-label="Descendre"><ChevronDown className="h-3.5 w-3.5" /></button>
+                                <button onClick={() => insertLine(i)} aria-label="Insérer une ligne vide ici"><Plus className="h-3.5 w-3.5" /></button>
+                                <button onClick={() => removeLine(i)} aria-label="Supprimer la ligne"><Trash2 className="h-3.5 w-3.5 hover:text-destructive" /></button>
+                              </div>
+                            </td>
                           </tr>
                         );
                       })}
                     </tbody>
                   </table>
                 </div>
+                <Button variant="outline" size="sm" className="gap-1.5 self-start" onClick={() => insertLine(parsed.length)}>
+                  <Plus className="h-3.5 w-3.5" /> Ajouter une ligne vide à la fin
+                </Button>
               </>
             )}
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex-wrap gap-2">
+            <Button variant="outline" className="gap-1.5 mr-auto" disabled={clearBusy} onClick={clearImported}>
+              <Eraser className="h-3.5 w-3.5" /> Supprimer le script importé
+            </Button>
             <Button variant="outline" onClick={() => setImportOpen(false)}>Annuler</Button>
-            <Button disabled={!!importError || parsed.length === 0 || importBusy} onClick={runImport}>
+            <Button disabled={!!importError || !!mismatch || parsed.length === 0 || importBusy} onClick={runImport}>
               Confirmer l'import
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Ajouter une diapo</DialogTitle>
+            <DialogDescription>Choisissez où placer la nouvelle diapo.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <Select value={addMode} onValueChange={(v) => setAddMode(v as "end" | "at")}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="end">Dernière diapo</SelectItem>
+                <SelectItem value="at">Choisir l'emplacement</SelectItem>
+              </SelectContent>
+            </Select>
+            {addMode === "at" && (
+              <label className="text-sm">Numéro de la nouvelle diapo
+                <Input type="number" min={1} max={slides.length + 1} value={addPos} onChange={(e) => setAddPos(e.target.value)} />
+              </label>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddOpen(false)}>Annuler</Button>
+            <Button
+              onClick={async () => {
+                const pos = Number(addPos);
+                setAddOpen(false);
+                if (addMode === "end") await addSlides(1);
+                else if (Number.isInteger(pos) && pos >= 1 && pos <= slides.length + 1) await insertAt(pos);
+                else toast.error("Numéro de diapo invalide.");
+              }}
+            >
+              Ajouter
             </Button>
           </DialogFooter>
         </DialogContent>
