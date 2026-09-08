@@ -366,11 +366,12 @@ function Editor() {
             >
               <SelectTrigger className="h-8 w-[280px] text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
-                {[...parts]
-                  .sort((a, b) => a.episode - b.episode || a.part - b.part)
+                {parts
+                  .filter((p) => p.episode === Number(episode))
+                  .sort((a, b) => a.part - b.part)
                   .map((p) => (
                     <SelectItem key={p.id} value={`${p.episode}/${p.part}`}>
-                      Épisode {p.episode} · Partie {p.part} — {p.title}
+                      Partie {p.part} — {p.title}
                     </SelectItem>
                   ))}
               </SelectContent>
