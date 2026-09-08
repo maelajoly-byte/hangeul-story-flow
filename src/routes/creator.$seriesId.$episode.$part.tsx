@@ -500,7 +500,8 @@ function Editor() {
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBulkOpen(true)}>
                   <Layers className="h-3.5 w-3.5" /> Créer des diapos en masse
                 </Button>
-                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSlides(1)}>
+                <Button variant="outline" size="sm" className="gap-1.5"
+                  onClick={() => { setAddMode("end"); setAddPos(String(slides.length + 1)); setAddOpen(true); }}>
                   <Plus className="h-3.5 w-3.5" /> Ajouter une diapo
                 </Button>
               </div>
