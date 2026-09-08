@@ -296,6 +296,7 @@ function Editor() {
         await updateSlide(slide.id, {
           hangeul: line.text,
           bubble_type: line.text.trim() ? line.bubble_type : "none",
+          bubble_position: "center",
           speaker_name: line.bubble_type === "bp-normal" ? line.speaker_name : "",
         });
       }
