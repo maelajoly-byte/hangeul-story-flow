@@ -22,7 +22,7 @@ import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from 
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowLeft, ChevronDown, ChevronUp, CornerDownRight, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText, Eraser } from "lucide-react";
 import { toast } from "sonner";
 
 
