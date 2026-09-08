@@ -64,17 +64,27 @@ export function parseScript(paragraphs: RawParagraph[]): ParsedLine[] {
   let speaker = "";
   for (const p of paragraphs) {
     if (!p.text) continue;
-    const m = SPEAKER_RE.exec(p.text);
-    if (m) {
+
+    // A paragraph may start with a "Nom :" line (manual line break) — it sets the
+    // active speaker and never becomes part of the slide text.
+    const lines = p.text.split("\n");
+    while (lines.length > 0) {
+      const first = (lines[0] ?? "").trim();
+      if (!first) { lines.shift(); continue; }
+      const m = SPEAKER_RE.exec(first);
+      if (!m) break;
       speaker = m[1]!.trim();
-      continue;
+      lines.shift();
     }
+    const text = lines.join("\n").trim();
+    if (!text) continue;
+
     if (p.centered) {
-      out.push({ index: out.length + 1, bubble_type: "bpp-narrator", speaker_name: "", text: p.text });
+      out.push({ index: out.length + 1, bubble_type: "bpp-narrator", speaker_name: "", text });
     } else if (speaker === SARA) {
-      out.push({ index: out.length + 1, bubble_type: "bpp-classic", speaker_name: "", text: p.text });
+      out.push({ index: out.length + 1, bubble_type: "bpp-classic", speaker_name: "", text });
     } else {
-      out.push({ index: out.length + 1, bubble_type: "bp-normal", speaker_name: speaker, text: p.text });
+      out.push({ index: out.length + 1, bubble_type: "bp-normal", speaker_name: speaker, text });
     }
   }
   return out;
