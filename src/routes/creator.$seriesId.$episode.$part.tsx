@@ -310,6 +310,24 @@ function Editor() {
     }
   };
 
+  /** Vide le texte, le type de bulle et le nom du personnage de toutes les diapos. */
+  const clearImported = async () => {
+    setClearBusy(true);
+    try {
+      for (const s of slides) {
+        await updateSlide(s.id, { hangeul: "", bubble_type: "none", speaker_name: "" });
+      }
+      setSlideDrafts({});
+      refresh();
+      toast.success("Script importé supprimé");
+    } catch {
+      toast.error("Impossible de supprimer le script importé.");
+    } finally {
+      setClearBusy(false);
+    }
+  };
+
+
   const counts = {
     bp: parsed.filter((p) => p.bubble_type === "bp-normal").length,
     classic: parsed.filter((p) => p.bubble_type === "bpp-classic").length,
