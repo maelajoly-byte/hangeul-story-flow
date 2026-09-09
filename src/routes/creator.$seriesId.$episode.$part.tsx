@@ -290,8 +290,10 @@ function Editor() {
     try {
       const buf = await file.arrayBuffer();
       setParsed(parseScript(readDocxParagraphs(buf)));
+      setFromFile(true);
     } catch {
       setImportError("Impossible de lire ce fichier .docx.");
+      setFromFile(false);
     }
   };
 
