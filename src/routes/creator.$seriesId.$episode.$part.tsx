@@ -465,7 +465,7 @@ function Editor() {
                 const hasNameTag = !!getBubble(bubbleId).nameTag;
                 return (
                 <div
-                  key={s.id}
+                  key={`${s.id}-${formVersion}`}
                   ref={(el) => { cardRefs.current[s.id] = el; }}
                   className={`rounded-xl border p-3 space-y-2 ${i === active ? "border-accent" : "border-border/60"}`}
                   onClick={() => setActive(i)}
