@@ -73,6 +73,8 @@ function Editor() {
   const [addMode, setAddMode] = useState<"end" | "at">("end");
   const [addPos, setAddPos] = useState("1");
   const [clearBusy, setClearBusy] = useState(false);
+  /** Incrémenté après chaque rechargement des diapos pour resynchroniser les champs non contrôlés. */
+  const [formVersion, setFormVersion] = useState(0);
 
 
   const [publishing, setPublishing] = useState(false);
@@ -126,6 +128,9 @@ function Editor() {
   }
 
   const refresh = () => {
+    setSlideDrafts({});
+    setBubbleTypes({});
+    setFormVersion((v) => v + 1);
     qc.invalidateQueries({ queryKey: ["slides", current.id] });
     qc.invalidateQueries({ queryKey: ["lexicon", current.id] });
   };

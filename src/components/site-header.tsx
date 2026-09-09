@@ -34,7 +34,7 @@ export function SiteHeader() {
             <DropdownMenuTrigger asChild>
               <button className="flex flex-col items-start leading-tight group">
                 <span className="font-display text-lg tracking-tight inline-flex items-center gap-1">
-                  K<span className="text-accent">·</span>Intermédiaire
+                  K<span className="text-accent">-</span>Flow
                   <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                 </span>
                 <span className="font-korean text-[10px] text-muted-foreground">드디어, 한국어가 살아나는 순간</span>
@@ -49,7 +49,7 @@ export function SiteHeader() {
         </div>
         <Link to="/" className="hidden md:flex items-center gap-2 group">
           <span className="font-display text-xl tracking-tight">
-            K<span className="text-accent">·</span>Intermédiaire
+            K<span className="text-accent">-</span>Flow
           </span>
           <span className="font-korean text-xs text-muted-foreground">드디어, 한국어가 살아나는 순간</span>
         </Link>
