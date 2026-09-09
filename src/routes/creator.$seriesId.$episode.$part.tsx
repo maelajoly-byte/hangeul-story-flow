@@ -743,7 +743,7 @@ function Editor() {
             </Button>
             <Button variant="outline" onClick={() => setImportOpen(false)}>Annuler</Button>
             <Button disabled={!!importError || !!mismatch || parsed.length === 0 || importBusy} onClick={runImport}>
-              Confirmer l'import
+              {fromFile ? "Confirmer l'import" : "Enregistrer les modifications"}
             </Button>
           </DialogFooter>
         </DialogContent>
