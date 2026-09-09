@@ -10,9 +10,9 @@ import { useUser } from "@/lib/user-store";
 export const Route = createFileRoute("/read/$seriesId/$episode/$part")({
   head: ({ params }) => ({
     meta: [
-      { title: `Lecture · Épisode ${params.episode} — K·Intermédiaire` },
+      { title: `Lecture · Épisode ${params.episode} — K-Flow` },
       { name: "description", content: "Lisez l'histoire en coréen, diapo par diapo, avec le lexique intégré." },
-      { property: "og:title", content: "Lecture — K·Intermédiaire" },
+      { property: "og:title", content: "Lecture — K-Flow" },
       { property: "og:description", content: "Une histoire coréenne illustrée, adaptée au niveau B1/B2." },
     ],
   }),

@@ -6,9 +6,9 @@ import { ArrowRight, Check } from "lucide-react";
 export const Route = createFileRoute("/tarifs")({
   head: () => ({
     meta: [
-      { title: "Tarifs — K·Intermédiaire, méthode coréen B1/B2" },
+      { title: "Tarifs — K-Flow, méthode coréen B1/B2" },
       { name: "description", content: "Découverte gratuite avec la première histoire, Pass série à 9 €, Pack fondateur à 49 € pour les 9 séries et celles à venir. Sans abonnement." },
-      { property: "og:title", content: "Tarifs — K·Intermédiaire" },
+      { property: "og:title", content: "Tarifs — K-Flow" },
       { property: "og:description", content: "Trois formules simples, sans abonnement piégeur." },
       { property: "og:url", content: "/tarifs" },
     ],

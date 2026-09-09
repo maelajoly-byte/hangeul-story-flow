@@ -35,7 +35,7 @@ export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Éditeur de partie — Creator Mode | K·Intermédiaire" },
+      { title: "Éditeur de partie — Creator Mode | K-Flow" },
       { name: "description", content: "Éditer les diapos, le texte hangeul, les audios et le lexique d'une partie." },
       { property: "og:title", content: "Éditeur de partie — Creator Mode" },
       { property: "og:description", content: "Édition des diapos et du lexique." },
@@ -73,6 +73,8 @@ function Editor() {
   const [addMode, setAddMode] = useState<"end" | "at">("end");
   const [addPos, setAddPos] = useState("1");
   const [clearBusy, setClearBusy] = useState(false);
+  /** Incrémenté après chaque rechargement des diapos pour resynchroniser les champs non contrôlés. */
+  const [formVersion, setFormVersion] = useState(0);
 
 
   const [publishing, setPublishing] = useState(false);
@@ -126,6 +128,9 @@ function Editor() {
   }
 
   const refresh = () => {
+    setSlideDrafts({});
+    setBubbleTypes({});
+    setFormVersion((v) => v + 1);
     qc.invalidateQueries({ queryKey: ["slides", current.id] });
     qc.invalidateQueries({ queryKey: ["lexicon", current.id] });
   };
@@ -460,7 +465,7 @@ function Editor() {
                 const hasNameTag = !!getBubble(bubbleId).nameTag;
                 return (
                 <div
-                  key={s.id}
+                  key={`${s.id}-${formVersion}`}
                   ref={(el) => { cardRefs.current[s.id] = el; }}
                   className={`rounded-xl border p-3 space-y-2 ${i === active ? "border-accent" : "border-border/60"}`}
                   onClick={() => setActive(i)}

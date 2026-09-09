@@ -20,7 +20,7 @@ export const Route = createFileRoute("/profile")({
   validateSearch: (search: Record<string, unknown>) => ({
     tab: typeof search['tab'] === "string" ? (search['tab'] as string) : undefined,
   }),
-  head: () => ({ meta: [{ title: "Mon Compte — K·Intermédiaire" }] }),
+  head: () => ({ meta: [{ title: "Mon Compte — K-Flow" }] }),
   component: ProfilePage,
 });
 

@@ -251,9 +251,9 @@ export function DbSlideReader({
                               {seg.text}
                             </span>
                           </PopoverTrigger>
-                          <PopoverContent className="w-80">
-                            <div className="font-korean text-lg mb-1">{seg.entry.term}</div>
-                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">{seg.entry.explanation}</p>
+                          <PopoverContent className="w-80 text-popover-foreground">
+                            <div className="font-korean text-lg mb-1 text-popover-foreground">{seg.entry.term}</div>
+                            <p className="text-sm text-popover-foreground/75 whitespace-pre-wrap">{seg.entry.explanation}</p>
                           </PopoverContent>
                         </Popover>
                       ) : (

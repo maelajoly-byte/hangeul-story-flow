@@ -208,7 +208,7 @@ export function Comments({ episodeKey }: { episodeKey: string }) {
               <p className={`text-sm mt-1.5 text-cream/90 ${c.lang === "ko" ? "font-korean" : ""}`}>{c.text}</p>
               {c.correction && (
                 <p className="mt-2 text-xs text-gold/90 bg-gold/5 border border-gold/20 rounded p-2">
-                  Correction K·Intermédiaire — {c.correction}
+                  Correction K-Flow — {c.correction}
                 </p>
               )}
               <ReplyThread comment={c} onReply={(body) => postReply(c, body)} labels={{ reply: t.reply, placeholder: t.replyPlaceholder, send: t.send }} />
