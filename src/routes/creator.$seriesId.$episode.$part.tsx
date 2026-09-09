@@ -67,6 +67,7 @@ function Editor() {
   const [importName, setImportName] = useState("");
   const [importError, setImportError] = useState("");
   const [parsed, setParsed] = useState<ParsedLine[]>([]);
+  const [fromFile, setFromFile] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [addMode, setAddMode] = useState<"end" | "at">("end");
