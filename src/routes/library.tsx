@@ -11,9 +11,9 @@ import { PenLine } from "lucide-react";
 export const Route = createFileRoute("/library")({
   head: () => ({
     meta: [
-      { title: "Bibliothèque — 9 histoires en coréen pour B1/B2 | K·Intermédiaire" },
+      { title: "Bibliothèque — 9 histoires en coréen pour B1/B2 | K-Flow" },
       { name: "description", content: "Neuf histoires illustrées en coréen, dans l'ordre de difficulté croissante, pour passer du B1 au B2. La première est offerte." },
-      { property: "og:title", content: "Bibliothèque — K·Intermédiaire" },
+      { property: "og:title", content: "Bibliothèque — K-Flow" },
       { property: "og:description", content: "9 histoires pour progresser en coréen, du B1 au B2." },
       { property: "og:url", content: "/library" },
     ],

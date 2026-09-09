@@ -6,10 +6,10 @@ import { Sparkles, ArrowRight, AlertTriangle, Wrench, Eye, Gift, Quote, ImageIco
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Apprendre le coréen intermédiaire en lisant — K·Intermédiaire" },
+      { title: "Apprendre le coréen intermédiaire en lisant — K-Flow" },
       { name: "description", content: "Passez du B1 au B2 en coréen sans cours ni listes de vocabulaire : lisez des histoires imagées en Hangeul, diapo par diapo, à votre rythme. Première histoire offerte." },
       { name: "keywords", content: "apprendre le coréen, coréen intermédiaire, lire en coréen, B1 B2 coréen, méthode coréen, hangeul, histoires coréennes, K-pop apprendre coréen" },
-      { property: "og:title", content: "Apprendre le coréen intermédiaire en lisant — K·Intermédiaire" },
+      { property: "og:title", content: "Apprendre le coréen intermédiaire en lisant — K-Flow" },
       { property: "og:description", content: "Des histoires illustrées en coréen pour vraiment progresser après l'alphabet. Votre première histoire est offerte." },
       { property: "og:url", content: "/" },
     ],
@@ -90,7 +90,7 @@ function Index() {
           <p className="mt-6 text-base md:text-lg text-foreground/80 max-w-2xl mx-auto leading-relaxed">
             Vous connaissez l'alphabet, vous écoutez de la K-pop, vous regardez vos dramas avec
             les sous-titres — mais lire un vrai texte coréen vous épuise au bout de trois lignes.
-            K·Intermédiaire vous fait progresser sans cours, sans liste de vocabulaire, et sans
+            K-Flow vous fait progresser sans cours, sans liste de vocabulaire, et sans
             dictionnaire.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
@@ -268,7 +268,7 @@ function Index() {
               <span>
                 <strong className="font-display text-base">Genèse</strong>
                 <br />
-                <span style={{ color: "rgba(255,255,255,0.75)" }}>Pourquoi K·Intermédiaire existe</span>
+                <span style={{ color: "rgba(255,255,255,0.75)" }}>Pourquoi K-Flow existe</span>
               </span>
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -285,7 +285,7 @@ function Index() {
             téléphone. Aujourd'hui, je veux offrir la même chose à tous les passionné·es de
             culture coréenne qui galèrent comme moi. »
           </p>
-          <p className="text-sm text-muted-foreground mt-4">— Fondatrice de K·Intermédiaire</p>
+          <p className="text-sm text-muted-foreground mt-4">— Fondatrice de K-Flow</p>
           <div className="mt-8">
             <Button asChild size="lg" className="h-12 px-6" style={{ backgroundColor: "oklch(0.72 0.066 72.68)", color: "#ffffff" }}>
               <Link to="/series/$id" params={{ id: "ghost-of-the-past" }}>
@@ -298,7 +298,7 @@ function Index() {
 
       <footer className="border-t border-border/60">
         <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground flex flex-wrap gap-3 justify-between">
-          <span>© K·Intermédiaire — 중급 한국어</span>
+          <span>© K-Flow — 드디어, 한국어가 살아나는 순간</span>
           <span className="flex gap-4">
             <Link to="/library" className="hover:text-foreground">Bibliothèque</Link>
             <Link to="/pourquoi" className="hover:text-foreground">Genèse</Link>

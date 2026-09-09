@@ -18,9 +18,9 @@ export const Route = createFileRoute("/series/$id")({
     const s = getSeries(params.id);
     return {
       meta: [
-        { title: s ? `${s.title} — K·Intermédiaire` : "Série — K·Intermédiaire" },
-        { name: "description", content: s?.synopsis ?? "Série K·Intermédiaire" },
-        { property: "og:title", content: s?.title ?? "K·Intermédiaire" },
+        { title: s ? `${s.title} — K-Flow` : "Série — K-Flow" },
+        { name: "description", content: s?.synopsis ?? "Série K-Flow" },
+        { property: "og:title", content: s?.title ?? "K-Flow" },
         { property: "og:description", content: s?.synopsis ?? "" },
       ],
     };

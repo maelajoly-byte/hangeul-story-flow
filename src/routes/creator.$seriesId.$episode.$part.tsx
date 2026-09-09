@@ -35,7 +35,7 @@ export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Éditeur de partie — Creator Mode | K·Intermédiaire" },
+      { title: "Éditeur de partie — Creator Mode | K-Flow" },
       { name: "description", content: "Éditer les diapos, le texte hangeul, les audios et le lexique d'une partie." },
       { property: "og:title", content: "Éditeur de partie — Creator Mode" },
       { property: "og:description", content: "Édition des diapos et du lexique." },

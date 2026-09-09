@@ -80,9 +80,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "author", content: "K·Intermédiaire" },
+      { name: "author", content: "K-Flow" },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "K·Intermédiaire" },
+      { property: "og:site_name", content: "K-Flow" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "K·Intermédiaire",
+          name: "K-Flow",
           inLanguage: "fr-FR",
           description:
             "Plateforme de lecture immersive pour apprendre le coréen au niveau intermédiaire (B1/B2) à partir d'histoires illustrées.",

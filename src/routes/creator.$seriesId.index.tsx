@@ -24,7 +24,7 @@ export const Route = createFileRoute("/creator/$seriesId/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Édition d'une histoire — Creator Mode | K·Intermédiaire" },
+      { title: "Édition d'une histoire — Creator Mode | K-Flow" },
       { name: "description", content: "Gérer les épisodes et les parties d'une histoire." },
       { property: "og:title", content: "Édition d'une histoire — Creator Mode" },
       { property: "og:description", content: "Gérer les épisodes et les parties." },

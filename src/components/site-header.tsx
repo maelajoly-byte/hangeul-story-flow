@@ -37,7 +37,7 @@ export function SiteHeader() {
                   K<span className="text-accent">·</span>Intermédiaire
                   <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                 </span>
-                <span className="font-korean text-[10px] text-muted-foreground">중급 한국어</span>
+                <span className="font-korean text-[10px] text-muted-foreground">드디어, 한국어가 살아나는 순간</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
@@ -51,7 +51,7 @@ export function SiteHeader() {
           <span className="font-display text-xl tracking-tight">
             K<span className="text-accent">·</span>Intermédiaire
           </span>
-          <span className="font-korean text-xs text-muted-foreground">중급 한국어</span>
+          <span className="font-korean text-xs text-muted-foreground">드디어, 한국어가 살아나는 순간</span>
         </Link>
         <div className="flex items-center gap-2 ml-auto">
           <nav className="hidden md:flex items-center gap-2 text-sm">

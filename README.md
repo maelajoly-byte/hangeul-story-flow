@@ -1,6 +1,6 @@
-# K-Intermédiaire: Immersive Korean
+# K-Flow: Immersive Korean
 
-Act as an expert full-stack developer and UI/UX designer. Build a web application for an innovative Korean learning platform tailored for intermediate learners (B1/B2) called "K-Intermédiaire". 
+Act as an expert full-stack developer and UI/UX designer. Build a web application for an innovative Korean learning platform tailored for intermediate learners (B1/B2) called "K-Flow". 
 
 CRITICAL CONCEPT RULES:
 

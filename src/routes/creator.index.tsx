@@ -19,9 +19,9 @@ export const Route = createFileRoute("/creator/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Creator Mode — K·Intermédiaire" },
+      { title: "Creator Mode — K-Flow" },
       { name: "description", content: "Espace d'édition réservé à l'autrice : fiches des histoires, diapos, textes en hangeul, audio et lexique." },
-      { property: "og:title", content: "Creator Mode — K·Intermédiaire" },
+      { property: "og:title", content: "Creator Mode — K-Flow" },
       { property: "og:description", content: "Espace d'édition des histoires." },
     ],
   }),

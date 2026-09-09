@@ -6,9 +6,9 @@ import { ArrowRight, Heart } from "lucide-react";
 export const Route = createFileRoute("/pourquoi")({
   head: () => ({
     meta: [
-      { title: "Pourquoi K·Intermédiaire existe — L'histoire du projet" },
+      { title: "Pourquoi K-Flow existe — L'histoire du projet" },
       { name: "description", content: "Comment une étudiante en licence de coréen, fan de BTS, a appris l'anglais par accident en lisant des fanfictions — et veut aujourd'hui offrir la même méthode aux apprenants intermédiaires de coréen." },
-      { property: "og:title", content: "Pourquoi K·Intermédiaire existe" },
+      { property: "og:title", content: "Pourquoi K-Flow existe" },
       { property: "og:description", content: "L'histoire derrière la plateforme : combler le vide pour les apprenants intermédiaires en coréen." },
       { property: "og:url", content: "/pourquoi" },
       { property: "og:type", content: "article" },
@@ -30,7 +30,7 @@ function Pourquoi() {
           J'ai appris l'anglais par accident. Je veux que vous appreniez le coréen pareil.
         </h1>
         <p className="mt-6 text-lg text-muted-foreground italic">
-          L'histoire derrière K·Intermédiaire, racontée par sa fondatrice.
+          L'histoire derrière K-Flow, racontée par sa fondatrice.
         </p>
 
         <article className="prose-custom mt-12 space-y-6 text-foreground/90 text-lg leading-relaxed">
@@ -133,7 +133,7 @@ function Pourquoi() {
 
           <p className="text-sm text-muted-foreground mt-6">
             <strong>Crédits&nbsp;:</strong> les récits et illustrations sont l'œuvre originale de
-            l'autrice Sara Eonni, initialement publiés sur BTS Universe Story. K·Intermédiaire
+            l'autrice Sara Eonni, initialement publiés sur BTS Universe Story. K-Flow
             propose une adaptation pédagogique en coréen, dans une logique de partage et
             d'apprentissage.
           </p>
