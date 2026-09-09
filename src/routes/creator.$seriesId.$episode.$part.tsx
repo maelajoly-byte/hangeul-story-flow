@@ -94,6 +94,20 @@ function Editor() {
     cardRefs.current[activeSlideId]?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [activeSlideId]);
 
+  // À l'ouverture de la fenêtre d'import, préremplir le tableau avec les diapos existantes.
+  useEffect(() => {
+    if (!importOpen) return;
+    setParsed((prev) => {
+      if (prev.length > 0) return prev;
+      return slides.map((s, i) => {
+        const bt = (s.bubble_type ?? "") as string;
+        const type: ParsedLine["bubble_type"] =
+          bt === "bp-normal" || bt === "bpp-classic" || bt === "bpp-narrator" ? bt : "bpp-narrator";
+        return { index: i + 1, bubble_type: type, speaker_name: s.speaker_name ?? "", text: s.hangeul ?? "" };
+      });
+    });
+  }, [importOpen, slides]);
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen">
