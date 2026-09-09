@@ -67,6 +67,7 @@ function Editor() {
   const [importName, setImportName] = useState("");
   const [importError, setImportError] = useState("");
   const [parsed, setParsed] = useState<ParsedLine[]>([]);
+  const [fromFile, setFromFile] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [addMode, setAddMode] = useState<"end" | "at">("end");
@@ -92,6 +93,20 @@ function Editor() {
     if (!activeSlideId) return;
     cardRefs.current[activeSlideId]?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [activeSlideId]);
+
+  // À l'ouverture de la fenêtre d'import, préremplir le tableau avec les diapos existantes.
+  useEffect(() => {
+    if (!importOpen) return;
+    setParsed((prev) => {
+      if (prev.length > 0) return prev;
+      return slides.map((s, i) => {
+        const bt = (s.bubble_type ?? "") as string;
+        const type: ParsedLine["bubble_type"] =
+          bt === "bp-normal" || bt === "bpp-classic" || bt === "bpp-narrator" ? bt : "bpp-narrator";
+        return { index: i + 1, bubble_type: type, speaker_name: s.speaker_name ?? "", text: s.hangeul ?? "" };
+      });
+    });
+  }, [importOpen, slides]);
 
   if (!isAdmin) {
     return (
@@ -275,8 +290,10 @@ function Editor() {
     try {
       const buf = await file.arrayBuffer();
       setParsed(parseScript(readDocxParagraphs(buf)));
+      setFromFile(true);
     } catch {
       setImportError("Impossible de lire ce fichier .docx.");
+      setFromFile(false);
     }
   };
 
@@ -301,8 +318,10 @@ function Editor() {
         });
       }
       setImportOpen(false);
+      setFromFile(false);
+      setSlideDrafts({});
       refresh();
-      toast.success(`${parsed.length} diapos remplies depuis le script`);
+      toast.success(`${parsed.length} diapos mises à jour`);
     } catch {
       toast.error("Impossible d'importer le script.");
     } finally {
@@ -318,6 +337,10 @@ function Editor() {
         await updateSlide(s.id, { hangeul: "", bubble_type: "none", speaker_name: "" });
       }
       setSlideDrafts({});
+      setImportName("");
+      setImportError("");
+      setFromFile(false);
+      setParsed(slides.map((_, i) => ({ index: i + 1, bubble_type: "bpp-narrator" as const, speaker_name: "", text: "" })));
       refresh();
       toast.success("Script importé supprimé");
     } catch {
@@ -631,6 +654,12 @@ function Editor() {
 
             {importError && <p className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">{importError}</p>}
 
+            {parsed.length === 0 && !importError && (
+              <p className="rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
+                Cette partie ne contient aucune diapo. Créez d'abord des diapos, puis importez le script.
+              </p>
+            )}
+
             {parsed.length > 0 && (
               <>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
@@ -714,7 +743,7 @@ function Editor() {
             </Button>
             <Button variant="outline" onClick={() => setImportOpen(false)}>Annuler</Button>
             <Button disabled={!!importError || !!mismatch || parsed.length === 0 || importBusy} onClick={runImport}>
-              Confirmer l'import
+              {fromFile ? "Confirmer l'import" : "Enregistrer les modifications"}
             </Button>
           </DialogFooter>
         </DialogContent>
