@@ -654,6 +654,12 @@ function Editor() {
 
             {importError && <p className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">{importError}</p>}
 
+            {parsed.length === 0 && !importError && (
+              <p className="rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
+                Cette partie ne contient aucune diapo. Créez d'abord des diapos, puis importez le script.
+              </p>
+            )}
+
             {parsed.length > 0 && (
               <>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
