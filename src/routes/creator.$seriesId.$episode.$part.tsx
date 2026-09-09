@@ -337,6 +337,10 @@ function Editor() {
         await updateSlide(s.id, { hangeul: "", bubble_type: "none", speaker_name: "" });
       }
       setSlideDrafts({});
+      setImportName("");
+      setImportError("");
+      setFromFile(false);
+      setParsed(slides.map((_, i) => ({ index: i + 1, bubble_type: "bpp-narrator" as const, speaker_name: "", text: "" })));
       refresh();
       toast.success("Script importé supprimé");
     } catch {
