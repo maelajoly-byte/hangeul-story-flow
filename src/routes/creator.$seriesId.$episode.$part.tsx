@@ -318,8 +318,10 @@ function Editor() {
         });
       }
       setImportOpen(false);
+      setFromFile(false);
+      setSlideDrafts({});
       refresh();
-      toast.success(`${parsed.length} diapos remplies depuis le script`);
+      toast.success(`${parsed.length} diapos mises à jour`);
     } catch {
       toast.error("Impossible d'importer le script.");
     } finally {
