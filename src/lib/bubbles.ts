@@ -71,9 +71,9 @@ export const BUBBLES: BubbleStyle[] = [
     inset: { x: 12, yTop: 26, yBottom: 14 },
     nameTag: { left: 10, right: 72, top: 6, bottom: 75 },
   },
-  { id: "bp-fairy", label: "BP · Fairy", url: bpFairy, darkText: true, scale: 120, inset: { x: 22, yTop: 26, yBottom: 26 } },
+  { id: "bp-fairy", label: "BP · Fairy", url: bpFairy, scale: 120, inset: { x: 22, yTop: 26, yBottom: 26 } },
   { id: "bp-radio", label: "BP · Radio", url: bpRadio.url, darkText: true, scale: 114, inset: { x: 10, yTop: 24, yBottom: 22 } },
-  { id: "b-author", label: "B · Author", url: bAuthor, darkText: true, scale: 103, inset: { x: 26, yTop: 26, yBottom: 26 } },
+  { id: "b-author", label: "B · Author", url: bAuthor, scale: 103, inset: { x: 26, yTop: 26, yBottom: 26 } },
   { id: "b-fullscreen", label: "B · FullScreen", url: fullScreen.url, darkText: true, scale: 100, fullScreen: true, inset: { x: 12, yTop: 20, yBottom: 20 } },
 ];
 
