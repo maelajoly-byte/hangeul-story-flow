@@ -9,37 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TarifsRouteImport } from './routes/tarifs'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as PourquoiRouteImport } from './routes/pourquoi'
-import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LibraryRouteImport } from './routes/library'
+import { Route as PourquoiRouteImport } from './routes/pourquoi'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as CreatorIndexRouteImport } from './routes/creator.index'
-import { Route as SeriesIdRouteImport } from './routes/series.$id'
 import { Route as CreatorSeriesIdRouteImport } from './routes/creator.$seriesId'
+import { Route as SeriesIdRouteImport } from './routes/series.$id'
 import { Route as CreatorSeriesIdIndexRouteImport } from './routes/creator.$seriesId.index'
-import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 import { Route as CreatorSeriesIdEpisodePartRouteImport } from './routes/creator.$seriesId.$episode.$part'
+import { Route as ReadSeriesIdEpisodePartRouteImport } from './routes/read.$seriesId.$episode.$part'
 
-const TarifsRoute = TarifsRouteImport.update({
-  id: '/tarifs',
-  path: '/tarifs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PourquoiRoute = PourquoiRouteImport.update({
-  id: '/pourquoi',
-  path: '/pourquoi',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -47,9 +32,24 @@ const LibraryRoute = LibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PourquoiRoute = PourquoiRouteImport.update({
+  id: '/pourquoi',
+  path: '/pourquoi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreatorIndexRoute = CreatorIndexRouteImport.update({
@@ -57,14 +57,14 @@ const CreatorIndexRoute = CreatorIndexRouteImport.update({
   path: '/creator/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SeriesIdRoute = SeriesIdRouteImport.update({
-  id: '/series/$id',
-  path: '/series/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CreatorSeriesIdRoute = CreatorSeriesIdRouteImport.update({
   id: '/creator/$seriesId',
   path: '/creator/$seriesId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeriesIdRoute = SeriesIdRouteImport.update({
+  id: '/series/$id',
+  path: '/series/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreatorSeriesIdIndexRoute = CreatorSeriesIdIndexRouteImport.update({
@@ -72,17 +72,17 @@ const CreatorSeriesIdIndexRoute = CreatorSeriesIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CreatorSeriesIdRoute,
 } as any)
-const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
-  id: '/read/$seriesId/$episode/$part',
-  path: '/read/$seriesId/$episode/$part',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CreatorSeriesIdEpisodePartRoute =
   CreatorSeriesIdEpisodePartRouteImport.update({
     id: '/$episode/$part',
     path: '/$episode/$part',
     getParentRoute: () => CreatorSeriesIdRoute,
   } as any)
+const ReadSeriesIdEpisodePartRoute = ReadSeriesIdEpisodePartRouteImport.update({
+  id: '/read/$seriesId/$episode/$part',
+  path: '/read/$seriesId/$episode/$part',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -185,32 +185,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tarifs': {
-      id: '/tarifs'
-      path: '/tarifs'
-      fullPath: '/tarifs'
-      preLoaderRoute: typeof TarifsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pourquoi': {
-      id: '/pourquoi'
-      path: '/pourquoi'
-      fullPath: '/pourquoi'
-      preLoaderRoute: typeof PourquoiRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -220,11 +199,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/pourquoi': {
+      id: '/pourquoi'
+      path: '/pourquoi'
+      fullPath: '/pourquoi'
+      preLoaderRoute: typeof PourquoiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/creator/': {
@@ -234,18 +234,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/series/$id': {
-      id: '/series/$id'
-      path: '/series/$id'
-      fullPath: '/series/$id'
-      preLoaderRoute: typeof SeriesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/creator/$seriesId': {
       id: '/creator/$seriesId'
       path: '/creator/$seriesId'
       fullPath: '/creator/$seriesId'
       preLoaderRoute: typeof CreatorSeriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/series/$id': {
+      id: '/series/$id'
+      path: '/series/$id'
+      fullPath: '/series/$id'
+      preLoaderRoute: typeof SeriesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/creator/$seriesId/': {
@@ -255,19 +255,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorSeriesIdIndexRouteImport
       parentRoute: typeof CreatorSeriesIdRoute
     }
-    '/read/$seriesId/$episode/$part': {
-      id: '/read/$seriesId/$episode/$part'
-      path: '/read/$seriesId/$episode/$part'
-      fullPath: '/read/$seriesId/$episode/$part'
-      preLoaderRoute: typeof ReadSeriesIdEpisodePartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/creator/$seriesId/$episode/$part': {
       id: '/creator/$seriesId/$episode/$part'
       path: '/$episode/$part'
       fullPath: '/creator/$seriesId/$episode/$part'
       preLoaderRoute: typeof CreatorSeriesIdEpisodePartRouteImport
       parentRoute: typeof CreatorSeriesIdRoute
+    }
+    '/read/$seriesId/$episode/$part': {
+      id: '/read/$seriesId/$episode/$part'
+      path: '/read/$seriesId/$episode/$part'
+      fullPath: '/read/$seriesId/$episode/$part'
+      preLoaderRoute: typeof ReadSeriesIdEpisodePartRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
