@@ -161,14 +161,19 @@ export async function addSlide(partId: string, position: number) {
 }
 
 /** Inserts a slide at `position`, shifting following slides one step down. */
-export async function insertSlideAt(partId: string, position: number) {
+export async function insertSlideAt(partId: string, position: number, mediaUrl?: string | null) {
   const slides = await listSlides(partId);
   const toShift = slides.filter((s) => s.position >= position).sort((a, b) => b.position - a.position);
   for (const s of toShift) {
     const { error } = await supabase.from("story_slides").update({ position: s.position + 1 }).eq("id", s.id);
     if (error) throw error;
   }
-  return addSlide(partId, position);
+  if (mediaUrl === undefined) return addSlide(partId, position);
+  const { data, error } = await supabase.from("story_slides")
+    .insert({ part_id: partId, position, media_url: mediaUrl, hangeul: "" })
+    .select().single();
+  if (error) throw error;
+  return data as StorySlide;
 }
 
 /** Renumbers slides of a part to 1..n following the given id order. */

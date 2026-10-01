@@ -60,7 +60,7 @@ export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolea
   if (!unlocked) {
     return (
       <article className="group rounded-xl border border-border bg-card/40 overflow-hidden">
-        <div className="relative aspect-[3/4] flex flex-col items-center justify-center gap-3 p-6 text-center"
+        <div className="relative aspect-[616/624] flex flex-col items-center justify-center gap-3 p-6 text-center"
              style={{ background: "linear-gradient(160deg, oklch(0.30 0.03 240), oklch(0.20 0.02 240))" }}>
           <Lock className="h-8 w-8 text-white/70" />
           <div className="text-xs uppercase tracking-[0.2em] text-white/60">Histoire n°{s.order}</div>
@@ -80,9 +80,9 @@ export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolea
 
   return (
     <article className="group rounded-xl border border-border bg-card/70 overflow-hidden hover:border-accent/50 transition-colors">
-      <div className="relative aspect-[3/4]" style={{ background: `linear-gradient(160deg, ${s.cover.from}, ${s.cover.to})` }}>
+      <div className="relative aspect-[616/624]" style={{ background: `linear-gradient(160deg, ${s.cover.from}, ${s.cover.to})` }}>
         {s.coverImageUrl ? (
-          <img src={s.coverImageUrl} alt={`Couverture de ${s.title}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={s.coverImageUrl} alt={`Couverture de ${s.title}`} loading="lazy" className="absolute inset-0 h-full w-full object-contain" />
         ) : (
           <div className="absolute inset-0 grid place-items-center">
             <span className="font-korean text-[8rem] text-white/15 leading-none">{s.cover.symbol}</span>
