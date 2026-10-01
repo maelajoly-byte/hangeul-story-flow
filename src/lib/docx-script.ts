@@ -3,7 +3,7 @@ import { unzipSync, strFromU8 } from "fflate";
 export interface ParsedLine {
   /** 1-based index of the slide in the part */
   index: number;
-  bubble_type: "bpp-narrator" | "bpp-classic" | "bp-normal";
+  bubble_type: "bpp-narrator" | "bpp-classic" | "bp-normal" | "bp-thinking";
   speaker_name: string;
   text: string;
 }
@@ -57,6 +57,7 @@ export function readDocxParagraphs(buffer: ArrayBuffer): RawParagraph[] {
 
 const SPEAKER_RE = /^([^\s:：][^:：]{0,20})\s*[:：]\s*$/;
 const SARA = "사라";
+const INNER_RE = /\s*[(（]\s*속으로\s*[)）]\s*/;
 
 /** Turns docx paragraphs into the ordered list of slide texts. */
 export function parseScript(paragraphs: RawParagraph[]): ParsedLine[] {
@@ -81,6 +82,10 @@ export function parseScript(paragraphs: RawParagraph[]): ParsedLine[] {
 
     if (p.centered) {
       out.push({ index: out.length + 1, bubble_type: "bpp-narrator", speaker_name: "", text });
+    } else if (INNER_RE.test(speaker)) {
+      const name = speaker.replace(INNER_RE, "").trim();
+      if (name === SARA) out.push({ index: out.length + 1, bubble_type: "bpp-narrator", speaker_name: "", text });
+      else out.push({ index: out.length + 1, bubble_type: "bp-thinking", speaker_name: name, text });
     } else if (speaker === SARA) {
       out.push({ index: out.length + 1, bubble_type: "bpp-classic", speaker_name: "", text });
     } else {
@@ -92,6 +97,7 @@ export function parseScript(paragraphs: RawParagraph[]): ParsedLine[] {
 
 export const BUBBLE_LABELS: Record<ParsedLine["bubble_type"], string> = {
   "bp-normal": "BP · Normal",
+  "bp-thinking": "BP · Thinking",
   "bpp-classic": "BPP · Classic",
   "bpp-narrator": "BPP · Narrator",
 };

@@ -222,18 +222,19 @@ export function DbSlideReader({
                 const bubble = getBubble(slide.bubble_type);
                 const pos = (slide.bubble_position || "bottom") as "top" | "center" | "bottom";
                 const w = `${bubble.scale ?? 100}%`;
+                const mw = bubble.id === "bpp-angry" ? "96%" : "none";
                 const posStyle = bubble.fullScreen
                   ? { inset: 0, width: "100%", zIndex: 10 }
                   : pos === "top"
-                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: "96%", zIndex: 10 }
+                    ? { top: "6%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: mw, zIndex: 10 }
                     : pos === "center"
-                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, maxWidth: "96%", zIndex: 10 }
-                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: "96%", zIndex: 10 };
+                      ? { top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: w, maxWidth: mw, zIndex: 10 }
+                      : { bottom: "4%", left: "50%", transform: "translateX(-50%)", width: w, maxWidth: mw, zIndex: 10 };
                 const text = (
                   <p
                     className="font-korean text-center whitespace-pre-line"
                     style={{
-                      fontSize: bubble.url ? "clamp(10px, 1.7vh, 16px)" : "clamp(12px, 2.1vh, 20px)",
+                      fontSize: bubble.url ? "clamp(13px, 2.3vh, 22px)" : "clamp(14px, 2.5vh, 24px)",
                       lineHeight: 1.45,
                       wordBreak: "keep-all",
                     }}
@@ -294,7 +295,7 @@ export function DbSlideReader({
                               right: `${bubble.nameTag.right}%`,
                               top: `${bubble.nameTag.top}%`,
                               bottom: `${bubble.nameTag.bottom}%`,
-                              fontSize: "clamp(9px, 1.6vh, 15px)",
+                              fontSize: "clamp(10px, 1.8vh, 17px)",
                               padding: "2px 4px",
                             }}
                           >

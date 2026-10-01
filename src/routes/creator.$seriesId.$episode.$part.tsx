@@ -104,7 +104,7 @@ function Editor() {
       return slides.map((s, i) => {
         const bt = (s.bubble_type ?? "") as string;
         const type: ParsedLine["bubble_type"] =
-          bt === "bp-normal" || bt === "bpp-classic" || bt === "bpp-narrator" ? bt : "bpp-narrator";
+          bt === "bp-normal" || bt === "bp-thinking" || bt === "bpp-classic" || bt === "bpp-narrator" ? bt : "bpp-narrator";
         return { index: i + 1, bubble_type: type, speaker_name: s.speaker_name ?? "", text: s.hangeul ?? "" };
       });
     });
@@ -307,7 +307,7 @@ function Editor() {
       ? ""
       : parsed.length < slides.length
         ? `${slides.length} diapos · ${parsed.length} textes — il manque ${slides.length - parsed.length} texte(s). Ajoutez des lignes (même vides) ci-dessous.`
-        : `${slides.length} diapos · ${parsed.length} textes — ${parsed.length - slides.length} texte(s) en trop. Supprimez des lignes ci-dessous.`;
+        : `${slides.length} diapos · ${parsed.length} textes — ${parsed.length - slides.length} texte(s) en trop (lignes en rouge en bas du tableau). Supprimez ou fusionnez des lignes au-dessus.`;
 
   const runImport = async () => {
     setImportBusy(true);
@@ -319,7 +319,7 @@ function Editor() {
           hangeul: line.text,
           bubble_type: line.text.trim() ? line.bubble_type : "none",
           bubble_position: "center",
-          speaker_name: line.bubble_type === "bp-normal" ? line.speaker_name : "",
+          speaker_name: line.bubble_type === "bp-normal" || line.bubble_type === "bp-thinking" ? line.speaker_name : "",
         });
       }
       setImportOpen(false);
@@ -695,10 +695,11 @@ function Editor() {
                     <tbody>
                       {parsed.map((l, i) => {
                         const existing = (slides[i]?.hangeul ?? "").trim().length > 0;
+                        const extra = i >= slides.length;
                         return (
-                          <tr key={i} className="border-t border-border/50 align-top">
-                            <td className="p-2">
-                              {slides[i]?.position ?? l.index}
+                          <tr key={i} className={`border-t align-top ${extra ? "bg-destructive/25 border-destructive ring-2 ring-inset ring-destructive" : "border-border/50"}`}>
+                            <td className={`p-2 ${extra ? "text-destructive font-bold" : ""}`}>
+                              {extra ? <span title="Aucune diapo pour ce texte">En trop</span> : (slides[i]?.position ?? l.index)}
                               {existing && <span className="ml-1 text-amber-600" title="Texte déjà présent">•</span>}
                             </td>
                             <td className="p-2">
@@ -712,7 +713,7 @@ function Editor() {
                               </Select>
                             </td>
                             <td className="p-2">
-                              {l.bubble_type === "bp-normal" ? (
+                              {l.bubble_type === "bp-normal" || l.bubble_type === "bp-thinking" ? (
                                 <Input className="h-8 font-korean text-xs" value={l.speaker_name}
                                   onChange={(e) => updateLine(i, { speaker_name: e.target.value })} />
                               ) : <span className="text-muted-foreground">—</span>}
