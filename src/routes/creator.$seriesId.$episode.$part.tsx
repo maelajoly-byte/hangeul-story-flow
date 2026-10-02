@@ -10,6 +10,7 @@ import {
   listEpisodes, upsertEpisode, insertSlideAt,
 } from "@/lib/content";
 import { DbSlideReader } from "@/components/db-slide-reader";
+import { SlideMediaPreview } from "@/components/slide-media-preview";
 import { resolveLexiconRequests } from "@/lib/lexicon.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ import { readDocxParagraphs, parseScript, BUBBLE_LABELS, type ParsedLine } from 
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowLeft, ChevronDown, ChevronUp, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText, Eraser } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, Save, Trash2, Layers, Globe, EyeOff, FileText, Eraser, CopyPlus } from "lucide-react";
 import { toast } from "sonner";
 
 
@@ -30,6 +31,8 @@ const MEDIA_BASES: Record<string, string> = {
   "ghost-of-the-past": "https://media.sebastien-rebiere.fr/Ghost_Of_The_Past/GP1_Slides/",
 };
 const DEFAULT_MEDIA_BASE = "https://media.sebastien-rebiere.fr/";
+
+type ImportLine = ParsedLine & { duplicateMediaUrl?: string | null };
 
 export const Route = createFileRoute("/creator/$seriesId/$episode/$part")({
   ssr: false,
@@ -66,7 +69,7 @@ function Editor() {
   const [importBusy, setImportBusy] = useState(false);
   const [importName, setImportName] = useState("");
   const [importError, setImportError] = useState("");
-  const [parsed, setParsed] = useState<ParsedLine[]>([]);
+  const [parsed, setParsed] = useState<ImportLine[]>([]);
   const [fromFile, setFromFile] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -287,6 +290,37 @@ function Editor() {
       return copy.map((l, k) => ({ ...l, index: k + 1 }));
     });
 
+  const mediaForImportRow = (rowIndex: number) => {
+    let originalIndex = 0;
+    for (let i = 0; i <= rowIndex; i++) {
+      const row = parsed[i];
+      if (!row) return null;
+      if (row.duplicateMediaUrl !== undefined) {
+        if (i === rowIndex) return row.duplicateMediaUrl;
+      } else {
+        const media = slides[originalIndex]?.media_url ?? null;
+        if (i === rowIndex) return media;
+        originalIndex += 1;
+      }
+    }
+    return null;
+  };
+
+  const duplicateImportMedia = (i: number) => {
+    const mediaUrl = mediaForImportRow(i);
+    setParsed((prev) => {
+      const copy = [...prev];
+      copy.splice(i + 1, 0, {
+        index: i + 2,
+        bubble_type: "bpp-narrator",
+        speaker_name: "",
+        text: "",
+        duplicateMediaUrl: mediaUrl,
+      });
+      return copy.map((line, k) => ({ ...line, index: k + 1 }));
+    });
+  };
+
 
   const onPickFile = async (file: File) => {
     setImportError("");
@@ -302,19 +336,29 @@ function Editor() {
     }
   };
 
+  const plannedDuplicates = parsed.filter((line) => line.duplicateMediaUrl !== undefined).length;
+  const plannedSlideCount = slides.length + plannedDuplicates;
   const mismatch =
-    parsed.length === 0 || parsed.length === slides.length
+    parsed.length === 0 || parsed.length === plannedSlideCount
       ? ""
-      : parsed.length < slides.length
-        ? `${slides.length} diapos · ${parsed.length} textes — il manque ${slides.length - parsed.length} texte(s). Ajoutez des lignes (même vides) ci-dessous.`
-        : `${slides.length} diapos · ${parsed.length} textes — ${parsed.length - slides.length} texte(s) en trop (lignes en rouge en bas du tableau). Supprimez ou fusionnez des lignes au-dessus.`;
+      : parsed.length < plannedSlideCount
+        ? `${plannedSlideCount} diapos prévues · ${parsed.length} textes — il manque ${plannedSlideCount - parsed.length} texte(s). Ajoutez des lignes (même vides) ci-dessous.`
+        : `${plannedSlideCount} diapos prévues · ${parsed.length} textes — ${parsed.length - plannedSlideCount} texte(s) en trop (lignes en rouge en bas du tableau). Supprimez ou fusionnez des lignes au-dessus.`;
 
   const runImport = async () => {
     setImportBusy(true);
     try {
       for (let i = 0; i < parsed.length; i++) {
-        const line = parsed[i]!;
-        const slide = slides[i]!;
+        const line = parsed[i];
+        if (line?.duplicateMediaUrl !== undefined) {
+          await insertSlideAt(current.id, i + 1, line.duplicateMediaUrl);
+        }
+      }
+      const importSlides = plannedDuplicates > 0 ? await listSlides(current.id) : slides;
+      for (let i = 0; i < parsed.length; i++) {
+        const line = parsed[i];
+        const slide = importSlides[i];
+        if (!line || !slide) throw new Error("Correspondance diapo/texte incomplète");
         await updateSlide(slide.id, {
           hangeul: line.text,
           bubble_type: line.text.trim() ? line.bubble_type : "none",
@@ -326,7 +370,7 @@ function Editor() {
       setFromFile(false);
       setSlideDrafts({});
       refresh();
-      toast.success(`${parsed.length} diapos mises à jour`);
+      toast.success(`${parsed.length} diapos mises à jour${plannedDuplicates > 0 ? `, dont ${plannedDuplicates} dupliquée(s)` : ""}`);
     } catch {
       toast.error("Impossible d'importer le script.");
     } finally {
@@ -472,9 +516,29 @@ function Editor() {
                 >
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>Diapo {s.position}</span>
-                    <button onClick={async () => { await deleteSlide(s.id); refresh(); }} aria-label="Supprimer la diapo">
-                      <Trash2 className="h-3.5 w-3.5 hover:text-destructive" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <Button type="button" variant="ghost" size="icon" className="h-7 w-7"
+                        title="Dupliquer le lien média juste après"
+                        aria-label={`Dupliquer le lien média de la diapo ${s.position}`}
+                        onClick={async (event) => {
+                          event.stopPropagation();
+                          const draftUrl = slideDrafts[s.id]?.media_url;
+                          const mediaUrl = draftUrl === undefined ? s.media_url : draftUrl || null;
+                          try {
+                            await insertSlideAt(current.id, s.position + 1, mediaUrl);
+                            refresh();
+                            toast.success(`Lien de la diapo ${s.position} dupliqué juste après`);
+                          } catch {
+                            toast.error("Impossible de dupliquer le lien média.");
+                          }
+                        }}>
+                        <CopyPlus className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button type="button" variant="ghost" size="icon" className="h-7 w-7"
+                        onClick={async (event) => { event.stopPropagation(); await deleteSlide(s.id); refresh(); }} aria-label="Supprimer la diapo">
+                        <Trash2 className="h-3.5 w-3.5 hover:text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                   <Input defaultValue={s.media_url ?? mediaBase} placeholder="URL de la vidéo / image"
                     onChange={(e) => setSlideField(s.id, "media_url", e.target.value)} />
@@ -635,7 +699,7 @@ function Editor() {
       </Dialog>
 
       <Dialog open={importOpen} onOpenChange={setImportOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="w-[96vw] sm:max-w-6xl">
           <DialogHeader>
             <DialogTitle>Importer le script coréen (.docx)</DialogTitle>
             <DialogDescription>
@@ -670,6 +734,7 @@ function Editor() {
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                   <span>{slides.length} diapos dans la partie</span>
                   <span>{parsed.length} textes détectés</span>
+                  {plannedDuplicates > 0 && <span>{plannedDuplicates} lien(s) à dupliquer</span>}
                   <span>BP · Normal : {counts.bp}</span>
                   <span>BPP · Classic : {counts.classic}</span>
                   <span>BPP · Narrator : {counts.narrator}</span>
@@ -686,6 +751,7 @@ function Editor() {
                     <thead className="sticky top-0 bg-muted/70">
                       <tr className="text-left">
                         <th className="p-2 w-12">N°</th>
+                        <th className="p-2 w-32">Média</th>
                         <th className="p-2 w-36">Bulle</th>
                         <th className="p-2 w-28">Personnage</th>
                         <th className="p-2">Texte coréen</th>
@@ -695,12 +761,19 @@ function Editor() {
                     <tbody>
                       {parsed.map((l, i) => {
                         const existing = (slides[i]?.hangeul ?? "").trim().length > 0;
-                        const extra = i >= slides.length;
+                        const extra = i >= plannedSlideCount;
+                        const mediaUrl = mediaForImportRow(i);
                         return (
                           <tr key={i} className={`border-t align-top ${extra ? "bg-destructive/25 border-destructive ring-2 ring-inset ring-destructive" : "border-border/50"}`}>
                             <td className={`p-2 ${extra ? "text-destructive font-bold" : ""}`}>
-                              {extra ? <span title="Aucune diapo pour ce texte">En trop</span> : (slides[i]?.position ?? l.index)}
+                              {extra ? <span title="Aucune diapo pour ce texte">En trop</span> : l.index}
                               {existing && <span className="ml-1 text-amber-600" title="Texte déjà présent">•</span>}
+                            </td>
+                            <td className="p-2">
+                              <SlideMediaPreview url={mediaUrl} position={l.index} />
+                              {l.duplicateMediaUrl !== undefined && (
+                                <span className="mt-1 block text-center text-[10px] font-medium text-primary">Lien dupliqué</span>
+                              )}
                             </td>
                             <td className="p-2">
                               <Select value={l.bubble_type} onValueChange={(v) => updateLine(i, { bubble_type: v as ParsedLine["bubble_type"] })}>
@@ -723,11 +796,15 @@ function Editor() {
                                 onChange={(e) => updateLine(i, { text: e.target.value })} />
                             </td>
                             <td className="p-2">
-                              <div className="flex items-center gap-1">
-                                <button onClick={() => moveLine(i, -1)} aria-label="Monter"><ChevronUp className="h-3.5 w-3.5" /></button>
-                                <button onClick={() => moveLine(i, 1)} aria-label="Descendre"><ChevronDown className="h-3.5 w-3.5" /></button>
-                                <button onClick={() => insertLine(i)} aria-label="Insérer une ligne vide ici"><Plus className="h-3.5 w-3.5" /></button>
-                                <button onClick={() => removeLine(i)} aria-label="Supprimer la ligne"><Trash2 className="h-3.5 w-3.5 hover:text-destructive" /></button>
+                              <div className="flex flex-wrap items-center gap-1">
+                                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => moveLine(i, -1)} aria-label="Monter"><ChevronUp className="h-3.5 w-3.5" /></Button>
+                                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => moveLine(i, 1)} aria-label="Descendre"><ChevronDown className="h-3.5 w-3.5" /></Button>
+                                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => insertLine(i)} aria-label="Insérer une ligne vide ici"><Plus className="h-3.5 w-3.5" /></Button>
+                                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => duplicateImportMedia(i)}
+                                  aria-label={`Dupliquer le lien média de la diapo ${l.index}`} title="Dupliquer le lien média juste après">
+                                  <CopyPlus className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeLine(i)} aria-label="Supprimer la ligne"><Trash2 className="h-3.5 w-3.5 hover:text-destructive" /></Button>
                               </div>
                             </td>
                           </tr>
