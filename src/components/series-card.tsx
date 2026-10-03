@@ -1,3 +1,4 @@
+import { useLang } from "@/lib/i18n";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { getReaderReviews, type Series } from "@/lib/data";
@@ -8,6 +9,7 @@ import { Info, Lock, Sparkles, Star } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 function Stars({ n }: { n: number }) {
+  const { t } = useLang();
   return (
     <TooltipProvider delayDuration={100}>
       <span className="inline-flex items-center gap-1" aria-label={`Difficulté ${n} sur 5`}>
@@ -31,7 +33,7 @@ function Stars({ n }: { n: number }) {
             </button>
           </TooltipTrigger>
           <TooltipContent className="max-w-[240px] text-xs leading-relaxed">
-            La note combine la <strong>difficulté linguistique</strong> (registre, vocabulaire, structures) et l'<strong>ambition narrative</strong> de l'histoire. 1 étoile signifie une entrée en douceur, pensée pour prendre confiance — pas une histoire mineure. Chaque récit a été écrit avec la même exigence.
+            {t("La note combine la difficulté linguistique (registre, vocabulaire, structures) et l'ambition narrative de l'histoire. 1 étoile signifie une entrée en douceur, pensée pour prendre confiance — pas une histoire mineure. Chaque récit a été écrit avec la même exigence.", "The rating combines linguistic difficulty (register, vocabulary, structures) and the story's narrative ambition. 1 star means a gentle start designed to build confidence — not a minor story. Every story was written with the same care.")}
           </TooltipContent>
         </Tooltip>
       </span>
@@ -40,9 +42,10 @@ function Stars({ n }: { n: number }) {
 }
 
 export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolean; onEdit?: () => void }) {
+  const { t } = useLang();
   const { user } = useUser();
   const unlocked = creator || s.free || user.unlockedSeries.includes(s.id);
-  const statusLabel = s.status === "available" ? "Disponible" : s.status === "in_progress" ? "En cours" : "Bientôt";
+  const statusLabel = s.status === "available" ? t("Disponible", "Available") : s.status === "in_progress" ? t("En cours", "Ongoing") : t("Bientôt", "Soon");
 
   const reviews = useMemo(() => getReaderReviews(s.id), [s.id]);
   const avgStars = reviews.length
@@ -63,15 +66,15 @@ export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolea
         <div className="relative aspect-[616/624] flex flex-col items-center justify-center gap-3 p-6 text-center"
              style={{ background: "linear-gradient(160deg, oklch(0.30 0.03 240), oklch(0.20 0.02 240))" }}>
           <Lock className="h-8 w-8 text-white/70" />
-          <div className="text-xs uppercase tracking-[0.2em] text-white/60">Histoire n°{s.order}</div>
-          <div className="font-display text-xl text-white/85">À découvrir</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-white/60">{t("Histoire n°", "Story #")}{s.order}</div>
+          <div className="font-display text-xl text-white/85">{t("À découvrir", "To discover")}</div>
           <p className="text-xs text-white/50 max-w-[16ch]">
-            Débloquée après la précédente
+            {t("Débloquée après la précédente", "Unlocked after the previous one")}
           </p>
         </div>
         <div className="p-4">
           <Button disabled className="w-full" variant="secondary">
-            <Lock className="h-4 w-4 mr-2" /> Verrouillée
+            <Lock className="h-4 w-4 mr-2" /> {t("Verrouillée", "Locked")}
           </Button>
         </div>
       </article>
@@ -107,7 +110,7 @@ export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolea
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <Stars n={s.stars} />
-          <span>{s.episodes} épisodes</span>
+          <span>{s.episodes} {t("épisodes", "episodes")}</span>
         </div>
         {creator ? (
           <div className="grid grid-cols-2 gap-2">
@@ -117,11 +120,11 @@ export function SeriesCard({ s, creator, onEdit }: { s: Series; creator?: boolea
             </Button>
           </div>
         ) : s.status === "coming_soon" ? (
-          <Button disabled className="w-full" variant="secondary">Bientôt disponible</Button>
+          <Button disabled className="w-full" variant="secondary">{t("Bientôt disponible", "Coming soon")}</Button>
         ) : (
           <Button asChild className="w-full bg-cream text-cream-foreground hover:bg-cream/90">
             <Link to="/series/$id" params={{ id: s.id }}>
-              <Sparkles className="h-4 w-4 mr-2" /> {s.free ? "Commencer" : "Reprendre"}
+              <Sparkles className="h-4 w-4 mr-2" /> {s.free ? t("Commencer", "Start") : t("Reprendre", "Resume")}
             </Link>
           </Button>
         )}
