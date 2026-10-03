@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { UserProvider } from "../lib/user-store";
 import { Toaster } from "../components/ui/sonner";
 import { CookieBanner } from "../components/cookie-banner";
+import { LangProvider } from "../lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -134,11 +135,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <LangProvider>
       <UserProvider>
         <Outlet />
         <CookieBanner />
         <Toaster />
       </UserProvider>
+      </LangProvider>
     </QueryClientProvider>
   );
 }
