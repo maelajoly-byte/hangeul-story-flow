@@ -1,4 +1,6 @@
+import { useLang } from "@/lib/i18n";
 import { NotificationBell } from "@/components/notification-bell";
+import { LangToggle } from "@/lib/i18n";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useUser } from "@/lib/user-store";
@@ -14,15 +16,16 @@ import {
 import { ChevronDown, LogOut, BarChart3, ListChecks, MessageSquare, Mail, Ticket, Settings } from "lucide-react";
 
 const ACCOUNT_LINKS = [
-  { tab: "stats", label: "Statistiques", icon: BarChart3 },
-  { tab: "checked", label: "Éléments vérifiés", icon: ListChecks },
-  { tab: "comments", label: "Mes commentaires", icon: MessageSquare },
-  { tab: "queries", label: "Mes demandes", icon: Mail },
-  { tab: "passes", label: "Mes pass", icon: Ticket },
-  { tab: "settings", label: "Paramètres", icon: Settings },
+  { tab: "stats", label: "Statistiques", en: "Statistics", icon: BarChart3 },
+  { tab: "checked", label: "Éléments vérifiés", en: "Checked items", icon: ListChecks },
+  { tab: "comments", label: "Mes commentaires", en: "My comments", icon: MessageSquare },
+  { tab: "queries", label: "Mes demandes", en: "My requests", icon: Mail },
+  { tab: "passes", label: "Mes pass", en: "My passes", icon: Ticket },
+  { tab: "settings", label: "Paramètres", en: "Settings", icon: Settings },
 ] as const;
 
 export function SiteHeader() {
+  const { t } = useLang();
   const { user, signOut } = useUser();
   const [authOpen, setAuthOpen] = useState(false);
   return (
@@ -41,9 +44,9 @@ export function SiteHeader() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuItem asChild><Link to="/">Accueil</Link></DropdownMenuItem>
-              <DropdownMenuItem asChild><Link to="/library">Bibliothèque</Link></DropdownMenuItem>
-              <DropdownMenuItem asChild><Link to="/pourquoi">Genèse</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/">{t("Accueil", "Home")}</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/library">{t("Bibliothèque", "Library")}</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/pourquoi">{t("Genèse", "Origins")}</Link></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -56,9 +59,9 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 ml-auto">
           <nav className="hidden md:flex items-center gap-2 text-sm">
             {[
-              { to: "/", label: "Accueil" },
-              { to: "/library", label: "Bibliothèque" },
-              { to: "/pourquoi", label: "Genèse" },
+              { to: "/", label: t("Accueil", "Home") },
+              { to: "/library", label: t("Bibliothèque", "Library") },
+              { to: "/pourquoi", label: t("Genèse", "Origins") },
             ].map((l) => (
               <Link
                 key={l.to}
@@ -70,6 +73,7 @@ export function SiteHeader() {
               </Link>
             ))}
           </nav>
+          <LangToggle />
           {user.signedIn ? (
             <div className="flex items-center gap-1">
             <NotificationBell />
@@ -81,16 +85,16 @@ export function SiteHeader() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {ACCOUNT_LINKS.map(({ tab, label, icon: Icon }) => (
+                {ACCOUNT_LINKS.map(({ tab, label, en, icon: Icon }) => (
                   <DropdownMenuItem key={tab} asChild>
                     <Link to="/profile" search={{ tab }}>
-                      <Icon className="h-4 w-4 mr-2" /> {label}
+                      <Icon className="h-4 w-4 mr-2" /> {t(label, en)}
                     </Link>
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut}>
-                  <LogOut className="h-4 w-4 mr-2" /> Se déconnecter
+                  <LogOut className="h-4 w-4 mr-2" /> {t("Se déconnecter", "Sign out")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -100,7 +104,7 @@ export function SiteHeader() {
               onClick={() => setAuthOpen(true)}
               className="h-9 px-4 rounded-md text-sm font-medium bg-cream text-cream-foreground hover:bg-cream/90 shadow-[0_0_28px_-4px_color-mix(in_oklab,var(--cream)_80%,transparent)]"
             >
-              S'inscrire / Se connecter
+              {t("S'inscrire / Se connecter", "Sign up / Sign in")}
             </Button>
           )}
         </div>
