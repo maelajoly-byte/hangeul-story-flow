@@ -1,8 +1,10 @@
+import { useLang } from "@/lib/i18n";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getConsent, setConsent, type ConsentLevel } from "@/lib/cookie-consent";
 
 export function CookieBanner() {
+  const { t } = useLang();
   const [visible, setVisible] = useState(false);
   const [details, setDetails] = useState(false);
 
@@ -20,35 +22,32 @@ export function CookieBanner() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-4">
       <div className="mx-auto max-w-3xl rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-xl p-5">
-        <h2 className="font-display text-lg">Votre vie privée</h2>
+        <h2 className="font-display text-lg">{t("Votre vie privée", "Your privacy")}</h2>
         <p className="text-sm text-muted-foreground mt-2">
-          Nous utilisons des cookies et du stockage local. Les cookies <strong>essentiels</strong> servent
-          uniquement à vous garder connecté·e et à mémoriser votre progression de lecture. Les autres (mesure
-          d'audience, préférences non indispensables) ne sont déposés qu'avec votre accord. Vous pouvez changer
-          d'avis à tout moment depuis « Paramètres » de votre compte.
+          {t("Nous utilisons des cookies et du stockage local. Les cookies essentiels servent uniquement à vous garder connecté·e et à mémoriser votre progression de lecture. Les autres (mesure d'audience, préférences non indispensables) ne sont déposés qu'avec votre accord. Vous pouvez changer d'avis à tout moment depuis « Paramètres » de votre compte.", "We use cookies and local storage. Essential cookies only keep you signed in and remember your reading progress. Others (analytics, non-essential preferences) are only set with your consent. You can change your mind at any time from your account Settings.")}
         </p>
         {details && (
           <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
-            <li><strong className="text-foreground">Essentiels</strong> — session de connexion, progression de lecture, choix de cookies. Toujours actifs si vous acceptez, jamais utilisés à des fins publicitaires.</li>
-            <li><strong className="text-foreground">Mesure &amp; confort</strong> — statistiques d'usage anonymisées et préférences d'affichage. Uniquement avec « Tout accepter ».</li>
-            <li><strong className="text-foreground">Refus</strong> — aucun stockage persistant : vous restez connecté·e le temps de l'onglet seulement.</li>
+            <li><strong className="text-foreground">{t("Essentiels", "Essential")}</strong> — {t("session de connexion, progression de lecture, choix de cookies. Toujours actifs si vous acceptez, jamais utilisés à des fins publicitaires.", "sign-in session, reading progress, cookie choice. Always active if you accept, never used for advertising.")}</li>
+            <li><strong className="text-foreground">{t("Mesure & confort", "Analytics & comfort")}</strong> — {t("statistiques d'usage anonymisées et préférences d'affichage. Uniquement avec « Tout accepter ».", "anonymised usage stats and display preferences. Only with Accept all.")}</li>
+            <li><strong className="text-foreground">{t("Refus", "Refuse")}</strong> — {t("aucun stockage persistant : vous restez connecté·e le temps de l'onglet seulement.", "no persistent storage: you stay signed in for this tab only.")}</li>
           </ul>
         )}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <Button size="sm" onClick={() => choose("all")} className="bg-cream text-cream-foreground hover:bg-cream/90">
-            Tout accepter
+            {t("Tout accepter", "Accept all")}
           </Button>
           <Button size="sm" variant="outline" onClick={() => choose("essential")}>
-            Cookies essentiels
+            {t("Cookies essentiels", "Essential cookies")}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => choose("refused")}>
-            Refuser
+            {t("Refuser", "Refuse")}
           </Button>
           <button
             onClick={() => setDetails((d) => !d)}
             className="ml-auto text-xs text-muted-foreground hover:text-foreground underline"
           >
-            {details ? "Masquer le détail" : "En savoir plus"}
+            {details ? t("Masquer le détail", "Hide details") : t("En savoir plus", "Learn more")}
           </button>
         </div>
       </div>
